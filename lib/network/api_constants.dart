@@ -1,0 +1,21 @@
+
+const String kBaseUrl = "http://192.168.43.30:86";
+const String kBaseImageUrl = "http://192.168.43.30:86/uploadimage/";
+
+//end point
+const String kEndPointLogin = "/v1/api/Token";
+const String kEndPointGetCompanies = "/v1/api/Companies";
+const String kEndPointGetDepartmentsById = "/v1/api/Departments";
+const String kEndPointGetPositionsById = "/v1/api/Positions";
+const String kEndPointGetCompanyById = "/v1/api/Companies";
+const String kEndPointGetCompanyImages = "/v1/api/Companyimages/filter";
+const String kEndPointGetEmployees = "/v1/api/Employees/filter";
+const String kEndPointGetDepartmentByCompanyId = "/v1/api/Departments/filter";
+const String kEndPointGetPositionByCompanyId = "/v1/api/Positions/filter";
+const String kEndPointGetUserData = "/v1/api/Users";
+const String kEndPointUploadImage = "/v1/api/Upload/upload";
+const String kEndPointAddDepartment = "/v1/api/Departments";
+
+//Param
+const String kParamPage = "page";
+const String kParamAuthorization = "Authorization";

@@ -1,0 +1,190 @@
+import 'package:flutter/material.dart';
+import 'package:pahg_group/data/models/pahg_model.dart';
+import 'package:pahg_group/data/vos/request_body/login_request.dart';
+import 'package:pahg_group/data/vos/token_vo.dart';
+import 'package:pahg_group/data/vos/user_vo.dart';
+import 'package:pahg_group/exception/helper_functions.dart';
+import 'package:pahg_group/ui/pages/home_page.dart';
+import 'package:pahg_group/ui/providers/auth_provider.dart';
+import 'package:pahg_group/widgets/loading_widget.dart';
+import 'package:provider/provider.dart';
+
+class LoginPage extends StatefulWidget {
+
+  const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  bool isSuccess = false;
+  final PahgModel _pahgModel = PahgModel();
+
+  void userLogin() async{
+      try {
+        showDialog(context: context, barrierDismissible: false,builder: (context) => const LoadingWidget());
+        TokenVo tokenVo = await _pahgModel.userLogin(_emailController.text.toString(),_emailController.text.toString());
+        try{
+          String bearerToken = 'Bearer ${tokenVo.accessToken!}';
+          UserVo? userVo = await _pahgModel.getUserById(bearerToken, tokenVo.userId!);
+          saveToken(bearerToken, userVo!.userRolesId!, tokenVo.userId!);
+          Navigator.of(context).pop();
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
+        } catch (e) {
+          Navigator.of(context).pop();
+          showErrorDialog(e.toString());
+        }
+      }catch(e) {
+        Navigator.of(context).pop();
+        if(e.toString()=='Connection') {
+          showConnectionErrorDialog(context, 'Check internet connection');
+        }else {
+          showErrorDialog(e.toString());
+        }
+      }
+  }
+
+  void saveToken(String token,int userRole,String userId) async{
+    AuthProvider authProvider = Provider.of<AuthProvider>(context,listen: false);
+    await authProvider.clearTokenAndRoleAndId();
+    await authProvider.setTokenAndRoleAndUserId(token, userRole, userId);
+  }
+
+  void showErrorDialog(String errorMessage) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Error'),
+          content: Text(errorMessage),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.grey[200],
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: double.infinity,
+                color: Colors.blue[800],
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 40,bottom: 5),
+                      child: Image.asset(
+                        'assets/pahg_logo.png', // Replace with your logo asset
+                        height: 100,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Log in',
+                      style: TextStyle(
+                        fontSize: 24,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 20,),
+                    Container(
+                      height: 50,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: const BorderRadius.only(topLeft: Radius.circular(50))
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              ///email text field
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 25),
+                child: TextField(
+                  controller: _emailController,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.email),
+                    labelText: 'Email',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                ),
+              ),
+              ///Password text field
+              Padding(
+                padding: const EdgeInsets.all(25.0),
+                child: TextField(
+                  controller: _passwordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.lock),
+                    labelText: 'Password',
+                    suffixIcon: const Icon(Icons.visibility),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 15),
+              ///sign in button
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                child: InkWell(
+                  onTap: () {
+                    if(_emailController.text.isNotEmpty && _passwordController.text.isNotEmpty){
+                      userLogin();
+                    }else{
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Please fill Email and Password'),
+                        ),
+                      );
+                    }
+
+                  },
+                  child: Ink(
+                    decoration: BoxDecoration(
+                        color: Colors.blue[700],
+                        borderRadius: const BorderRadius.only(topLeft: Radius.circular(16),bottomRight: Radius.circular(16))
+                    ),
+                    padding: const EdgeInsets.all(18),
+                    child: const Center(
+                      child: Text(
+                        'Log In',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 18),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 25),
+              //not a member register now
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
