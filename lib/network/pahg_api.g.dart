@@ -353,6 +353,142 @@ class _PahgApi implements PahgApi {
     return value;
   }
 
+  @override
+  Future<PostMethodResponse?> updateDepartment(
+    String apiKey,
+    int deptId,
+    AddDepartmentRequest requestBody,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': apiKey};
+    _headers.removeWhere((k, v) => v == null);
+    final _data = <String, dynamic>{};
+    _data.addAll(requestBody.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>?>(
+        _setStreamType<PostMethodResponse>(Options(
+      method: 'PUT',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/v1/api/Departments/${deptId}',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = _result.data == null
+        ? null
+        : PostMethodResponse.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<PositionResponse?> getPosition(
+    String apiKey,
+    List<GetRequest> requestBody,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': apiKey};
+    _headers.removeWhere((k, v) => v == null);
+    final _data = requestBody.map((e) => e.toJson()).toList();
+    final _result = await _dio
+        .fetch<Map<String, dynamic>?>(_setStreamType<PositionResponse>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/v1/api/Positions/filter',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value =
+        _result.data == null ? null : PositionResponse.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<PostMethodResponse?> addPosition(
+    String apiKey,
+    AddPositionRequest requestBody,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': apiKey};
+    _headers.removeWhere((k, v) => v == null);
+    final _data = <String, dynamic>{};
+    _data.addAll(requestBody.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>?>(
+        _setStreamType<PostMethodResponse>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/v1/api/Positions',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = _result.data == null
+        ? null
+        : PostMethodResponse.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<PostMethodResponse?> updatePosition(
+    String apiKey,
+    int positionId,
+    AddPositionRequest requestBody,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': apiKey};
+    _headers.removeWhere((k, v) => v == null);
+    final _data = <String, dynamic>{};
+    _data.addAll(requestBody.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>?>(
+        _setStreamType<PostMethodResponse>(Options(
+      method: 'PUT',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/v1/api/Positions/${positionId}',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = _result.data == null
+        ? null
+        : PostMethodResponse.fromJson(_result.data!);
+    return value;
+  }
+
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
     if (T != dynamic &&
         !(requestOptions.responseType == ResponseType.bytes ||

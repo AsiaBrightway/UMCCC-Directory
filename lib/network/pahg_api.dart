@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:pahg_group/data/vos/request_body/add_company_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_department_request.dart';
+import 'package:pahg_group/data/vos/request_body/add_position_request.dart';
 import 'package:pahg_group/data/vos/request_body/login_request.dart';
 import 'package:pahg_group/network/api_constants.dart';
 import 'package:pahg_group/network/responses/company_images_response.dart';
@@ -13,6 +14,7 @@ import 'package:pahg_group/network/responses/department_list_response.dart';
 import 'package:pahg_group/network/responses/employee_list_response.dart';
 import 'package:pahg_group/network/responses/image_upload_response.dart';
 import 'package:pahg_group/network/responses/login_response.dart';
+import 'package:pahg_group/network/responses/position_response.dart';
 import 'package:pahg_group/network/responses/post_method_response.dart';
 import 'package:pahg_group/network/responses/user_response.dart';
 import 'package:retrofit/http.dart';
@@ -83,5 +85,31 @@ abstract class PahgApi{
   Future<PostMethodResponse?> addDepartment(
       @Header(kParamAuthorization) String apiKey,
       @Body() AddDepartmentRequest requestBody
+      );
+  
+  @PUT("$kEndPointAddDepartment/{dept_id}")
+  Future<PostMethodResponse?> updateDepartment(
+      @Header(kParamAuthorization) String apiKey,
+      @Path('dept_id') int deptId,
+      @Body() AddDepartmentRequest requestBody
+      );
+
+  @POST(kEndPointGetPositionByCompanyId)
+  Future<PositionResponse?> getPosition(
+      @Header(kParamAuthorization) String apiKey,
+      @Body() List<GetRequest> requestBody
+      );
+
+  @POST(kEndPointGetPositionsById)
+  Future<PostMethodResponse?> addPosition(
+      @Header(kParamAuthorization) String apiKey,
+      @Body() AddPositionRequest requestBody
+      );
+
+  @PUT("$kEndPointGetPositionsById/{position_id}")
+  Future<PostMethodResponse?> updatePosition(
+      @Header(kParamAuthorization) String apiKey,
+      @Path('position_id') int positionId,
+      @Body() AddPositionRequest requestBody
       );
 }

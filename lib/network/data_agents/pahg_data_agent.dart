@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:pahg_group/data/vos/companies_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_company_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_department_request.dart';
+import 'package:pahg_group/data/vos/request_body/add_position_request.dart';
 import 'package:pahg_group/data/vos/request_body/get_request.dart';
 import 'package:pahg_group/data/vos/request_body/login_request.dart';
 import 'package:pahg_group/network/responses/login_response.dart';
@@ -13,6 +14,7 @@ import '../responses/company_images_response.dart';
 import '../responses/department_list_response.dart';
 import '../responses/employee_list_response.dart';
 import '../responses/image_upload_response.dart';
+import '../responses/position_response.dart';
 import '../responses/user_response.dart';
 
 abstract class PahgDataAgent{
@@ -33,8 +35,15 @@ abstract class PahgDataAgent{
 
   Future<PostMethodResponse?> addDepartment(String apiKey,AddDepartmentRequest request);
 
+  Future<PostMethodResponse?> updateDepartment(String apiKey,int deptId,AddDepartmentRequest request);
+
   Future<UserResponse?> getUserById(String apiKey,String userId);
 
   Future<ImageUploadResponse?> uploadImage(String apiKey,File file);
 
+  Future<PositionResponse?> getPositions(String apiKey,List<GetRequest> request);
+
+  Future<PostMethodResponse?> addPosition(String apiKey,AddPositionRequest request);
+
+  Future<PostMethodResponse?> updatePosition(String apiKey,int positionId,AddPositionRequest request);
 }

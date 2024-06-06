@@ -1,5 +1,6 @@
 
 
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:pahg_group/data/vos/request_body/get_request.dart';
 import 'package:pahg_group/ui/providers/auth_provider.dart';
@@ -78,51 +79,78 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
             child: Column(
               children: [
                 const SizedBox(height: 10),
-                (companyImages.isEmpty)?
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(14),
-                  child: Container(
-                    margin: const EdgeInsets.only(bottom: 8),
-                      height: 180,
-                      child: Image.asset('assets/placeholder_image.png',fit: BoxFit.cover),
-                  ),
-                )
+                (companyImages.isEmpty)
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(14),
+                        child: Container(
+                          margin: const EdgeInsets.only(bottom: 8),
+                          height: 180,
+                          child: Image.asset('assets/placeholder_image.png',
+                              fit: BoxFit.cover),
+                        ),
+                      )
                     : CompanyBannerCard(imagesVo: companyImages),
-
+                const SizedBox(height: 16,),
                 ///drop down button
                 Center(
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(vertical: 8),
-                    width: MediaQuery.of(context).size.width - 60,
-                    child: DropdownButtonFormField<String>(
-                      value: _selectedValue,
-                      hint: const Text('Filter Employee by Department'),
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 14,vertical: 10),
-                        filled: true,
-                        fillColor: Theme.of(context).colorScheme.primaryContainer, // Background color of the dropdown
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide.none,
+                  child: SizedBox(
+                    height: 50,
+                    width: MediaQuery.of(context).size.width -36,
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton2(
+                        isExpanded: true,
+                        value: _selectedValue,
+                        hint: const Text(
+                          'Choose Department',
+                          style: TextStyle(
+                            fontSize: 14,
+                          ),
                         ),
-
+                        items: departments.map((DepartmentVo value) {
+                          return DropdownMenuItem<String>(
+                            value: value.departmentName,
+                            child: Text(value.departmentName ?? '',style: TextStyle(
+                                overflow: TextOverflow.ellipsis,color: Theme.of(context).colorScheme.onSurface
+                            ),),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            _selectedValue = newValue;
+                            onDropDownChanged(newValue!);
+                          });
+                        },
+                        dropdownStyleData: DropdownStyleData(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: Theme.of(context).colorScheme.onTertiaryContainer,
+                          ),
+                          scrollbarTheme: const ScrollbarThemeData(
+                            radius: Radius.circular(20),
+                          ),
+                        ),
+                        buttonStyleData: ButtonStyleData(
+                          elevation: 4,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: Colors.black26,
+                            ),
+                            color: Theme.of(context).colorScheme.onTertiaryContainer,
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          height: 40,
+                          width: 140,
+                        ),
+                        iconStyleData: IconStyleData(
+                          icon: const Icon(
+                            Icons.keyboard_arrow_down_sharp,
+                          ),
+                          iconSize: 22,
+                          iconEnabledColor: Colors.green[700],
+                          iconDisabledColor: Colors.black,
+                        ),
                       ),
-                      icon: Icon(Icons.arrow_drop_down,color: Colors.green[300],),
-                      iconSize: 24,
-                      elevation: 16,
-                      items: departments.map((DepartmentVo value) {
-                        return DropdownMenuItem<String>(
-                          value: value.departmentName,
-                          child: Text(value.departmentName ?? '',style: const TextStyle(
-                            overflow: TextOverflow.ellipsis,
-                          ),),
-                        );
-                      }).toList(),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          onDropDownChanged(newValue!);
-                        });
-                      },
                     ),
                   ),
                 ),
@@ -195,7 +223,7 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                     );
                   },
                   errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
-                    return const Icon(Icons.person,size: 80,); // Show error image
+                    return Image.asset('lib/icons/profile.png',width: 80,height: 90); // Show error image
                   },
                 ),
               )
@@ -207,10 +235,13 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
             children: [
               Text(employee.employeeName!,style: const TextStyle(
                   fontSize: 18,
-                  fontWeight: FontWeight.bold
+                  fontWeight: FontWeight.w500
               )),
               const SizedBox(height: 10),
-              Text(employee.departmentName!)
+              Text(employee.departmentName!,style: const TextStyle(
+                fontFamily: 'Roboto',
+                fontWeight: FontWeight.w300
+              ),)
             ],
           )
         ],

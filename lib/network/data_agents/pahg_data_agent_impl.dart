@@ -7,6 +7,7 @@ import 'package:pahg_group/data/vos/companies_vo.dart';
 import 'package:pahg_group/data/vos/error_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_company_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_department_request.dart';
+import 'package:pahg_group/data/vos/request_body/add_position_request.dart';
 import 'package:pahg_group/data/vos/request_body/get_request.dart';
 import 'package:pahg_group/data/vos/request_body/login_request.dart';
 import 'package:pahg_group/exception/custom_exception.dart';
@@ -17,6 +18,7 @@ import 'package:pahg_group/network/responses/department_list_response.dart';
 import 'package:pahg_group/network/responses/employee_list_response.dart';
 import 'package:pahg_group/network/responses/image_upload_response.dart';
 import 'package:pahg_group/network/responses/login_response.dart';
+import 'package:pahg_group/network/responses/position_response.dart';
 import 'package:pahg_group/network/responses/post_method_response.dart';
 import 'package:pahg_group/network/responses/user_response.dart';
 
@@ -152,6 +154,34 @@ class PahgDataAgentImpl extends PahgDataAgent{
   @override
   Future<PostMethodResponse?> addDepartment(String apiKey, AddDepartmentRequest request) {
     return mApi.addDepartment(apiKey, request).catchError((error){
+      throw _createException(error);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> updateDepartment(String apiKey, int deptId, AddDepartmentRequest request) {
+    return mApi.updateDepartment(apiKey, deptId, request).catchError((error){
+      throw _createException(error);
+    });
+  }
+
+  @override
+  Future<PositionResponse?> getPositions(String apiKey, List<GetRequest> request) {
+    return mApi.getPosition(apiKey, request).catchError((error){
+      throw _createException(error);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> addPosition(String apiKey, AddPositionRequest request) {
+    return mApi.addPosition(apiKey, request).catchError((error){
+      throw _createException(error);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> updatePosition(String apiKey, int positionId, AddPositionRequest request) {
+    return mApi.updatePosition(apiKey, positionId, request).catchError((error){
       throw _createException(error);
     });
   }

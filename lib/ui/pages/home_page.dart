@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:pahg_group/data/models/pahg_model.dart';
 import 'package:pahg_group/data/vos/companies_vo.dart';
@@ -49,7 +48,6 @@ class _HomePageState extends State<HomePage> {
       });
     }
     super.didChangeDependencies();
-
   }
 
   @override

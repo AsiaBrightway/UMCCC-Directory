@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pahg_group/ui/pages/add_company_page.dart';
 import 'package:pahg_group/ui/pages/add_department_page.dart';
+import 'package:pahg_group/ui/pages/add_position_page.dart';
 import 'package:pahg_group/ui/pages/login_page.dart';
 import 'package:pahg_group/ui/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
@@ -34,7 +35,7 @@ class MyDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.onTertiaryContainer,
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -119,7 +120,7 @@ class MyDrawer extends StatelessWidget {
                 leading: Image.asset('lib/icons/add_chair.png',width: 25),
                 title: const Text('Add Position',style: TextStyle(fontWeight: FontWeight.w400),),
                 onTap: (){
-                  //TODO
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const AddPositionPage(isAdd: true),));
                 },
               ),
             ),
@@ -129,7 +130,7 @@ class MyDrawer extends StatelessWidget {
                 leading: Image.asset('lib/icons/edit_chair.png',width: 25,color: Colors.deepOrange,),
                 title: const Text('Edit Position',style: TextStyle(fontWeight: FontWeight.w400),),
                 onTap: (){
-                  //TODO
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const AddPositionPage(isAdd: false),));
                 },
               ),
             ),

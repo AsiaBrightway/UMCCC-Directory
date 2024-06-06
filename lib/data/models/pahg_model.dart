@@ -5,8 +5,10 @@ import 'package:pahg_group/data/vos/companies_vo.dart';
 import 'package:pahg_group/data/vos/company_images_vo.dart';
 import 'package:pahg_group/data/vos/department_vo.dart';
 import 'package:pahg_group/data/vos/employee_vo.dart';
+import 'package:pahg_group/data/vos/position_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_company_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_department_request.dart';
+import 'package:pahg_group/data/vos/request_body/add_position_request.dart';
 import 'package:pahg_group/data/vos/request_body/get_request.dart';
 import 'package:pahg_group/data/vos/request_body/login_request.dart';
 import 'package:pahg_group/data/vos/token_vo.dart';
@@ -87,11 +89,32 @@ class PahgModel {
     return mDataAgent.addDepartment(apiKey, request);
   }
 
+  Future<PostMethodResponse?> updateDepartment(String apiKey,int companyId,int deptId,String departmentName,bool isActive){
+    AddDepartmentRequest request = AddDepartmentRequest(0, companyId, departmentName, isActive);
+    return mDataAgent.updateDepartment(apiKey, deptId, request);
+  }
+
   Future<UserVo?> getUserById(String apiKey,String userId){
     return mDataAgent.getUserById(apiKey, userId).asStream().map((response) => response?.document).first;
   }
 
   Future<ImageVo?> uploadImage(String apiKey,File file){
     return mDataAgent.uploadImage(apiKey, file).asStream().map((response) => response?.document).first;
+  }
+
+  Future<List<PositionVo>> getPositions(String apiKey,String columnName,String deptId){
+    var request = GetRequest(columnName: columnName, columnCondition: 1, columnValue: deptId);
+    List<GetRequest> requestList = [request];
+    return mDataAgent.getPositions(apiKey, requestList).asStream().map((response) => response?.document?.records ?? []).first;
+  }
+
+  Future<PostMethodResponse?> addPosition(String apiKey,int deptId,String positionName,bool isActive){
+    var request = AddPositionRequest(0, deptId, positionName, isActive);
+    return mDataAgent.addPosition(apiKey, request);
+  }
+
+  Future<PostMethodResponse?> updatePosition(String apiKey,int positionId, int deptId,String position,bool isActive){
+    var request = AddPositionRequest(0, deptId, position, isActive);
+    return mDataAgent.updatePosition(apiKey, positionId, request);
   }
 }

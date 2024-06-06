@@ -49,7 +49,7 @@ void showSuccessDialog(BuildContext context,String successMessage) {
     builder: (BuildContext context) {
       return AlertDialog(
         icon: Image.asset('lib/icons/accept.png',width: 20,height: 20),
-        content: Text(successMessage),
+        content: Padding(padding: const EdgeInsets.symmetric(vertical: 10),child: Text(successMessage)),
         actions: <Widget>[
           TextButton(
             onPressed: () {
