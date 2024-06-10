@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../exception/helper_functions.dart';
+
 class UserDrawer extends StatelessWidget {
   const UserDrawer({super.key});
 
@@ -39,8 +41,8 @@ class UserDrawer extends StatelessWidget {
                 leading: const Icon(Icons.logout_outlined),
                 title: const Text('Log out',style: TextStyle(fontWeight: FontWeight.bold),),
                 onTap: (){
-                  //TODO
-                },
+                  showLogoutDialog(context);
+                  },
               ),
             ),
           ],

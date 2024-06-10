@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pahg_group/data/models/pahg_model.dart';
-import 'package:pahg_group/data/vos/request_body/login_request.dart';
 import 'package:pahg_group/data/vos/token_vo.dart';
 import 'package:pahg_group/data/vos/user_vo.dart';
 import 'package:pahg_group/exception/helper_functions.dart';
@@ -26,7 +25,7 @@ class _LoginPageState extends State<LoginPage> {
   void userLogin() async{
       try {
         showDialog(context: context, barrierDismissible: false,builder: (context) => const LoadingWidget());
-        TokenVo tokenVo = await _pahgModel.userLogin(_emailController.text.toString(),_emailController.text.toString());
+        TokenVo tokenVo = await _pahgModel.userLogin(_emailController.text.toString(),_passwordController.text.toString());
         try{
           String bearerToken = 'Bearer ${tokenVo.accessToken!}';
           UserVo? userVo = await _pahgModel.getUserById(bearerToken, tokenVo.userId!);
@@ -87,6 +86,7 @@ class _LoginPageState extends State<LoginPage> {
                 color: Colors.blue[800],
                 child: Column(
                   children: [
+                    ///logo and text
                     Padding(
                       padding: const EdgeInsets.only(top: 40,bottom: 5),
                       child: Image.asset(
@@ -95,9 +95,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    const Text(
-                      'Log in',
-                      style: TextStyle(
+                    const Text('Log in', style: TextStyle(
                         fontSize: 24,
                         color: Colors.white,
                       ),
@@ -159,7 +157,6 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       );
                     }
-
                   },
                   child: Ink(
                     decoration: BoxDecoration(

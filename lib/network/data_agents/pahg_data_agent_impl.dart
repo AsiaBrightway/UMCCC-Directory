@@ -4,9 +4,11 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:pahg_group/data/vos/companies_vo.dart';
+import 'package:pahg_group/data/vos/employee_vo.dart';
 import 'package:pahg_group/data/vos/error_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_company_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_department_request.dart';
+import 'package:pahg_group/data/vos/request_body/add_employee_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_position_request.dart';
 import 'package:pahg_group/data/vos/request_body/get_request.dart';
 import 'package:pahg_group/data/vos/request_body/login_request.dart';
@@ -182,6 +184,20 @@ class PahgDataAgentImpl extends PahgDataAgent{
   @override
   Future<PostMethodResponse?> updatePosition(String apiKey, int positionId, AddPositionRequest request) {
     return mApi.updatePosition(apiKey, positionId, request).catchError((error){
+      throw _createException(error);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> addUser(String apiKey, AddEmployeeRequest request) {
+    return mApi.addUser(apiKey, request).catchError((error){
+      throw _createException(error);
+    });
+  }
+
+  @override
+  Future<EmployeeVo?> getEmployeeById(String apiKey, String userId) {
+    return mApi.getEmployeeById(apiKey, userId).catchError((error){
       throw _createException(error);
     });
   }

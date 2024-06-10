@@ -1,7 +1,9 @@
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../ui/pages/login_page.dart';
+import '../ui/providers/auth_provider.dart';
 
 void showUnauthorizedDialog(BuildContext context,String errorMessage){
   showDialog(
@@ -74,6 +76,29 @@ void showErrorDialog(BuildContext context,String errorMessage) {
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void showLogoutDialog(BuildContext context){
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        icon: const Text('Logout' ,style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+        content: const Text('Are you sure to logout?',style: TextStyle(fontSize: 16),),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              AuthProvider authProvider = Provider.of<AuthProvider>(context,listen: false);
+              authProvider.clearTokenAndRoleAndId();
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginPage()));
             },
             child: const Text('OK'),
           ),

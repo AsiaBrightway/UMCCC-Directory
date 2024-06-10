@@ -1,36 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:pahg_group/ui/pages/add_company_page.dart';
 import 'package:pahg_group/ui/pages/add_department_page.dart';
+import 'package:pahg_group/ui/pages/add_employee_page.dart';
 import 'package:pahg_group/ui/pages/add_position_page.dart';
 import 'package:pahg_group/ui/pages/login_page.dart';
 import 'package:pahg_group/ui/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../../exception/helper_functions.dart';
+
 class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key});
 
-  void showLogoutDialog(BuildContext context){
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          icon: const Text('Logout' ,style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-          content: const Text('Are you sure to logout?',style: TextStyle(fontSize: 16),),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                AuthProvider authProvider = Provider.of<AuthProvider>(context,listen: false);
-                authProvider.clearTokenAndRoleAndId();
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginPage()));
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +45,7 @@ class MyDrawer extends StatelessWidget {
                 leading: Image.asset('lib/icons/add_employee.png',width: 25,color: Colors.black,),
                 title: const Text('Add Employee',style: TextStyle(fontWeight: FontWeight.w400),),
                 onTap: (){
-                  //TODO
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const AddEmployeePage(isAdd: true),));
                 },
               ),
             ),

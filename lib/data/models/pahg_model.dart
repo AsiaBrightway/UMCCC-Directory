@@ -8,6 +8,7 @@ import 'package:pahg_group/data/vos/employee_vo.dart';
 import 'package:pahg_group/data/vos/position_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_company_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_department_request.dart';
+import 'package:pahg_group/data/vos/request_body/add_employee_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_position_request.dart';
 import 'package:pahg_group/data/vos/request_body/get_request.dart';
 import 'package:pahg_group/data/vos/request_body/login_request.dart';
@@ -116,5 +117,13 @@ class PahgModel {
   Future<PostMethodResponse?> updatePosition(String apiKey,int positionId, int deptId,String position,bool isActive){
     var request = AddPositionRequest(0, deptId, position, isActive);
     return mDataAgent.updatePosition(apiKey, positionId, request);
+  }
+
+  Future<PostMethodResponse?> addUser(String apiKey,AddEmployeeRequest request){
+    return mDataAgent.addUser(apiKey, request);
+  }
+
+  Future<EmployeeVo?> getEmployeeById(String apiKey,String userId){
+    return mDataAgent.getEmployeeById(apiKey, userId);
   }
 }

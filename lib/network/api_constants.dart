@@ -1,6 +1,6 @@
 
-const String kBaseUrl = "http://192.168.100.46:86";
-const String kBaseImageUrl = "http://192.168.100.46:86/uploadimage/";
+const String kBaseUrl = "http://192.168.1.8:86";
+const String kBaseImageUrl = "http://192.168.1.8:86/uploadimage/";
 
 //end point
 const String kEndPointLogin = "/v1/api/Token";
@@ -15,7 +15,13 @@ const String kEndPointGetPositionByCompanyId = "/v1/api/Positions/filter";
 const String kEndPointGetUserData = "/v1/api/Users";
 const String kEndPointUploadImage = "/v1/api/Upload/upload";
 const String kEndPointAddDepartment = "/v1/api/Departments";
+const String kEndPointGetEmployee = "/v1/api/Employees";
 
 //Param
 const String kParamPage = "page";
 const String kParamAuthorization = "Authorization";
+
+
+//default const
+const String autoGenerate = "auto";
+const String defaultPassword = "0000";

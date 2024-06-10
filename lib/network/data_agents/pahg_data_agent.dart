@@ -4,12 +4,14 @@ import 'dart:io';
 import 'package:pahg_group/data/vos/companies_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_company_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_department_request.dart';
+import 'package:pahg_group/data/vos/request_body/add_employee_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_position_request.dart';
 import 'package:pahg_group/data/vos/request_body/get_request.dart';
 import 'package:pahg_group/data/vos/request_body/login_request.dart';
 import 'package:pahg_group/network/responses/login_response.dart';
 import 'package:pahg_group/network/responses/post_method_response.dart';
 
+import '../../data/vos/employee_vo.dart';
 import '../responses/company_images_response.dart';
 import '../responses/department_list_response.dart';
 import '../responses/employee_list_response.dart';
@@ -46,4 +48,8 @@ abstract class PahgDataAgent{
   Future<PostMethodResponse?> addPosition(String apiKey,AddPositionRequest request);
 
   Future<PostMethodResponse?> updatePosition(String apiKey,int positionId,AddPositionRequest request);
+
+  Future<PostMethodResponse?> addUser(String apiKey,AddEmployeeRequest request);
+
+  Future<EmployeeVo?> getEmployeeById(String apiKey,String userId);
 }

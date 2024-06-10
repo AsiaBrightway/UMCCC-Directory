@@ -1,6 +1,5 @@
 
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pahg_group/ui/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
@@ -199,7 +198,7 @@ class _AddPositionPageState extends State<AddPositionPage> {
                     ],
                   ),
                 ),
-                SizedBox(height: 20,),
+                const SizedBox(height: 20,),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
