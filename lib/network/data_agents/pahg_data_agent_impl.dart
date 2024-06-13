@@ -12,12 +12,14 @@ import 'package:pahg_group/data/vos/request_body/add_employee_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_position_request.dart';
 import 'package:pahg_group/data/vos/request_body/get_request.dart';
 import 'package:pahg_group/data/vos/request_body/login_request.dart';
+import 'package:pahg_group/data/vos/request_body/update_employee_request.dart';
 import 'package:pahg_group/exception/custom_exception.dart';
 import 'package:pahg_group/network/data_agents/pahg_data_agent.dart';
 import 'package:pahg_group/network/pahg_api.dart';
 import 'package:pahg_group/network/responses/company_images_response.dart';
 import 'package:pahg_group/network/responses/department_list_response.dart';
 import 'package:pahg_group/network/responses/employee_list_response.dart';
+import 'package:pahg_group/network/responses/employee_response.dart';
 import 'package:pahg_group/network/responses/image_upload_response.dart';
 import 'package:pahg_group/network/responses/login_response.dart';
 import 'package:pahg_group/network/responses/position_response.dart';
@@ -196,8 +198,15 @@ class PahgDataAgentImpl extends PahgDataAgent{
   }
 
   @override
-  Future<EmployeeVo?> getEmployeeById(String apiKey, String userId) {
+  Future<EmployeeResponse?> getEmployeeById(String apiKey, String userId) {
     return mApi.getEmployeeById(apiKey, userId).catchError((error){
+      throw _createException(error);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> updateEmployeeById(String apiKey, String userId, UpdateEmployeeRequest request) {
+    return mApi.updateEmployee(apiKey, userId, request).catchError((error){
       throw _createException(error);
     });
   }

@@ -28,7 +28,7 @@ class _SplashPageState extends State<SplashPage> {
     await Future.delayed(const Duration(seconds: 1));
     AuthProvider authProvider = Provider.of<AuthProvider>(context,listen: false);
     await Provider.of<AuthProvider>(context,listen: false).loadTokenAndRoleAndId();
-    String userId = await authProvider.userId;
+    String userId = authProvider.userId;
     String token = await authProvider.token;
 
     ///token မရှိရင် login ,network call fail ရင် login

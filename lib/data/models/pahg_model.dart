@@ -12,6 +12,7 @@ import 'package:pahg_group/data/vos/request_body/add_employee_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_position_request.dart';
 import 'package:pahg_group/data/vos/request_body/get_request.dart';
 import 'package:pahg_group/data/vos/request_body/login_request.dart';
+import 'package:pahg_group/data/vos/request_body/update_employee_request.dart';
 import 'package:pahg_group/data/vos/token_vo.dart';
 import 'package:pahg_group/data/vos/user_vo.dart';
 import 'package:pahg_group/network/data_agents/pahg_data_agent.dart';
@@ -123,7 +124,13 @@ class PahgModel {
     return mDataAgent.addUser(apiKey, request);
   }
 
-  Future<EmployeeVo?> getEmployeeById(String apiKey,String userId){
-    return mDataAgent.getEmployeeById(apiKey, userId);
+  Future<EmployeeVo> getEmployeeById(String apiKey,String userId){
+    var empvo = EmployeeVo('0123', '', '', 0, 0, 0, '', '', 'null', 'null', 'null');
+    return mDataAgent.getEmployeeById(apiKey, userId).asStream().map((response) => response?.document ?? empvo).first;
+  }
+
+  Future<PostMethodResponse?> updateEmployee(String apiKey,String empId,UpdateEmployeeRequest request){
+    print('request data ::: $request');
+    return mDataAgent.updateEmployeeById(apiKey, empId, request);
   }
 }

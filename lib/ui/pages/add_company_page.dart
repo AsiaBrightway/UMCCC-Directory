@@ -223,23 +223,37 @@ class _AddCompanyPageState extends State<AddCompanyPage> {
                               }
                             });
                           },
-                          child: (_image == null) ? ClipRRect(
-                            borderRadius: BorderRadius.circular(16),
-                              child: Image.network(
-                                imageUrlForCompanyImage,width: 90,height: 90,fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace){
-                                  return Image.asset('assets/image_url_not_found.png',color : Colors.black,width: 90,height: 90,fit: BoxFit.cover,);
-                                },
-                                loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                                  if (loadingProgress == null) {
-                                    return child;
-                                  }
-                                  return const Center(
-                                    child: SizedBox(height: 90,child: CircularProgressIndicator()),
-                                  );
-                                },)
-                          ) :
-                              ClipRRect(
+                          child: (_image == null)
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(16),
+                                  child: Image.network(
+                                    imageUrlForCompanyImage,
+                                    width: 90,
+                                    height: 90,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Image.asset(
+                                        'assets/image_url_not_found.png',
+                                        color: Colors.black,
+                                        width: 90,
+                                        height: 90,
+                                        fit: BoxFit.cover,
+                                      );
+                                    },
+                                    loadingBuilder: (BuildContext context,
+                                        Widget child,
+                                        ImageChunkEvent? loadingProgress) {
+                                      if (loadingProgress == null) {
+                                        return child;
+                                      }
+                                      return const Center(
+                                        child: SizedBox(
+                                            height: 90,
+                                            child: CircularProgressIndicator()),
+                                      );
+                                    },
+                                  ))
+                              : ClipRRect(
                                 borderRadius: BorderRadius.circular(16),
                                   child: Image.file(_image!,width: 90,height: 90,fit: BoxFit.cover,)
                               )
@@ -404,7 +418,7 @@ class _AddCompanyPageState extends State<AddCompanyPage> {
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         elevation: 5,
-                        padding: const EdgeInsets.symmetric(horizontal: 60,vertical: 18),
+                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.14,vertical: 18),
                         backgroundColor: Colors.white,
                       ),
                         onPressed: (){
@@ -415,7 +429,7 @@ class _AddCompanyPageState extends State<AddCompanyPage> {
                     (widget.isAdd) ? ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           elevation: 5,
-                          padding: const EdgeInsets.symmetric(horizontal: 60,vertical: 18),
+                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.14,vertical: 18),
                           backgroundColor: Colors.blue,
                         ),
                         onPressed: (){
@@ -427,7 +441,7 @@ class _AddCompanyPageState extends State<AddCompanyPage> {
                     ) : ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           elevation: 5,
-                          padding: const EdgeInsets.symmetric(horizontal: 60,vertical: 18),
+                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.14,vertical: 18),
                           backgroundColor: Colors.orange,
                         ),
                         onPressed: (){

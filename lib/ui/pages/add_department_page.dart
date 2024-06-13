@@ -176,7 +176,7 @@ class _AddDepartmentPageState extends State<AddDepartmentPage> {
                     ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           elevation: 5,
-                          padding: const EdgeInsets.symmetric(horizontal: 60,vertical: 18),
+                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.14,vertical: 18),
                           backgroundColor: Colors.white,
                         ),
                         onPressed: (){
@@ -187,7 +187,7 @@ class _AddDepartmentPageState extends State<AddDepartmentPage> {
                     (widget.isAdd) ? ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           elevation: 5,
-                          padding: const EdgeInsets.symmetric(horizontal: 60,vertical: 18),
+                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.14,vertical: 18),
                           backgroundColor: Colors.blue,
                         ),
                         onPressed: (){
@@ -199,7 +199,7 @@ class _AddDepartmentPageState extends State<AddDepartmentPage> {
                     ) : ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           elevation: 5,
-                          padding: const EdgeInsets.symmetric(horizontal: 60,vertical: 18),
+                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.14,vertical: 18),
                           backgroundColor: Colors.orange,
                         ),
                         onPressed: (){

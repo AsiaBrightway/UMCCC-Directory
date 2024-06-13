@@ -26,6 +26,7 @@ class _HomePageState extends State<HomePage> {
   String errorMessage = '';
   List<CompaniesVo> companies = [];
 
+
   @override
   void didChangeDependencies() {
     final authModel = Provider.of<AuthProvider>(context);
@@ -49,6 +50,26 @@ class _HomePageState extends State<HomePage> {
     super.didChangeDependencies();
   }
 
+  Future<void> _refresh() async{
+    if(_role == 1 || _role == 2){
+      _model.getCompanies(_token).then((companies) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Refresh complete"),
+          behavior: SnackBarBehavior.floating,
+        ));
+        setState(() {
+          this.companies = companies;
+        });
+      }).catchError((error){
+        ///exception found without toString()
+        showErrorDialog(context, error.toString());
+      });
+    }else{
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,10 +79,7 @@ class _HomePageState extends State<HomePage> {
         iconTheme: const IconThemeData(
           color: Colors.white, // Set the drawer icon color
         ),
-        title: const Text(
-          'P A H G',
-          style: TextStyle(color: Colors.white),
-        ),
+        title: const Text('P A H G', style: TextStyle(color: Colors.white),),
         centerTitle: true,
         actions: [
           IconButton(
@@ -72,26 +90,28 @@ class _HomePageState extends State<HomePage> {
       ),
       drawer:  _role==1 ? const MyDrawer() : const UserDrawer() ,
       body: (companies.isNotEmpty)
-          ? ListView.builder(
-              itemCount: companies.length,
-              itemBuilder: (context, index) {
-                  return GestureDetector(
-                      onTap: () {
-                        String mCompanyName =
-                            companies[index].companyName ?? '';
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CompanyDetailsPage(
-                                companyName: mCompanyName,
-                                companyId: companies[index].id ?? 1,
-                              ),
-                            ));
-                      },
-                      child: CompanyCardWidget(companies: companies[index]));
-
-              },
-            )
+          ? RefreshIndicator(
+            onRefresh: _refresh,
+            child: ListView.builder(
+                itemCount: companies.length,
+                itemBuilder: (context, index) {
+                    return GestureDetector(
+                        onTap: () {
+                          String mCompanyName =
+                              companies[index].companyName ?? '';
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CompanyDetailsPage(
+                                  companyName: mCompanyName,
+                                  companyId: companies[index].id ?? 1,
+                                ),
+                              ));
+                        },
+                        child: CompanyCardWidget(companies: companies[index]));
+                },
+              ),
+          )
           : isLoading
               ? const Center(
                   child: CircularProgressIndicator(),

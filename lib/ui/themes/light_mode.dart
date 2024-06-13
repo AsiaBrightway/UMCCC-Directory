@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
      primaryContainer: Colors.blue[700]!,
      onTertiaryContainer: Colors.grey.shade300,
      secondary: Colors.green,
-     secondaryContainer: Colors.green[700]!,
+     secondaryContainer: const Color.fromRGBO(242, 255, 249, 1),
      surface: Colors.grey.shade300,
      error: Colors.red,
      onPrimary: Colors.white,

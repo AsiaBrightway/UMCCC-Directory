@@ -8,11 +8,13 @@ import 'package:pahg_group/data/vos/request_body/add_department_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_employee_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_position_request.dart';
 import 'package:pahg_group/data/vos/request_body/login_request.dart';
+import 'package:pahg_group/data/vos/request_body/update_employee_request.dart';
 import 'package:pahg_group/network/api_constants.dart';
 import 'package:pahg_group/network/responses/company_images_response.dart';
 import 'package:pahg_group/network/responses/company_list_response.dart';
 import 'package:pahg_group/network/responses/department_list_response.dart';
 import 'package:pahg_group/network/responses/employee_list_response.dart';
+import 'package:pahg_group/network/responses/employee_response.dart';
 import 'package:pahg_group/network/responses/image_upload_response.dart';
 import 'package:pahg_group/network/responses/login_response.dart';
 import 'package:pahg_group/network/responses/position_response.dart';
@@ -60,7 +62,7 @@ abstract class PahgApi{
       );
 
   @GET("$kEndPointGetEmployee/{emp_id}")
-  Future<EmployeeVo?> getEmployeeById(
+  Future<EmployeeResponse?> getEmployeeById(
       @Header(kParamAuthorization) String apiKey,
       @Path("emp_id") String userId,
       );
@@ -125,5 +127,12 @@ abstract class PahgApi{
   Future<PostMethodResponse?> addUser(
       @Header(kParamAuthorization) String apiKey,
       @Body() AddEmployeeRequest requestBody
+      );
+
+  @PUT("$kEndPointGetEmployee/{emp_id}")
+  Future<PostMethodResponse?> updateEmployee(
+      @Header(kParamAuthorization) String apiKey,
+      @Path('emp_id') String empId,
+      @Body() UpdateEmployeeRequest requestBody
       );
 }

@@ -1,10 +1,13 @@
 import 'dart:io';
 
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pahg_group/data/vos/request_body/add_employee_request.dart';
+import 'package:pahg_group/data/vos/request_body/update_employee_request.dart';
 import 'package:pahg_group/network/api_constants.dart';
+import 'package:pahg_group/ui/themes/colors.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/models/pahg_model.dart';
@@ -18,7 +21,8 @@ import '../providers/auth_provider.dart';
 
 class AddEmployeePage extends StatefulWidget {
   final bool isAdd;
-  const AddEmployeePage({super.key, required this.isAdd});
+  final String userId;
+  const AddEmployeePage({super.key, required this.isAdd, required this.userId});
 
   @override
   State<AddEmployeePage> createState() => _AddEmployeePageState();
@@ -33,6 +37,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
   List<DepartmentVo> departments = [];
   List<PositionVo> positions = [];
   bool isImageSelected = false;
+  bool editMode = false;
   String _token = '';
   int positionId = 0;
   int companyId = 0;
@@ -41,14 +46,24 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
   String? _selectedCompany;
   String? _selectedPosition;
   String? _emailErrorText;
+  String companyName = 'Loading..';
+  String departmentName = 'Loading..';
+  String positionName = 'Loading..';
   final _userNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _employeeNumberController = TextEditingController();
   final _jdCodeController = TextEditingController();
+  final Map<int, String> userRoles = {1: 'Admin', 2: 'Chairman', 3: 'MD', 4: 'Employee'};
+  int selectedRole = 4;
 
   @override
-  void didChangeDependencies() {
-    final authModel = Provider.of<AuthProvider>(context);
+  void initState() {
+    super.initState();
+    Future.microtask(() => _initializeData());
+  }
+
+  Future<void> _initializeData() async{
+    final authModel = Provider.of<AuthProvider>(context,listen: false);
     _token = authModel.token;
     _model.getAllCompanies(_token).then((companies){
       setState(() {
@@ -57,7 +72,59 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
     }).catchError((error){
       showErrorDialog(context, error.toString());
     });
-    super.didChangeDependencies();
+    if(widget.isAdd != true){
+      _model.getEmployeeById(_token, widget.userId).then((response){
+        setState(() {
+          _userNameController.text = response.employeeName ?? '';
+          _employeeNumberController.text = response.employeeNumber ?? '';
+          _jdCodeController.text = response.jdCode ?? '';
+          companyId = response.companyId!;
+          departmentId = response.departmentId!;
+          positionId = response.positionId!;
+          companyName = response.companyName ?? '';
+          departmentName = response.departmentName ?? '';
+          positionName = response.position ?? '';
+          imageUrl = response.imageUrl ?? '';
+          imageUrlForProfile = response.getImageWithBaseUrl() ?? '';
+        });
+      }).catchError((error){
+        showErrorDialog(context, error.toString());
+      });
+      _model.getUserById(_token, widget.userId).then((response){
+        setState(() {
+          selectedRole = response?.userRolesId ?? 4;
+        });
+      }).catchError((error){
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("User Role Error : ${error.toString}"),
+        ));
+      });
+    }
+  }
+
+  void updateEmployeeWithoutImage(){
+    _model.updateEmployee(_token, widget.userId, getEmployeeRequest()).then((response){
+      Navigator.of(context).pop();
+      showSuccessDialog(context, response?.message ?? '');
+    }).catchError((error){
+      Navigator.of(context).pop();
+      showErrorDialog(context, error.toString());
+    });
+  }
+
+  void updateEmployee(){
+    showDialog(context: context, barrierDismissible: false,builder: (context) => const LoadingWidget());
+    if(isImageSelected){
+      _model.uploadImage(_token, _image!).then((response){
+        imageUrl = response!.file?? 'null';
+        updateEmployeeWithoutImage();
+      }).catchError((error){
+        Navigator.of(context).pop();                                            //dismiss loading
+        showErrorDialog(context, 'Image : ${error.toString()}');
+      });
+    }else{
+      updateEmployeeWithoutImage();
+    }
   }
 
   void addNewUserWithoutImage(){
@@ -149,60 +216,53 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                               }
                             });
                           },
-                          child: (_image == null) ? ClipRRect(
-                              borderRadius: BorderRadius.circular(16),
-                              child: Image.network(
-                                imageUrlForProfile,width: 90,height: 90,fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace){
-                                  return Image.asset('lib/icons/add_photo.png',width: 90,height: 90,fit: BoxFit.cover);
-                                },
-                                loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                                  if (loadingProgress == null) {
-                                    return child;
-                                  }
-                                  return const Center(
-                                    child: SizedBox(height: 90,child: CircularProgressIndicator()),
-                                  );
-                                },)
-                          ) :
-                          ClipRRect(
-                              borderRadius: BorderRadius.circular(16),
-                              child: Image.file(_image!,width: 90,height: 90,fit: BoxFit.cover,)
-                          )
-                      )
+                          child: (_image == null)
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(16),
+                                  child: Image.network(
+                                    imageUrlForProfile,
+                                    width: 90,
+                                    height: 96,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Image.asset(
+                                        'lib/icons/add_photo.png',
+                                        width: 80,
+                                        height: 80,
+                                        fit: BoxFit.cover,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurface,
+                                      );
+                                    },
+                                    loadingBuilder: (BuildContext context,
+                                        Widget child,
+                                        ImageChunkEvent? loadingProgress) {
+                                      if (loadingProgress == null) {
+                                        return child;
+                                      }
+                                      return const Center(
+                                        child: SizedBox(
+                                            height: 90,
+                                            child: CircularProgressIndicator()),
+                                      );
+                                    },
+                                  ))
+                              : ClipRRect(
+                                  borderRadius: BorderRadius.circular(16),
+                                  child: Image.file(
+                                    _image!,
+                                    width: 90,
+                                    height: 90,
+                                    fit: BoxFit.cover,
+                                  )))
                   ),
                 ),
-                const Text('company',style: TextStyle(fontWeight: FontWeight.w300,fontSize: 12),),
-                Center(
-                  child: companyDropDown(),
-                ),
-                  const SizedBox(height: 20),
-                const Text('department',style: TextStyle(fontWeight: FontWeight.w300,fontSize: 12),),
-                  Center(
-                      child: Container(
-                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(8),color: Theme.of(context).colorScheme.onTertiaryContainer),
-                        margin: const EdgeInsets.only(top: 5),
-                        height: 50,
-                        width: MediaQuery.of(context).size.width - 36,
-                        child: departments.isEmpty
-                            ? const Padding(padding : EdgeInsets.all(14),child: Text('Empty'))
-                            : departmentDropdown(),
-                      )
-                  ),
-                const SizedBox(height: 20),
-                const Text('position',style: TextStyle(fontWeight: FontWeight.w300,fontSize: 12)),
-                Center(
-                  child: Container(
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(8),color: Theme.of(context).colorScheme.onTertiaryContainer),
-                      margin: const EdgeInsets.only(top: 5),
-                      height: 50,
-                      width: MediaQuery.of(context).size.width - 36,
-                      child: positions.isEmpty
-                          ? const Padding(padding: EdgeInsets.all(14),child: Text('Empty'),)
-                          : positionDropdown()
-                  ),
-                ),
-                const SizedBox(height: 20),
+                (widget.isAdd)
+                    ? editDropDown()
+                    : (editMode)
+                        ? editDropDown()
+                        : showUserData(),
                 ///name text field
                 TextField(
                   controller: _userNameController,
@@ -218,26 +278,30 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                 ),
                 const SizedBox(height: 14),
                 ///email text field
-                TextField(
-                  controller: _emailController,
-                  decoration: InputDecoration(
+                (widget.isAdd)
+                    ? TextField(
+                    controller: _emailController,
+                    decoration: InputDecoration(
                     floatingLabelStyle: const TextStyle(color: Colors.blue),
                     prefixIcon: const Icon(Icons.email_outlined),
                     labelStyle: TextStyle(color: Colors.grey[700],fontFamily:'Roboto',fontWeight: FontWeight.w300),
                     errorText: _emailErrorText,
                     labelText: 'Email',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 14),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),)
+                    : const SizedBox(width: 1,),
+                const SizedBox(height: 10),
                 ///employee number text field
                 TextField(
                   controller: _employeeNumberController,
                   decoration: InputDecoration(
                     floatingLabelStyle: const TextStyle(color: Colors.blue),
-                    prefixIcon: const Icon(Icons.person_pin),
+                    prefixIcon: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Image.asset('lib/icons/employee_no.png',width: 12,height: 12),
+                    ),
                     labelStyle: TextStyle(color: Colors.grey[700],fontFamily:'Roboto',fontWeight: FontWeight.w300),
                     labelText: 'Employee Number',
                     border: OutlineInputBorder(
@@ -246,12 +310,15 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                   ),
                 ),
                 const SizedBox(height: 14),
-                ///employee number text field
+                ///employee jd text field
                 TextField(
                   controller: _jdCodeController,
                   decoration: InputDecoration(
                     floatingLabelStyle: const TextStyle(color: Colors.blue),
-                    prefixIcon: const Icon(Icons.person_pin),
+                    prefixIcon: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Image.asset('lib/icons/employee_jd.png',width: 12,height: 12),
+                    ),
                     labelStyle: TextStyle(color: Colors.grey[700],fontFamily:'Roboto',fontWeight: FontWeight.w300),
                     labelText: 'JD Code',
                     border: OutlineInputBorder(
@@ -267,7 +334,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                     ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           elevation: 5,
-                          padding: const EdgeInsets.symmetric(horizontal: 60,vertical: 18),
+                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.14,vertical: 18),
                           backgroundColor: Colors.white,
                         ),
                         onPressed: (){
@@ -278,7 +345,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                     (widget.isAdd)
                         ? ElevatedButton(style: ElevatedButton.styleFrom(
                             elevation: 5,
-                            padding: const EdgeInsets.symmetric(horizontal: 60,vertical: 18),
+                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.14,vertical: 18),
                             backgroundColor: Colors.blue,
                           ),
                           onPressed: (){
@@ -290,12 +357,12 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                         : ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             elevation: 5,
-                            padding: const EdgeInsets.symmetric(horizontal: 60,vertical: 18),
+                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.14,vertical: 18),
                             backgroundColor: Colors.orange,
                           ),
                           onPressed: (){
                             if(validateInput()){
-
+                              updateEmployee();
                             }
                           },
                           child: const Text('Update' ,style: TextStyle(color: Colors.white),)
@@ -344,6 +411,8 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
               _selectedDepartment = null;
               getDepartmentList(companyId);
               _selectedPosition = null;
+              positionId = 0;
+              departmentId = 0;
               positions.clear();
               departments.clear();
             });
@@ -408,6 +477,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
             positions.clear();
             _selectedPosition = null;
             departmentId = department.id ?? 0;
+            positionId = 0;
             getPositionList(departmentId);
           });
         },
@@ -503,10 +573,149 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
     );
   }
 
+  Widget userRoleDropDown(){
+    return DropdownButtonHideUnderline(
+      child: DropdownButton2(
+        isExpanded: true,
+        value: selectedRole,
+        items: userRoles.entries.map((entry) {
+          return DropdownMenuItem<int>(
+            value: entry.key,
+            child: Text(entry.value,style: TextStyle(
+                overflow: TextOverflow.ellipsis,color: Theme.of(context).colorScheme.onSurface
+            ),),
+          );
+        }).toList(),
+        onChanged: (int? newValue) {
+          setState(() {
+            selectedRole = newValue!;
+          });
+        },
+        dropdownStyleData: DropdownStyleData(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: Theme.of(context).colorScheme.onTertiaryContainer,
+          ),
+          scrollbarTheme: const ScrollbarThemeData(
+            radius: Radius.circular(20),
+          ),
+        ),
+        buttonStyleData: ButtonStyleData(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: Colors.black26,
+            ),
+            color: Theme.of(context).colorScheme.onTertiaryContainer,
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          height: 40,
+          width: 140,
+        ),
+        iconStyleData: IconStyleData(
+          icon: const Icon(
+            Icons.keyboard_arrow_down_sharp,
+          ),
+          iconSize: 22,
+          iconEnabledColor: Colors.green[700],
+          iconDisabledColor: Colors.black,
+        ),
+      ),
+    );
+  }
+
+  Widget showUserData(){
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              const Text('Edit Company',style: TextStyle(
+                fontWeight: FontWeight.w300,color: Colors.grey,
+                fontSize: 11
+              ),),
+              IconButton(
+                color: colorAccent,
+                  onPressed: (){
+                    setState(() {
+                      editMode = true;
+                    });
+                  }, icon: const Icon(Icons.edit,color: colorAccent,))
+            ],
+          ),
+          const Text('company',style: TextStyle(fontWeight: FontWeight.w300),),
+          Padding(
+            padding: const EdgeInsets.only(left: 10,bottom: 8),
+            child: Text(companyName,style: const TextStyle(fontSize: 18,fontWeight: FontWeight.w600)),
+          ),
+          const Text('department',style: TextStyle(fontWeight: FontWeight.w300),),
+          Padding(
+            padding: const EdgeInsets.only(left: 10,bottom: 8),
+            child: Text(departmentName,style: const TextStyle(fontSize: 18,fontWeight: FontWeight.w600)),
+          ),
+          const Text('position',style: TextStyle(fontWeight: FontWeight.w300),),
+          Padding(
+            padding: const EdgeInsets.only(left: 10),
+            child: Text(positionName,style: const TextStyle(fontSize: 18,fontWeight: FontWeight.w600)),
+          ),
+          const Text('role',style: TextStyle(fontWeight: FontWeight.w300),),
+          Padding(
+            padding: const EdgeInsets.only(left: 10),
+            child: Text('$selectedRole',style: const TextStyle(fontSize: 18,fontWeight: FontWeight.w600)),
+          ),
+        ],
+      ),
+    );
+  }
+  Widget editDropDown(){
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('company',style: TextStyle(fontWeight: FontWeight.w300,fontSize: 12),),
+        companyDropDown(),
+        const SizedBox(height: 20),
+        const Text('department',style: TextStyle(fontWeight: FontWeight.w300,fontSize: 12),),
+        Container(
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(8),color: Theme.of(context).colorScheme.onTertiaryContainer),
+          margin: const EdgeInsets.only(top: 5),
+          height: 50,
+          width: MediaQuery.of(context).size.width - 36,
+          child: departments.isEmpty
+              ? const Padding(padding : EdgeInsets.all(14),child: Text('Empty'))
+              : departmentDropdown(),
+        ),
+        const SizedBox(height: 20),
+        const Text('position',style: TextStyle(fontWeight: FontWeight.w300,fontSize: 12)),
+        Container(
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(8),color: Theme.of(context).colorScheme.onTertiaryContainer),
+            margin: const EdgeInsets.only(top: 5),
+            height: 50,
+            width: MediaQuery.of(context).size.width - 36,
+            child: positions.isEmpty
+                ? const Padding(padding: EdgeInsets.all(14),child: Text('Empty'),)
+                : positionDropdown()
+        ),
+        const SizedBox(height: 10,),
+        const Text('role',style: TextStyle(fontWeight: FontWeight.w300,fontSize: 12)),
+        Container(
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(8),color: Theme.of(context).colorScheme.onTertiaryContainer),
+            margin: const EdgeInsets.only(top: 6,bottom: 10),
+            height: 50,
+            width: MediaQuery.of(context).size.width - 36,
+            child: userRoleDropDown()
+        ),
+        const SizedBox(height: 20),
+      ],
+    );
+  }
+
   AddEmployeeRequest getEmployeeData(){
     return AddEmployeeRequest(
         autoGenerate,
-        4,
+        selectedRole,
         defaultPassword,
         _emailController.text.toString(),
         autoGenerate,
@@ -523,6 +732,19 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
     );
   }
 
+  //when id is empty,the exception is trigger
+  UpdateEmployeeRequest getEmployeeRequest(){
+    return UpdateEmployeeRequest(
+        'null',
+        _userNameController.text.toString(),
+        imageUrl,
+        companyId,
+        departmentId,
+        positionId,
+        _employeeNumberController.text.toString(),
+        _jdCodeController.text.toString());
+  }
+
   void clearTextField(){
     imageUrl = '';
     _userNameController.clear();
@@ -532,15 +754,17 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
   }
 
   bool validateInput() {
-    if(_emailController.text.toString().isEmpty){
-      setState(() {
-         _emailErrorText = "Email is required";
-      });
-      return false;
-    }else{
-      setState(() {
-        _emailErrorText = null;
-      });
+    if(widget.isAdd){
+      if(_emailController.text.toString().isEmpty){
+        setState(() {
+          _emailErrorText = "Email is required";
+        });
+        return false;
+      }else{
+        setState(() {
+          _emailErrorText = null;
+        });
+      }
     }
     if(_userNameController.text.isEmpty){
       showErrorDialog(context, 'Name is required');

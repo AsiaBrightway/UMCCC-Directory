@@ -3,9 +3,6 @@ import 'package:pahg_group/ui/pages/add_company_page.dart';
 import 'package:pahg_group/ui/pages/add_department_page.dart';
 import 'package:pahg_group/ui/pages/add_employee_page.dart';
 import 'package:pahg_group/ui/pages/add_position_page.dart';
-import 'package:pahg_group/ui/pages/login_page.dart';
-import 'package:pahg_group/ui/providers/auth_provider.dart';
-import 'package:provider/provider.dart';
 
 import '../../exception/helper_functions.dart';
 
@@ -45,7 +42,7 @@ class MyDrawer extends StatelessWidget {
                 leading: Image.asset('lib/icons/add_employee.png',width: 25,color: Colors.black,),
                 title: const Text('Add Employee',style: TextStyle(fontWeight: FontWeight.w400),),
                 onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const AddEmployeePage(isAdd: true),));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const AddEmployeePage(isAdd: true, userId: '',),));
                 },
               ),
             ),

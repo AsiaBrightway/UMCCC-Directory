@@ -21,7 +21,6 @@ const String kEndPointGetEmployee = "/v1/api/Employees";
 const String kParamPage = "page";
 const String kParamAuthorization = "Authorization";
 
-
 //default const
 const String autoGenerate = "auto";
 const String defaultPassword = "0000";

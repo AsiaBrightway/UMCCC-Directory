@@ -205,7 +205,7 @@ class _AddPositionPageState extends State<AddPositionPage> {
                     ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           elevation: 5,
-                          padding: const EdgeInsets.symmetric(horizontal: 60,vertical: 18),
+                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.14,vertical: 18),
                           backgroundColor: Colors.white,
                         ),
                         onPressed: (){
@@ -216,7 +216,7 @@ class _AddPositionPageState extends State<AddPositionPage> {
                     (widget.isAdd) ? ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           elevation: 5,
-                          padding: const EdgeInsets.symmetric(horizontal: 60,vertical: 18),
+                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.14,vertical: 18),
                           backgroundColor: Colors.blue,
                         ),
                         onPressed: (){
@@ -228,7 +228,7 @@ class _AddPositionPageState extends State<AddPositionPage> {
                     ) : ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           elevation: 5,
-                          padding: const EdgeInsets.symmetric(horizontal: 60,vertical: 18),
+                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.14,vertical: 18),
                           backgroundColor: Colors.orange,
                         ),
                         onPressed: (){
