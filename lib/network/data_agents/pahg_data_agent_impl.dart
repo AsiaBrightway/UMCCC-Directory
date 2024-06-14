@@ -22,6 +22,7 @@ import 'package:pahg_group/network/responses/employee_list_response.dart';
 import 'package:pahg_group/network/responses/employee_response.dart';
 import 'package:pahg_group/network/responses/image_upload_response.dart';
 import 'package:pahg_group/network/responses/login_response.dart';
+import 'package:pahg_group/network/responses/personal_info_response.dart';
 import 'package:pahg_group/network/responses/position_response.dart';
 import 'package:pahg_group/network/responses/post_method_response.dart';
 import 'package:pahg_group/network/responses/user_response.dart';
@@ -207,6 +208,13 @@ class PahgDataAgentImpl extends PahgDataAgent{
   @override
   Future<PostMethodResponse?> updateEmployeeById(String apiKey, String userId, UpdateEmployeeRequest request) {
     return mApi.updateEmployee(apiKey, userId, request).catchError((error){
+      throw _createException(error);
+    });
+  }
+
+  @override
+  Future<PersonalInfoResponse?> getPersonalInfo(String apiKey, List<GetRequest> request) {
+    return mApi.getPersonalInfo(apiKey, request).catchError((error){
       throw _createException(error);
     });
   }

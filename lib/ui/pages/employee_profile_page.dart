@@ -1,5 +1,4 @@
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pahg_group/data/models/pahg_model.dart';
 import 'package:pahg_group/data/vos/employee_vo.dart';
@@ -256,17 +255,20 @@ class _EmployeeProfilePageState extends State<EmployeeProfilePage> {
       children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 8),
-            child: ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Image.network(
-              widget.employeeVo.getImageWithBaseUrl(),
-              width: imageWidth,
-              height: imageHeight,
-              fit: BoxFit.cover,
-              errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
-                return Image.asset('assets/placeholder_image.png',width: 130,height: 160,); // Show error image
-              },
-            ),
+            child: Hero(
+              tag: widget.employeeVo.getImageWithBaseUrl(),
+              child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.network(
+                widget.employeeVo.getImageWithBaseUrl(),
+                width: imageWidth,
+                height: imageHeight,
+                fit: BoxFit.cover,
+                errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+                  return Image.asset('assets/placeholder_image.png',width: 130,height: 160,); // Show error image
+                },
+              ),
+              ),
             ),
           ),
           const SizedBox(width: 10),

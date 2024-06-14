@@ -1,4 +1,5 @@
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pahg_group/data/models/pahg_model.dart';
 import 'package:pahg_group/data/vos/companies_vo.dart';
@@ -53,8 +54,12 @@ class _HomePageState extends State<HomePage> {
   Future<void> _refresh() async{
     if(_role == 1 || _role == 2){
       _model.getCompanies(_token).then((companies) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Refresh complete"),
+        ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+          backgroundColor: Colors.grey,
+          content: const Text("Refresh Complete",style: TextStyle(color: Colors.white),),
+          duration: Duration(seconds: 1),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          margin: const EdgeInsets.symmetric(horizontal: 50),
           behavior: SnackBarBehavior.floating,
         ));
         setState(() {
@@ -70,6 +75,7 @@ class _HomePageState extends State<HomePage> {
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,16 +103,8 @@ class _HomePageState extends State<HomePage> {
                 itemBuilder: (context, index) {
                     return GestureDetector(
                         onTap: () {
-                          String mCompanyName =
-                              companies[index].companyName ?? '';
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => CompanyDetailsPage(
-                                  companyName: mCompanyName,
-                                  companyId: companies[index].id ?? 1,
-                                ),
-                              ));
+                          String mCompanyName = companies[index].companyName ?? '';
+                          navigateToCompany(context, index, mCompanyName);
                         },
                         child: CompanyCardWidget(companies: companies[index]));
                 },
@@ -117,6 +115,30 @@ class _HomePageState extends State<HomePage> {
                   child: CircularProgressIndicator(),
                 )
               : Center(child: Text(errorMessage)),
+    );
+  }
+
+  void navigateToCompany(BuildContext context, int index, String mCompanyName) {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => CompanyDetailsPage(
+            companyId: companies[index].id ?? 0,
+            companyName: mCompanyName
+        ),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(1.0, 0.0);
+          const end = Offset.zero;
+          const curve = Curves.ease;
+
+          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: child,
+          );
+        },
+      ),
     );
   }
 }

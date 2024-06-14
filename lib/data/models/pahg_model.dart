@@ -5,6 +5,7 @@ import 'package:pahg_group/data/vos/companies_vo.dart';
 import 'package:pahg_group/data/vos/company_images_vo.dart';
 import 'package:pahg_group/data/vos/department_vo.dart';
 import 'package:pahg_group/data/vos/employee_vo.dart';
+import 'package:pahg_group/data/vos/personal_info_vo.dart';
 import 'package:pahg_group/data/vos/position_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_company_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_department_request.dart';
@@ -130,7 +131,12 @@ class PahgModel {
   }
 
   Future<PostMethodResponse?> updateEmployee(String apiKey,String empId,UpdateEmployeeRequest request){
-    print('request data ::: $request');
     return mDataAgent.updateEmployeeById(apiKey, empId, request);
+  }
+
+  Future<List<PersonalInfoVo>?> getPersonalInfo(String apiKey,String columnName,String columnValue){
+    GetRequest request = GetRequest(columnName: columnName, columnCondition: 1, columnValue: columnName);
+    List<GetRequest> requestList = [request];
+    return mDataAgent.getPersonalInfo(apiKey, requestList).asStream().map((response)=> response?.document?.records ?? []).first;
   }
 }

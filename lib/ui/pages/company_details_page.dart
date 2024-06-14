@@ -188,7 +188,7 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
         onTap: (){
             Navigator.push(context, MaterialPageRoute(builder: (context) => EmployeeProfilePage(employeeVo: employee),));
         },
-        child: Ink(
+        child: Container(
           height: 100,
           decoration: BoxDecoration(
               boxShadow: [
@@ -205,31 +205,34 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
             children: [
               Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(40),
-                    child: Image.network(
-                      employee.getImageWithBaseUrl(),
-                      width: 80,
-                      height: 80,
-                      fit: BoxFit.cover,
-                      loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                        if (loadingProgress == null) {
-                          return child;
-                        }
-                        return Center(
-                          child: SizedBox(
-                            width: 80,height: 80,
-                            child: CircularProgressIndicator(
-                              value: loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
-                                  : null,
+                  child: Hero(
+                    tag: employee.getImageWithBaseUrl(),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(40),
+                      child: Image.network(
+                        employee.getImageWithBaseUrl(),
+                        width: 80,
+                        height: 80,
+                        fit: BoxFit.cover,
+                        loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                          if (loadingProgress == null) {
+                            return child;
+                          }
+                          return Center(
+                            child: SizedBox(
+                              width: 80,height: 80,
+                              child: CircularProgressIndicator(
+                                value: loadingProgress.expectedTotalBytes != null
+                                    ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
+                                    : null,
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                      errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
-                        return Image.asset('lib/icons/profile.png',width: 80,height: 90); // Show error image
-                      },
+                          );
+                        },
+                        errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+                          return Image.asset('lib/icons/profile.png',width: 80,height: 90); // Show error image
+                        },
+                      ),
                     ),
                   )
               ),

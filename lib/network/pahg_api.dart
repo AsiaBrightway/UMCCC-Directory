@@ -17,13 +17,13 @@ import 'package:pahg_group/network/responses/employee_list_response.dart';
 import 'package:pahg_group/network/responses/employee_response.dart';
 import 'package:pahg_group/network/responses/image_upload_response.dart';
 import 'package:pahg_group/network/responses/login_response.dart';
+import 'package:pahg_group/network/responses/personal_info_response.dart';
 import 'package:pahg_group/network/responses/position_response.dart';
 import 'package:pahg_group/network/responses/post_method_response.dart';
 import 'package:pahg_group/network/responses/user_response.dart';
 import 'package:retrofit/http.dart';
 import 'package:retrofit/retrofit.dart';
 
-import '../data/vos/employee_vo.dart';
 import '../data/vos/request_body/get_request.dart';
 part 'pahg_api.g.dart';
 
@@ -134,5 +134,11 @@ abstract class PahgApi{
       @Header(kParamAuthorization) String apiKey,
       @Path('emp_id') String empId,
       @Body() UpdateEmployeeRequest requestBody
+      );
+
+  @POST(kEndPointGetPersonalInfo)
+  Future<PersonalInfoResponse?> getPersonalInfo(
+      @Header(kParamAuthorization) String apiKey,
+      @Body() List<GetRequest> requestBody
       );
 }

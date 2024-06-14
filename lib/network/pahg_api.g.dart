@@ -13,7 +13,7 @@ class _PahgApi implements PahgApi {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'http://192.168.1.8:86';
+    baseUrl ??= 'http://192.168.1.16:86';
   }
 
   final Dio _dio;
@@ -587,6 +587,39 @@ class _PahgApi implements PahgApi {
     final value = _result.data == null
         ? null
         : PostMethodResponse.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<PersonalInfoResponse?> getPersonalInfo(
+    String apiKey,
+    List<GetRequest> requestBody,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': apiKey};
+    _headers.removeWhere((k, v) => v == null);
+    final _data = requestBody.map((e) => e.toJson()).toList();
+    final _result = await _dio.fetch<Map<String, dynamic>?>(
+        _setStreamType<PersonalInfoResponse>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/v1/api/PersonalInformations/filter',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = _result.data == null
+        ? null
+        : PersonalInfoResponse.fromJson(_result.data!);
     return value;
   }
 

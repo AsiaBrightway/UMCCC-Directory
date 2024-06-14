@@ -18,6 +18,7 @@ import '../responses/company_images_response.dart';
 import '../responses/department_list_response.dart';
 import '../responses/employee_list_response.dart';
 import '../responses/image_upload_response.dart';
+import '../responses/personal_info_response.dart';
 import '../responses/position_response.dart';
 import '../responses/user_response.dart';
 
@@ -56,4 +57,6 @@ abstract class PahgDataAgent{
   Future<EmployeeResponse?> getEmployeeById(String apiKey,String userId);
 
   Future<PostMethodResponse?> updateEmployeeById(String apiKey,String userId,UpdateEmployeeRequest request);
+
+  Future<PersonalInfoResponse?> getPersonalInfo(String apiKey,List<GetRequest> request);
 }
