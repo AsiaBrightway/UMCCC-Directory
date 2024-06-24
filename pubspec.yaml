@@ -95,6 +95,13 @@ flutter:
            style: italic
          - asset: fonts/Roboto-Bold.ttf
            weight: 700
+     - family: Ubuntu
+       fonts:
+         - asset: fonts/Ubuntu-Regular.ttf
+         - asset: fonts/Ubuntu-Light.ttf
+           weight: 300
+         - asset: fonts/Ubuntu-Bold.ttf
+           weight: 800
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

@@ -134,8 +134,8 @@ class PahgModel {
     return mDataAgent.updateEmployeeById(apiKey, empId, request);
   }
 
-  Future<List<PersonalInfoVo>?> getPersonalInfo(String apiKey,String columnName,String columnValue){
-    GetRequest request = GetRequest(columnName: columnName, columnCondition: 1, columnValue: columnName);
+  Future<List<PersonalInfoVo>> getPersonalInfo(String apiKey,String columnName,String columnValue){
+    GetRequest request = GetRequest(columnName: columnName, columnCondition: 1, columnValue: columnValue);
     List<GetRequest> requestList = [request];
     return mDataAgent.getPersonalInfo(apiKey, requestList).asStream().map((response)=> response?.document?.records ?? []).first;
   }

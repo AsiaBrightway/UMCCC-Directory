@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pahg_group/data/models/pahg_model.dart';
 import 'package:pahg_group/data/vos/employee_vo.dart';
 import 'package:pahg_group/ui/pages/add_employee_page.dart';
+import 'package:pahg_group/ui/pages/personal_info_page.dart';
 import 'package:pahg_group/ui/themes/colors.dart';
 import 'package:provider/provider.dart';
 import '../../data/vos/user_vo.dart';
@@ -21,7 +22,7 @@ class _EmployeeProfilePageState extends State<EmployeeProfilePage> {
   late Future<UserVo> userVo ;
   final PahgModel _model = PahgModel();
   @override
-  void didChangeDependencies() {
+  void didChangeDependencies(){
     AuthProvider authProvider = Provider.of<AuthProvider>(context);
     _userRole = authProvider.role;
     super.didChangeDependencies();
@@ -77,29 +78,34 @@ class _EmployeeProfilePageState extends State<EmployeeProfilePage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     ///Personal Info
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.42,
-                      height: 140,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black,width: 1,),
-                        borderRadius: BorderRadius.circular(8),
-                        color: Theme.of(context).colorScheme.secondaryContainer
-                      ),
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 20,),
-                          Image.asset('lib/icons/personal_info.png',width: 50,height: 50,color: Theme.of(context).colorScheme.onSurface,),
-                          const SizedBox(height: 10,),
-                          const Text('Personal Info',style: TextStyle(fontWeight: FontWeight.w500),),
-                          const Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                             children: [ Padding(
-                                 padding: EdgeInsets.only(right: 8.0,top: 8),
-                                 child: Text('more details >>',style: TextStyle(color: colorAccent,fontSize: 12),),
-                               )
-                             ]
-                          )
-                        ],
+                    GestureDetector(
+                      onTap: (){
+                        navigateToPersonal(context);
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.42,
+                        height: 140,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black,width: 1,),
+                          borderRadius: BorderRadius.circular(8),
+                          color: Theme.of(context).colorScheme.secondaryContainer
+                        ),
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 20,),
+                            Image.asset('lib/icons/personal_info.png',width: 50,height: 50,color: Theme.of(context).colorScheme.onSurface,),
+                            const SizedBox(height: 10,),
+                            const Text('Personal Info',style: TextStyle(fontWeight: FontWeight.w500),),
+                            const Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                               children: [ Padding(
+                                   padding: EdgeInsets.only(right: 8.0,top: 8),
+                                   child: Text('more details >>',style: TextStyle(color: colorAccent,fontSize: 12),),
+                                 )
+                               ]
+                            )
+                          ],
+                        ),
                       ),
                     ),
                     const SizedBox(width: 18,),
@@ -245,7 +251,6 @@ class _EmployeeProfilePageState extends State<EmployeeProfilePage> {
 
   Widget profileCard(){
     double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
     bool isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
 
     double imageWidth = isPortrait ? screenWidth * 0.3 : screenWidth * 0.2;
@@ -321,6 +326,31 @@ class _EmployeeProfilePageState extends State<EmployeeProfilePage> {
             ],
           )
       ],
+    );
+  }
+
+  void navigateToPersonal(BuildContext context) {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => PersonalInfoPage(
+            name: widget.employeeVo.employeeName ?? 'name null',
+            role: _userRole,
+            userId: widget.employeeVo.id!
+        ),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(1.0, 0.0);
+          const end = Offset.zero;
+          const curve = Curves.ease;
+
+          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: child,
+          );
+        },
+      ),
     );
   }
 }

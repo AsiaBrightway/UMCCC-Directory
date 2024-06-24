@@ -150,7 +150,7 @@ class _AddCompanyPageState extends State<AddCompanyPage> {
                   child: Container(
                     margin: const EdgeInsets.only(top: 14),
                     height: 45,
-                    width: MediaQuery.of(context).size.width - 60,
+                    width: MediaQuery.of(context).size.width * 0.9,
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton2(
                         isExpanded: true,
@@ -186,7 +186,7 @@ class _AddCompanyPageState extends State<AddCompanyPage> {
                         ),
                         buttonStyleData: ButtonStyleData(
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(14),
+                            borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: Colors.black26,
                             ),

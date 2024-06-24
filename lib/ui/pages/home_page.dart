@@ -101,12 +101,12 @@ class _HomePageState extends State<HomePage> {
             child: ListView.builder(
                 itemCount: companies.length,
                 itemBuilder: (context, index) {
-                    return GestureDetector(
-                        onTap: () {
-                          String mCompanyName = companies[index].companyName ?? '';
-                          navigateToCompany(context, index, mCompanyName);
-                        },
-                        child: CompanyCardWidget(companies: companies[index]));
+                  return CompanyCardWidget(companies: companies[index], index: index)                   ;// return GestureDetector(
+                    //     onTap: () {
+                    //       String mCompanyName = companies[index].companyName ?? '';
+                    //       navigateToCompany(context, index, mCompanyName);
+                    //     },
+                    //     child: CompanyCardWidget(companies: companies[index]));
                 },
               ),
           )
@@ -115,6 +115,62 @@ class _HomePageState extends State<HomePage> {
                   child: CircularProgressIndicator(),
                 )
               : Center(child: Text(errorMessage)),
+    );
+  }
+
+  Widget CompanyCardWidget({required CompaniesVo companies,required int index}){
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Ink(
+        height: 110,
+        decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(color: Colors.grey.withOpacity(0.1),
+                  spreadRadius: 5, // Extends the shadow beyond the box
+                  blurRadius: 7, // Blurs the edges of the shadow
+                  offset: const Offset(0, 3)
+              ),
+            ],
+            color: Theme.of(context).colorScheme.onPrimary,
+            borderRadius: BorderRadius.circular(12)
+        ),
+        child: InkWell(
+          onTap: (){
+            String mCompanyName = companies.companyName ?? '';
+            navigateToCompany(context,index,mCompanyName);
+          },
+          child: Row(
+            children: [
+              Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: Image.network(
+                      companies.getImageWithBaseUrl(),width: 80,height: 80,fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace){
+                        return Image.asset('assets/simple_placeholder.png',width: 90,height: 90,fit: BoxFit.cover,);
+                      },
+
+                    ),
+                  )
+              ),
+              const SizedBox(width: 16,),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(companies.companyName!,style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold
+                  )),
+                  const SizedBox(height: 10),
+                  Text(companies.address!)
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -143,73 +199,3 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class CompanyCardWidget extends StatelessWidget {
-  const CompanyCardWidget({
-    super.key,
-    required this.companies,
-  });
-
-  final CompaniesVo companies;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-        height: 110,
-        decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(color: Colors.grey.withOpacity(0.1),
-                  spreadRadius: 5, // Extends the shadow beyond the box
-                  blurRadius: 7, // Blurs the edges of the shadow
-                  offset: const Offset(0, 3)
-              ),
-            ],
-          color: Theme.of(context).colorScheme.onPrimary,
-          borderRadius: BorderRadius.circular(12)
-        ),
-        child: Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(15),
-                child: Image.network(
-                    companies.getImageWithBaseUrl(),width: 80,height: 80,fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace){
-                      return Image.asset('assets/simple_placeholder.png',width: 90,height: 90,fit: BoxFit.cover,);
-                    },
-
-                ),
-              )
-              // child: Container(
-              //   width: 80,
-              //   height: 80,
-              //   decoration: BoxDecoration(
-              //     borderRadius: BorderRadius.circular(12),
-              //     image: DecorationImage(
-              //       image: CachedNetworkImage(imageUrl: companies.getImageWithBaseUrl(),),
-              //       fit: BoxFit.cover
-              //     )
-              //   ),
-              // )
-            ),
-            const SizedBox(width: 16,),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(companies.companyName!,style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold
-                )),
-                const SizedBox(height: 10),
-                Text(companies.address!)
-              ],
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}

@@ -13,7 +13,6 @@ import 'package:pahg_group/network/responses/employee_response.dart';
 import 'package:pahg_group/network/responses/login_response.dart';
 import 'package:pahg_group/network/responses/post_method_response.dart';
 
-import '../../data/vos/employee_vo.dart';
 import '../responses/company_images_response.dart';
 import '../responses/department_list_response.dart';
 import '../responses/employee_list_response.dart';

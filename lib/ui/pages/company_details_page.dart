@@ -70,7 +70,7 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
         backgroundColor: Colors.blue[800],
-        title: Text(widget.companyName,),
+        title: Text(widget.companyName,style: const TextStyle(fontFamily: 'Ubuntu')),
         centerTitle: true,
       ),
       body: CustomScrollView(
