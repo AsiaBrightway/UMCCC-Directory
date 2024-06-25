@@ -3,7 +3,7 @@ part 'personal_info_vo.g.dart';
 
 @JsonSerializable()
 class PersonalInfoVo {
-  @JsonKey(name: 'id')
+  @JsonKey(name: 'Id')
   int? id;
 
   @JsonKey(name: 'EmployeeId')

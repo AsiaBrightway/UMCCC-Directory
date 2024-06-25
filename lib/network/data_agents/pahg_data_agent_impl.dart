@@ -11,6 +11,7 @@ import 'package:pahg_group/data/vos/request_body/add_employee_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_position_request.dart';
 import 'package:pahg_group/data/vos/request_body/get_request.dart';
 import 'package:pahg_group/data/vos/request_body/login_request.dart';
+import 'package:pahg_group/data/vos/request_body/personal_info_request.dart';
 import 'package:pahg_group/data/vos/request_body/update_employee_request.dart';
 import 'package:pahg_group/exception/custom_exception.dart';
 import 'package:pahg_group/network/data_agents/pahg_data_agent.dart';
@@ -214,6 +215,20 @@ class PahgDataAgentImpl extends PahgDataAgent{
   @override
   Future<PersonalInfoResponse?> getPersonalInfo(String apiKey, List<GetRequest> request) {
     return mApi.getPersonalInfo(apiKey, request).catchError((error){
+      throw _createException(error);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> addPersonalInfo(String apiKey, PersonalInfoRequest request) {
+    return mApi.addPersonalInfo(apiKey, request).catchError((error){
+      throw _createException(error);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> updatePersonalInfo(String apiKey, int personalId, PersonalInfoRequest request) {
+    return mApi.updatePersonalInfo(apiKey, personalId, request).catchError((error){
       throw _createException(error);
     });
   }

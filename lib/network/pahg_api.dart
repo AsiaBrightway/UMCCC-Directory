@@ -1,5 +1,3 @@
-
-
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -8,6 +6,7 @@ import 'package:pahg_group/data/vos/request_body/add_department_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_employee_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_position_request.dart';
 import 'package:pahg_group/data/vos/request_body/login_request.dart';
+import 'package:pahg_group/data/vos/request_body/personal_info_request.dart';
 import 'package:pahg_group/data/vos/request_body/update_employee_request.dart';
 import 'package:pahg_group/network/api_constants.dart';
 import 'package:pahg_group/network/responses/company_images_response.dart';
@@ -142,4 +141,16 @@ abstract class PahgApi{
       @Body() List<GetRequest> requestBody
       );
 
+  @POST(kEndPointAddPersonalInfo)
+  Future<PostMethodResponse?> addPersonalInfo(
+      @Header(kParamAuthorization) String apiKey,
+      @Body() PersonalInfoRequest requestBody
+      );
+
+  @PUT("$kEndPointAddPersonalInfo/{id}")
+  Future<PostMethodResponse?> updatePersonalInfo(
+      @Header(kParamAuthorization) String apiKey,
+      @Path("id") int personalId,
+      @Body() PersonalInfoRequest requestBody
+      );
 }

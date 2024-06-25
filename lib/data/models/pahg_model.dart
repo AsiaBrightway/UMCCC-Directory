@@ -13,6 +13,7 @@ import 'package:pahg_group/data/vos/request_body/add_employee_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_position_request.dart';
 import 'package:pahg_group/data/vos/request_body/get_request.dart';
 import 'package:pahg_group/data/vos/request_body/login_request.dart';
+import 'package:pahg_group/data/vos/request_body/personal_info_request.dart';
 import 'package:pahg_group/data/vos/request_body/update_employee_request.dart';
 import 'package:pahg_group/data/vos/token_vo.dart';
 import 'package:pahg_group/data/vos/user_vo.dart';
@@ -138,5 +139,13 @@ class PahgModel {
     GetRequest request = GetRequest(columnName: columnName, columnCondition: 1, columnValue: columnValue);
     List<GetRequest> requestList = [request];
     return mDataAgent.getPersonalInfo(apiKey, requestList).asStream().map((response)=> response?.document?.records ?? []).first;
+  }
+
+  Future<PostMethodResponse?> addPersonalInfo(String apiKey,PersonalInfoRequest request){
+    return mDataAgent.addPersonalInfo(apiKey, request);
+  }
+
+  Future<PostMethodResponse?> updatePersonalInfo(String apiKey,int personalId,PersonalInfoRequest request){
+    return mDataAgent.updatePersonalInfo(apiKey, personalId, request);
   }
 }

@@ -8,6 +8,7 @@ import 'package:pahg_group/data/vos/request_body/add_employee_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_position_request.dart';
 import 'package:pahg_group/data/vos/request_body/get_request.dart';
 import 'package:pahg_group/data/vos/request_body/login_request.dart';
+import 'package:pahg_group/data/vos/request_body/personal_info_request.dart';
 import 'package:pahg_group/data/vos/request_body/update_employee_request.dart';
 import 'package:pahg_group/network/responses/employee_response.dart';
 import 'package:pahg_group/network/responses/login_response.dart';
@@ -58,4 +59,8 @@ abstract class PahgDataAgent{
   Future<PostMethodResponse?> updateEmployeeById(String apiKey,String userId,UpdateEmployeeRequest request);
 
   Future<PersonalInfoResponse?> getPersonalInfo(String apiKey,List<GetRequest> request);
+
+  Future<PostMethodResponse?> addPersonalInfo(String apiKey,PersonalInfoRequest request);
+
+  Future<PostMethodResponse?> updatePersonalInfo(String apiKey,int personalId,PersonalInfoRequest request);
 }

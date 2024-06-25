@@ -3,15 +3,15 @@ import 'dart:ui';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
+import 'package:pahg_group/data/vos/request_body/personal_info_request.dart';
 import 'package:pahg_group/exception/helper_functions.dart';
 import 'package:pahg_group/ui/components/custom_drop_down_button.dart';
 import 'package:pahg_group/ui/themes/colors.dart';
 import 'package:provider/provider.dart';
 import '../../data/models/pahg_model.dart';
 import '../../data/vos/personal_info_vo.dart';
+import '../../widgets/loading_widget.dart';
 import '../components/custom_text_field.dart';
 import '../providers/auth_provider.dart';
 
@@ -29,8 +29,8 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   final PahgModel _model = PahgModel();
   List<PersonalInfoVo> personalInfo = [];
   String _token = '';
-  String _currentUserId = '';
   int _currentUserRole = 0;
+  int? personalInfoId;
   final Map<int, String> bloodType = {1: 'A', 2: 'B', 3: 'O', 4: 'AB'};
   final Map<int ,String> marriageList = {1: 'Single',2: 'Married',3: 'Divorce',4: 'Widower',5: 'Widow'};
   final Map<int ,String> licenseStatus = {1: 'Not Have',2: 'Have',3: 'Still Applying'};
@@ -76,6 +76,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   String licenseStatusName = "";
   String licenseTypeName = "";
   String licenseColorName = "";
+  String? _addressErrorText;
 
   @override
   void initState() {
@@ -87,9 +88,11 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     final authModel = Provider.of<AuthProvider>(context,listen: false);
     _token = authModel.token;
     _currentUserRole = authModel.role;
-    _currentUserId = authModel.userId;
     _model.getPersonalInfo(_token,'EmployeeId', widget.userId).then((response){
       setState(() {
+        if(response.isEmpty){
+          editMode = true;
+        }
         if(response.isNotEmpty){
           personalInfo = response;
           bindPersonalInfo(personalInfo);
@@ -112,8 +115,33 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     });
   }
 
-  void _addPersonalInfo(){
+  void _updatePersonalInfo(){
+    showDialog(context: context, barrierDismissible: false,builder: (context) => const LoadingWidget());
+    if(personalInfoId != null){
+      _model.updatePersonalInfo(_token,personalInfoId!, getPersonalData()).then((response){
+        Navigator.of(context).pop();
+        showSuccessDialog(context, response!.message.toString());
+        _initializeData();
+      }).catchError((error){
+        Navigator.of(context).pop();
+        showErrorDialog(context, error.toString());
+      });
+    }else{
+      Navigator.of(context).pop();
+      showErrorDialog(context, "Personal Id is null");
+    }
+  }
 
+  void _addPersonalInfo(){
+    showDialog(context: context, barrierDismissible: false,builder: (context) => const LoadingWidget());
+    _model.addPersonalInfo(_token, getPersonalData()).then((response){
+      Navigator.of(context).pop();
+      showSuccessDialog(context, response!.message.toString());
+      _initializeData();
+    }).catchError((error){
+      Navigator.of(context).pop();
+      showErrorDialog(context, error.toString());
+    });
   }
 
   @override
@@ -125,11 +153,19 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
         actions: [
           (widget.role == 1 )
               ? (personalInfo.isEmpty)
-                ? IconButton(onPressed: (){}, icon: const Icon(Icons.save,color: Colors.green,))
-                : (editMode)
-                  ? IconButton(onPressed: (){}, icon: const Icon(Icons.system_update_alt,color: colorAccent,))
-                  : const SizedBox(width: 1)
-              : const SizedBox(width: 1),
+                ? IconButton(onPressed: (){
+                  if(validatePersonalInfo()){
+                    _addPersonalInfo();
+                  }
+                  }, icon: const Icon(Icons.save,color: Colors.green,))
+                  : (editMode)
+                    ? IconButton(onPressed: (){
+                      if(validatePersonalInfo()){
+                        _updatePersonalInfo();
+                      }
+                  }, icon: const Icon(Icons.system_update_alt,color: colorAccent,))
+                    : const SizedBox(width: 1)
+                    : const SizedBox(width: 1),
             (widget.role == 1 && personalInfo.isNotEmpty)
               ? TextButton(onPressed: (){
                 setState(() {
@@ -150,6 +186,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              ///address text field
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
@@ -161,10 +198,11 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                   controller: _addressController,
                   readOnly: widget.role != 1,
                   keyboardType: TextInputType.multiline,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Address',
+                    errorText: _addressErrorText,
                     border: InputBorder.none,
-                    labelStyle: TextStyle(fontWeight: FontWeight.w100),
+                    labelStyle: const TextStyle(fontWeight: FontWeight.w300),
                     floatingLabelBehavior: FloatingLabelBehavior.always
                   ),
                 ),
@@ -173,9 +211,10 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
               Row(
                 children: [
                   Expanded(
+                      ///cellular is mobile phone
                       child: CustomTextField(controller: _cellularPhoneController,labelText: 'Cellular Phone',readOnly: _currentUserRole,keyboardType: TextInputType.number,)
                   ),
-                  const SizedBox(width: 10,),
+                  const SizedBox(width: 10),
                   Expanded(
                     child: CustomTextField(controller: _homePhoneController,labelText: 'Home Phone',readOnly: _currentUserRole,keyboardType: TextInputType.number,),
                   ),
@@ -760,8 +799,63 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     );
   }
 
+  PersonalInfoRequest getPersonalData(){
+    return  PersonalInfoRequest(
+        id: 0,
+        employeeId: widget.userId,
+        gender: _selectedGender,
+        address: _addressController.text,
+        telNoOffice: _cellularPhoneController.text,
+        telNoHome: _homePhoneController.text,
+        dateOfBirth: _date,
+        age: age,
+        placeOfBirth: _placeOfBirthController.text,
+        nationality: _nationalityController.text,
+        religion: _religionController.text,
+        race: _raceController.text,
+        health: _healthController.text,
+        bloodType: _selectedBloodType,
+        handUsage: _selectedHandUsage,
+        hairColor: _hairColorController.text,
+        eyeColor: _eyeColorController.text,
+        skinColor: _skinColorController.text,
+        marriageStatus: _selectedMarry,
+        emergencyContactName: _emergencyName.text,
+        emergencyContactRelation: _emergencyRelation.text,
+        emergencyContactMobilePhone: _emergencyCellularPhone.text,
+        emergencyContactHomePhone: _emergencyHomePhone.text,
+        emergencyContactOfficePhone: "--",
+        emergencyContactAddress: _emergencyAddress.text,
+        sportAndHobby: _sportsHobbyController.text,
+        socialActivities: _socialActivitiesController.text,
+        drivingLicenceStatus: _selectedLicenseStatus,
+        drivingLicenceType: _selectedLicenseType,
+        drivingLicenceColor: _selectedLicenseColor,
+        vehiclePunishment: _isVehiclePunished,
+        vehiclePunishmentDescription: _vehiclePunishmentDescription.text,
+        previousApplied: _isPreviousApplied,
+        previousAppliedDescription: _previousAppliedDescription.text,
+        hRDepartmentRecord: ""
+    );
+  }
+
+  bool validatePersonalInfo(){
+    if(_addressController.text.toString().isEmpty){
+      setState(() {
+        _addressErrorText = "Company Name is required";
+      });
+      return false;
+    }else{
+      setState(() {
+        _addressErrorText = null;
+      });
+    }
+    return true;
+  }
+
   void bindPersonalInfo(List<PersonalInfoVo> personalInfo){
     PersonalInfoVo personal = personalInfo.first;
+    personalInfoId = personal.id;
     _addressController.text = personal.address ?? "";
     _cellularPhoneController.text = personal.telNoOffice ?? "";
     _homePhoneController.text = personal.telNoHome ?? "";
