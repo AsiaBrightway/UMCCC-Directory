@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:pahg_group/data/vos/companies_vo.dart';
 import 'package:pahg_group/data/vos/company_images_vo.dart';
 import 'package:pahg_group/data/vos/department_vo.dart';
+import 'package:pahg_group/data/vos/education_school_vo.dart';
 import 'package:pahg_group/data/vos/employee_vo.dart';
 import 'package:pahg_group/data/vos/personal_info_vo.dart';
 import 'package:pahg_group/data/vos/position_vo.dart';
@@ -11,6 +12,7 @@ import 'package:pahg_group/data/vos/request_body/add_company_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_department_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_employee_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_position_request.dart';
+import 'package:pahg_group/data/vos/request_body/add_school_request.dart';
 import 'package:pahg_group/data/vos/request_body/get_request.dart';
 import 'package:pahg_group/data/vos/request_body/login_request.dart';
 import 'package:pahg_group/data/vos/request_body/personal_info_request.dart';
@@ -147,5 +149,23 @@ class PahgModel {
 
   Future<PostMethodResponse?> updatePersonalInfo(String apiKey,int personalId,PersonalInfoRequest request){
     return mDataAgent.updatePersonalInfo(apiKey, personalId, request);
+  }
+
+  Future<List<EducationSchoolVo>> getSchoolList(String apiKey,String columnName,String columnValue){
+    GetRequest request = GetRequest(columnName: columnName, columnCondition: 1, columnValue: columnValue);
+    List<GetRequest> requestList = [request];
+    return mDataAgent.getSchoolList(apiKey, requestList).asStream().map((response) => response?.document?.records ?? []).first;
+  }
+
+  Future<PostMethodResponse?> updateSchool(String apiKey,int schoolId,AddSchoolRequest request){
+    return mDataAgent.updateSchool(apiKey, schoolId, request);
+  }
+
+  Future<PostMethodResponse?> addSchool(String apiKey,AddSchoolRequest request){
+    return mDataAgent.addSchool(apiKey, request);
+  }
+
+  Future<PostMethodResponse?> deleteSchool(String apiKey,int schoolId){
+    return mDataAgent.deleteSchool(apiKey, schoolId);
   }
 }

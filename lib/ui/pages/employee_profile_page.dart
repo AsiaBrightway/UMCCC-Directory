@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pahg_group/data/models/pahg_model.dart';
 import 'package:pahg_group/data/vos/employee_vo.dart';
 import 'package:pahg_group/ui/pages/add_employee_page.dart';
+import 'package:pahg_group/ui/pages/education_page.dart';
 import 'package:pahg_group/ui/pages/personal_info_page.dart';
 import 'package:pahg_group/ui/themes/colors.dart';
 import 'package:provider/provider.dart';
@@ -110,29 +111,34 @@ class _EmployeeProfilePageState extends State<EmployeeProfilePage> {
                     ),
                     const SizedBox(width: 18,),
                     ///Education
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.42,
-                      height: 140,
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.black,width: 1,),
-                          borderRadius: BorderRadius.circular(8),
-                          color: Theme.of(context).colorScheme.secondaryContainer
-                      ),
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 20,),
-                          Image.asset('lib/icons/user_education.png',width: 50,height: 50,color: Theme.of(context).colorScheme.onSurface),
-                          const SizedBox(height: 10,),
-                          const Text('Education',style: TextStyle(fontWeight: FontWeight.w500),),
-                          const Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [ Padding(
-                                padding: EdgeInsets.only(right: 8.0,top: 8),
-                                child: Text('more details >>',style: TextStyle(color: colorAccent,fontSize: 12),),
-                              )
-                            ],
-                          )
-                        ],
+                    GestureDetector(
+                      onTap: (){
+                        navigateToEducation(context);
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.42,
+                        height: 140,
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Colors.black,width: 1,),
+                            borderRadius: BorderRadius.circular(8),
+                            color: Theme.of(context).colorScheme.secondaryContainer
+                        ),
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 20,),
+                            Image.asset('lib/icons/user_education.png',width: 50,height: 50,color: Theme.of(context).colorScheme.onSurface),
+                            const SizedBox(height: 10,),
+                            const Text('Education',style: TextStyle(fontWeight: FontWeight.w500),),
+                            const Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [ Padding(
+                                  padding: EdgeInsets.only(right: 8.0,top: 8),
+                                  child: Text('more details >>',style: TextStyle(color: colorAccent,fontSize: 12),),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -337,6 +343,30 @@ class _EmployeeProfilePageState extends State<EmployeeProfilePage> {
             name: widget.employeeVo.employeeName ?? 'name null',
             role: _userRole,
             userId: widget.employeeVo.id!
+        ),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(1.0, 0.0);
+          const end = Offset.zero;
+          const curve = Curves.ease;
+
+          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: child,
+          );
+        },
+      ),
+    );
+  }
+
+  void navigateToEducation(BuildContext context) {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => EducationPage(
+          empId: widget.employeeVo.id ?? 'null',
+          userRole: _userRole,
         ),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           const begin = Offset(1.0, 0.0);

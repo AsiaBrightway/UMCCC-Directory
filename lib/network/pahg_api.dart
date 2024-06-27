@@ -5,6 +5,7 @@ import 'package:pahg_group/data/vos/request_body/add_company_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_department_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_employee_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_position_request.dart';
+import 'package:pahg_group/data/vos/request_body/add_school_request.dart';
 import 'package:pahg_group/data/vos/request_body/login_request.dart';
 import 'package:pahg_group/data/vos/request_body/personal_info_request.dart';
 import 'package:pahg_group/data/vos/request_body/update_employee_request.dart';
@@ -19,6 +20,7 @@ import 'package:pahg_group/network/responses/login_response.dart';
 import 'package:pahg_group/network/responses/personal_info_response.dart';
 import 'package:pahg_group/network/responses/position_response.dart';
 import 'package:pahg_group/network/responses/post_method_response.dart';
+import 'package:pahg_group/network/responses/school_response.dart';
 import 'package:pahg_group/network/responses/user_response.dart';
 import 'package:retrofit/http.dart';
 import 'package:retrofit/retrofit.dart';
@@ -152,5 +154,30 @@ abstract class PahgApi{
       @Header(kParamAuthorization) String apiKey,
       @Path("id") int personalId,
       @Body() PersonalInfoRequest requestBody
+      );
+
+  @POST(kEndPointGetSchool)
+  Future<SchoolResponse?> getSchoolList(
+      @Header(kParamAuthorization) String apiKey,
+      @Body() List<GetRequest> requestBody
+      );
+
+  @PUT("$kEndPointUpdateSchool/{school_id}")
+  Future<PostMethodResponse?> updateSchool(
+      @Header(kParamAuthorization) String apiKey,
+      @Path("school_id") int schoolId,
+      @Body() AddSchoolRequest requestBody
+      );
+
+  @POST(kEndPointUpdateSchool)
+  Future<PostMethodResponse?> addSchool(
+      @Header(kParamAuthorization) String apiKey,
+      @Body() AddSchoolRequest request
+      );
+
+  @DELETE("$kEndPointUpdateSchool/{id}")
+  Future<PostMethodResponse?> deleteSchool(
+      @Header(kParamAuthorization) String apiKey,
+      @Path("id") int schoolId
       );
 }

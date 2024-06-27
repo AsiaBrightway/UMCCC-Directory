@@ -9,6 +9,7 @@ import 'package:pahg_group/data/vos/request_body/add_company_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_department_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_employee_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_position_request.dart';
+import 'package:pahg_group/data/vos/request_body/add_school_request.dart';
 import 'package:pahg_group/data/vos/request_body/get_request.dart';
 import 'package:pahg_group/data/vos/request_body/login_request.dart';
 import 'package:pahg_group/data/vos/request_body/personal_info_request.dart';
@@ -25,6 +26,7 @@ import 'package:pahg_group/network/responses/login_response.dart';
 import 'package:pahg_group/network/responses/personal_info_response.dart';
 import 'package:pahg_group/network/responses/position_response.dart';
 import 'package:pahg_group/network/responses/post_method_response.dart';
+import 'package:pahg_group/network/responses/school_response.dart';
 import 'package:pahg_group/network/responses/user_response.dart';
 
 class PahgDataAgentImpl extends PahgDataAgent{
@@ -230,6 +232,34 @@ class PahgDataAgentImpl extends PahgDataAgent{
   Future<PostMethodResponse?> updatePersonalInfo(String apiKey, int personalId, PersonalInfoRequest request) {
     return mApi.updatePersonalInfo(apiKey, personalId, request).catchError((error){
       throw _createException(error);
+    });
+  }
+
+  @override
+  Future<SchoolResponse?> getSchoolList(String apiKey, List<GetRequest> request) {
+    return mApi.getSchoolList(apiKey, request).catchError((error){
+      throw _createException(error);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> updateSchool(String apiKey, int schoolId, AddSchoolRequest request) {
+    return mApi.updateSchool(apiKey,schoolId,request).catchError((error){
+      throw _createException(error);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> addSchool(String apiKey, AddSchoolRequest request) {
+    return mApi.addSchool(apiKey, request).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> deleteSchool(String apiKey, int schoolId) {
+    return mApi.deleteSchool(apiKey, schoolId).catchError((onError){
+      throw _createException(onError);
     });
   }
 }

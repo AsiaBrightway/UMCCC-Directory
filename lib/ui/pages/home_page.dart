@@ -27,7 +27,6 @@ class _HomePageState extends State<HomePage> {
   String errorMessage = '';
   List<CompaniesVo> companies = [];
 
-
   @override
   void didChangeDependencies() {
     final authModel = Provider.of<AuthProvider>(context);

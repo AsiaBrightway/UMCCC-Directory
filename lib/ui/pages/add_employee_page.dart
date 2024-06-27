@@ -138,7 +138,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
       });
       showSuccessDialog(context, value!.message.toString());
     }).catchError((error){
-      Navigator.of(context).pop();                                            //dismiss loading
+      Navigator.of(context).pop();                                              //dismiss loading
       showErrorDialog(context,error.toString());
     });
   }

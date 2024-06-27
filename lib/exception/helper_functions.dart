@@ -85,6 +85,17 @@ void showErrorDialog(BuildContext context,String errorMessage) {
   );
 }
 
+void showScaffoldMessage(BuildContext context,String name){
+  ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+    backgroundColor: Colors.grey.shade700,
+    content: Text(name,style: const TextStyle(color: Colors.white),),
+    duration: const Duration(milliseconds: 1500),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    margin: const EdgeInsets.symmetric(horizontal: 50),
+    behavior: SnackBarBehavior.floating,
+  ));
+}
+
 void showLogoutDialog(BuildContext context){
   showDialog(
     context: context,

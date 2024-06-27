@@ -6,6 +6,7 @@ import 'package:pahg_group/data/vos/request_body/add_company_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_department_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_employee_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_position_request.dart';
+import 'package:pahg_group/data/vos/request_body/add_school_request.dart';
 import 'package:pahg_group/data/vos/request_body/get_request.dart';
 import 'package:pahg_group/data/vos/request_body/login_request.dart';
 import 'package:pahg_group/data/vos/request_body/personal_info_request.dart';
@@ -20,6 +21,7 @@ import '../responses/employee_list_response.dart';
 import '../responses/image_upload_response.dart';
 import '../responses/personal_info_response.dart';
 import '../responses/position_response.dart';
+import '../responses/school_response.dart';
 import '../responses/user_response.dart';
 
 abstract class PahgDataAgent{
@@ -63,4 +65,12 @@ abstract class PahgDataAgent{
   Future<PostMethodResponse?> addPersonalInfo(String apiKey,PersonalInfoRequest request);
 
   Future<PostMethodResponse?> updatePersonalInfo(String apiKey,int personalId,PersonalInfoRequest request);
+
+  Future<SchoolResponse?> getSchoolList(String apiKey,List<GetRequest> request);
+
+  Future<PostMethodResponse?> updateSchool(String apiKey,int schoolId,AddSchoolRequest request);
+
+  Future<PostMethodResponse?> addSchool(String apiKey,AddSchoolRequest request);
+
+  Future<PostMethodResponse?> deleteSchool(String apiKey,int schoolId);
 }
