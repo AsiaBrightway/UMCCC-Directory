@@ -26,8 +26,13 @@ class _SchoolDialogState extends State<SchoolDialog> {
   void initState() {
     super.initState();
      _nameController = TextEditingController(text: widget.school?.name ?? '');
-     startDate = widget.school?.fromDate;
-     endDate = widget.school?.toDate;
+     if(widget.school != null){
+       startDate = widget.school?.fromDate;
+       endDate = widget.school?.toDate;
+     }else{
+       startDate = DateFormat("yyyy-MM-dd").format(DateTime.now());
+       endDate = DateFormat("yyyy-MM-dd").format(DateTime.now());
+     }
      _secondaryController = TextEditingController(text: widget.school?.secondary ?? '');
      _maximumAchievementController = TextEditingController(text: widget.school?.maximumAchievement ?? '');
      _subjectController = TextEditingController(text: widget.school?.subjects ?? '');
@@ -66,7 +71,7 @@ class _SchoolDialogState extends State<SchoolDialog> {
     return AlertDialog(
       title: Text(widget.school == null ? 'Add School' : 'Update School'),
       content: SingleChildScrollView(
-        child: Container(
+        child: SizedBox(
           width: MediaQuery.of(context).size.width,
           child: Form(
             key: _formKey,
@@ -77,6 +82,7 @@ class _SchoolDialogState extends State<SchoolDialog> {
                   controller: _nameController,
                   decoration: InputDecoration(
                       floatingLabelStyle: const TextStyle(color: colorAccent),
+                      labelStyle: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13),
                       labelText: 'School',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
@@ -94,6 +100,7 @@ class _SchoolDialogState extends State<SchoolDialog> {
                   controller: _secondaryController,
                   decoration: InputDecoration(
                       floatingLabelStyle: const TextStyle(color: colorAccent),
+                      labelStyle: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13),
                       labelText: 'Secondary',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
@@ -105,6 +112,7 @@ class _SchoolDialogState extends State<SchoolDialog> {
                   controller: _maximumAchievementController,
                   decoration: InputDecoration(
                       floatingLabelStyle: const TextStyle(color: colorAccent),
+                      labelStyle: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13),
                       labelText: 'Maximum Achievements',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
@@ -116,6 +124,7 @@ class _SchoolDialogState extends State<SchoolDialog> {
                   controller: _subjectController,
                   decoration: InputDecoration(
                       floatingLabelStyle: const TextStyle(color: colorAccent),
+                      labelStyle: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13),
                       labelText: 'Subjects',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
@@ -125,7 +134,7 @@ class _SchoolDialogState extends State<SchoolDialog> {
                 const SizedBox(height: 12),
                 Row(
                   children: [
-                    Text("From :$startDate",style: TextStyle(fontWeight: FontWeight.w300)),
+                    Text("From :$startDate",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
                     const SizedBox(width: 4),
                     GestureDetector(
                       onTap: (){ _selectStartDate(context); },
@@ -164,7 +173,7 @@ class _SchoolDialogState extends State<SchoolDialog> {
           onPressed: () {
             if (_formKey.currentState!.validate()) {
               ///data should be null if user doesn't add date.the exception can found when the date is empty string
-              ///employeeId is null if add school
+              ///employeeId is null if add school and then change in fragment because null can lead to exception
               AddSchoolRequest updatedSchool = AddSchoolRequest(
                   widget.school?.id, // Use existing ID for update, null for add
                   widget.school?.employeeId,

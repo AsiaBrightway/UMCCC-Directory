@@ -6,11 +6,13 @@ import 'package:pahg_group/data/vos/company_images_vo.dart';
 import 'package:pahg_group/data/vos/department_vo.dart';
 import 'package:pahg_group/data/vos/education_school_vo.dart';
 import 'package:pahg_group/data/vos/employee_vo.dart';
+import 'package:pahg_group/data/vos/graduate_vo.dart';
 import 'package:pahg_group/data/vos/personal_info_vo.dart';
 import 'package:pahg_group/data/vos/position_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_company_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_department_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_employee_request.dart';
+import 'package:pahg_group/data/vos/request_body/add_graduate_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_position_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_school_request.dart';
 import 'package:pahg_group/data/vos/request_body/get_request.dart';
@@ -167,5 +169,23 @@ class PahgModel {
 
   Future<PostMethodResponse?> deleteSchool(String apiKey,int schoolId){
     return mDataAgent.deleteSchool(apiKey, schoolId);
+  }
+  
+  Future<List<GraduateVo>> getGraduateList(String apiKey,String columnName,String columnValue){
+    GetRequest request = GetRequest(columnName: columnName, columnCondition: 1, columnValue: columnValue);
+    List<GetRequest> requestList = [request];
+    return mDataAgent.getGraduate(apiKey, requestList).asStream().map((response)=> response?.document?.records ?? []).first;
+  }
+
+  Future<PostMethodResponse?> addGraduate(String apiKey,AddGraduateRequest request){
+    return mDataAgent.addGraduate(apiKey, request);
+  }
+
+  Future<PostMethodResponse?> updateGraduate(String apiKey,int id,AddGraduateRequest request){
+    return mDataAgent.updateGraduate(apiKey, id, request);
+  }
+
+  Future<PostMethodResponse?> deleteGraduate(String apiKey,int id){
+    return mDataAgent.deleteGraduate(apiKey, id);
   }
 }

@@ -27,7 +27,7 @@ class _EducationPageState extends State<EducationPage> with SingleTickerProvider
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Education'),
+        title: const Text('Education'),
         centerTitle: true,
         bottom: TabBar(
           controller: _tabController,
@@ -43,7 +43,7 @@ class _EducationPageState extends State<EducationPage> with SingleTickerProvider
       controller: _tabController,
       children: [
         SchoolFragment(userId: widget.empId,role: widget.userRole),
-        GraduateFragment(),
+        GraduateFragment(userId: widget.empId,role: widget.userRole,),
         TrainingFragment(),
         LanguageFragment()
       ],

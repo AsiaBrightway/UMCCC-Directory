@@ -4,7 +4,7 @@ import 'package:pahg_group/data/vos/education_school_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_school_request.dart';
 import 'package:pahg_group/exception/helper_functions.dart';
 import 'package:pahg_group/ui/components/school_card.dart';
-import 'package:pahg_group/ui/components/update_school_dialog.dart';
+import 'package:pahg_group/dialog/update_school_dialog.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/models/pahg_model.dart';
@@ -54,9 +54,18 @@ class _SchoolFragmentState extends State<SchoolFragment> {
     var addRequest = request;
     addRequest.id = 0;
     addRequest.employeeId = widget.userId;
-    _model.addSchool(_token, request).then((onValue){
+    _model.addSchool(_token, addRequest).then((onValue){
       _onRefresh();
       showScaffoldMessage(context, onValue?.message ?? "Successfully added");
+    }).catchError((onError){
+      showErrorDialog(context, onError.toString());
+    });
+  }
+
+  void _onUpdate(AddSchoolRequest updatedSchool){
+    _model.updateSchool(_token, updatedSchool.id!, updatedSchool).then((onValue){
+      _onRefresh();
+      showScaffoldMessage(context, onValue?.message ?? "Successfully updated");
     }).catchError((onError){
       showErrorDialog(context, onError.toString());
     });
@@ -100,6 +109,7 @@ class _SchoolFragmentState extends State<SchoolFragment> {
         if(onValue.isNotEmpty){
           schoolList = onValue;
         }else{
+          schoolList = [];
           isLoading = false;
         }
       });
@@ -112,31 +122,40 @@ class _SchoolFragmentState extends State<SchoolFragment> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       ///list view is not working in this tab view
-      child: Column(
-        children : [
-        (widget.role == 1)
-            ? Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: ElevatedButton(
-                  onPressed: (){
-                    showSchoolDialog(context,school: null,onSave: _onAdd);
-                  },
-                  child: Text("Add School")
-              ),
-            )
-            : const SizedBox(height: 1),
-        (schoolList.isNotEmpty)
-            ? Column(
-              children: schoolList.map((school){
-                return SchoolCard(school: school,token: _token,userRole: _userRole,onDelete: _onDelete);
-              }).toList(),
-            )
-            : isLoading
-            ? const Center(
-                child: CircularProgressIndicator(),
+      child: Container(
+        constraints: BoxConstraints(
+          minHeight: MediaQuery.of(context).size.height - kToolbarHeight,
+        ),
+        child: Column(
+          children : [
+          (widget.role == 1)
+              ? Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: ElevatedButton(
+                    onPressed: (){
+                      showSchoolDialog(context,school: null,onSave: _onAdd);
+                    },
+                    child: const Text("Add School")
+                ),
               )
-            : const Center(child: Text("Empty")),
-        ],
+              : const SizedBox(height: 1),
+          (schoolList.isNotEmpty)
+              ? Column(
+                children: schoolList.map((school){
+                  return SchoolCard(school: school,token: _token,userRole: _userRole,onDelete: _onDelete,onUpdate: _onUpdate,);
+                }).toList(),
+              )
+              : isLoading
+              ? const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: CircularProgressIndicator(),
+              )
+              : const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text("Empty",style: TextStyle(fontFamily: 'Ubuntu'),),
+              ),
+          ],
+        ),
       ),
     );
   }

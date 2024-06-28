@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:pahg_group/data/vos/education_school_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_school_request.dart';
-import 'package:pahg_group/exception/helper_functions.dart';
-import 'package:pahg_group/ui/components/update_school_dialog.dart';
+import 'package:pahg_group/dialog/update_school_dialog.dart';
 import 'package:pahg_group/ui/themes/colors.dart';
-
-import '../../data/models/pahg_model.dart';
 
 class SchoolCard extends StatefulWidget {
   final EducationSchoolVo school;
   final String token;
   final int userRole;
+  final Function(AddSchoolRequest school) onUpdate;
   final Function(String name,int schoolId) onDelete;
-  const SchoolCard({super.key, required this.school, required this.token, required this.userRole, required this.onDelete});
+  const SchoolCard({super.key, required this.school, required this.token, required this.userRole, required this.onDelete, required this.onUpdate});
 
   @override
   State<SchoolCard> createState() => _SchoolCardState();
@@ -21,7 +19,6 @@ class SchoolCard extends StatefulWidget {
 class _SchoolCardState extends State<SchoolCard> {
   bool _isExpanded = true;
   bool editMode = true;
-  final PahgModel _model = PahgModel();
 
   void _toggleExpanded() {
     setState(() {
@@ -29,12 +26,8 @@ class _SchoolCardState extends State<SchoolCard> {
     });
   }
 
-  void _updateSchool(AddSchoolRequest updateSchool){
-    _model.updateSchool(widget.token,updateSchool.id!, updateSchool).then((response){
-      //showSuccessDialog(context, response!.message.toString());
-    }).catchError((error){
-      showErrorDialog(context, error.toString());
-    });
+  void _updateSchool(AddSchoolRequest updatedSchool){
+    widget.onUpdate(updatedSchool);
   }
 
   @override
@@ -61,7 +54,7 @@ class _SchoolCardState extends State<SchoolCard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: 4.0,bottom: 10,right: 6),
+                  padding: const EdgeInsets.only(left: 4,top: 4.0,bottom: 10,right: 6),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -101,7 +94,7 @@ class _SchoolCardState extends State<SchoolCard> {
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(
                           children: [
-                            const Text("Maximum Achievements: ",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 13),),
+                            const Text("Achievements: ",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 13),),
 
                             Expanded(child: Text("${widget.school.maximumAchievement}",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13))),
                           ],

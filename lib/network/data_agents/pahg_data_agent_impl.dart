@@ -8,6 +8,7 @@ import 'package:pahg_group/data/vos/error_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_company_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_department_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_employee_request.dart';
+import 'package:pahg_group/data/vos/request_body/add_graduate_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_position_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_school_request.dart';
 import 'package:pahg_group/data/vos/request_body/get_request.dart';
@@ -21,6 +22,7 @@ import 'package:pahg_group/network/responses/company_images_response.dart';
 import 'package:pahg_group/network/responses/department_list_response.dart';
 import 'package:pahg_group/network/responses/employee_list_response.dart';
 import 'package:pahg_group/network/responses/employee_response.dart';
+import 'package:pahg_group/network/responses/graduate_response.dart';
 import 'package:pahg_group/network/responses/image_upload_response.dart';
 import 'package:pahg_group/network/responses/login_response.dart';
 import 'package:pahg_group/network/responses/personal_info_response.dart';
@@ -259,6 +261,34 @@ class PahgDataAgentImpl extends PahgDataAgent{
   @override
   Future<PostMethodResponse?> deleteSchool(String apiKey, int schoolId) {
     return mApi.deleteSchool(apiKey, schoolId).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<GraduateResponse?> getGraduate(String apiKey, List<GetRequest> request) {
+    return mApi.getGraduateList(apiKey,request).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> addGraduate(String apiKey, AddGraduateRequest request) {
+    return mApi.addGraduate(apiKey,request).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> updateGraduate(String apiKey, int id, AddGraduateRequest request) {
+    return mApi.updateGraduate(apiKey,id,request).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> deleteGraduate(String apiKey, int id) {
+    return mApi.deleteGraduate(apiKey,id).catchError((onError){
       throw _createException(onError);
     });
   }

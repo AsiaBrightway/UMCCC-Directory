@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:pahg_group/data/vos/request_body/add_company_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_department_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_employee_request.dart';
+import 'package:pahg_group/data/vos/request_body/add_graduate_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_position_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_school_request.dart';
 import 'package:pahg_group/data/vos/request_body/login_request.dart';
@@ -15,6 +16,7 @@ import 'package:pahg_group/network/responses/company_list_response.dart';
 import 'package:pahg_group/network/responses/department_list_response.dart';
 import 'package:pahg_group/network/responses/employee_list_response.dart';
 import 'package:pahg_group/network/responses/employee_response.dart';
+import 'package:pahg_group/network/responses/graduate_response.dart';
 import 'package:pahg_group/network/responses/image_upload_response.dart';
 import 'package:pahg_group/network/responses/login_response.dart';
 import 'package:pahg_group/network/responses/personal_info_response.dart';
@@ -179,5 +181,30 @@ abstract class PahgApi{
   Future<PostMethodResponse?> deleteSchool(
       @Header(kParamAuthorization) String apiKey,
       @Path("id") int schoolId
+      );
+
+  @POST(kEndPointGetGraduate)
+  Future<GraduateResponse?> getGraduateList(
+      @Header(kParamAuthorization) String apiKey,
+      @Body() List<GetRequest> requestBody
+      );
+
+  @POST(kEndPointAddGraduate)
+  Future<PostMethodResponse?> addGraduate(
+      @Header(kParamAuthorization) String apiKey,
+      @Body() AddGraduateRequest requestBody
+      );
+
+  @PUT("$kEndPointAddGraduate/{id}")
+  Future<PostMethodResponse?> updateGraduate(
+      @Header(kParamAuthorization) String apiKey,
+      @Path("id") int id,
+      @Body() AddGraduateRequest requestBody
+      );
+  
+  @DELETE("$kEndPointAddGraduate/{id}")
+  Future<PostMethodResponse?> deleteGraduate(
+      @Header(kParamAuthorization) String apiKey,
+      @Path("id") int id,
       );
 }
