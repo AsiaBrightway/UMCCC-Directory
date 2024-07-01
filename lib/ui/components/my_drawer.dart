@@ -3,14 +3,13 @@ import 'package:pahg_group/ui/pages/add_company_page.dart';
 import 'package:pahg_group/ui/pages/add_department_page.dart';
 import 'package:pahg_group/ui/pages/add_employee_page.dart';
 import 'package:pahg_group/ui/pages/add_position_page.dart';
+import 'package:pahg_group/ui/pages/employee_profile_page.dart';
 
 import '../../exception/helper_functions.dart';
 
 class MyDrawer extends StatelessWidget {
-  const MyDrawer({super.key});
-
-
-
+  const MyDrawer({super.key, required this.userId});
+  final String userId;
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -32,7 +31,7 @@ class MyDrawer extends StatelessWidget {
                 leading: Image.asset('lib/icons/profile.png',width: 25),
                 title: const Text('My Profile',style: TextStyle(fontFamily: 'Roboto',fontWeight: FontWeight.w400),),
                 onTap: (){
-                  //TODO
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => EmployeeProfilePage(userId: userId),));
                 },
               ),
             ),

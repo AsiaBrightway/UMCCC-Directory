@@ -9,8 +9,10 @@ import 'package:pahg_group/data/vos/request_body/add_company_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_department_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_employee_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_graduate_request.dart';
+import 'package:pahg_group/data/vos/request_body/add_language_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_position_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_school_request.dart';
+import 'package:pahg_group/data/vos/request_body/add_training_request.dart';
 import 'package:pahg_group/data/vos/request_body/get_request.dart';
 import 'package:pahg_group/data/vos/request_body/login_request.dart';
 import 'package:pahg_group/data/vos/request_body/personal_info_request.dart';
@@ -24,11 +26,13 @@ import 'package:pahg_group/network/responses/employee_list_response.dart';
 import 'package:pahg_group/network/responses/employee_response.dart';
 import 'package:pahg_group/network/responses/graduate_response.dart';
 import 'package:pahg_group/network/responses/image_upload_response.dart';
+import 'package:pahg_group/network/responses/language_response.dart';
 import 'package:pahg_group/network/responses/login_response.dart';
 import 'package:pahg_group/network/responses/personal_info_response.dart';
 import 'package:pahg_group/network/responses/position_response.dart';
 import 'package:pahg_group/network/responses/post_method_response.dart';
 import 'package:pahg_group/network/responses/school_response.dart';
+import 'package:pahg_group/network/responses/training_response.dart';
 import 'package:pahg_group/network/responses/user_response.dart';
 
 class PahgDataAgentImpl extends PahgDataAgent{
@@ -289,6 +293,62 @@ class PahgDataAgentImpl extends PahgDataAgent{
   @override
   Future<PostMethodResponse?> deleteGraduate(String apiKey, int id) {
     return mApi.deleteGraduate(apiKey,id).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<TrainingResponse?> getTrainingList(String apiKey, List<GetRequest> request) {
+    return mApi.getTraining(apiKey,request).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> addTraining(String apiKey, AddTrainingRequest request) {
+    return mApi.addTraining(apiKey, request).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> updateTraining(String apiKey, int id, AddTrainingRequest request) {
+    return mApi.updateTraining(apiKey,id, request).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> deleteTraining(String apiKey, int id) {
+    return mApi.deleteTraining(apiKey, id).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<LanguageResponse?> getLanguageList(String apiKey, List<GetRequest> request) {
+    return mApi.getLanguageList(apiKey, request).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> addLanguage(String apiKey, AddLanguageRequest request) {
+    return mApi.addLanguage(apiKey, request).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> updateLanguage(String apiKey, int id, AddLanguageRequest request) {
+    return mApi.updateLanguage(apiKey, id, request).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> deleteLanguage(String apiKey, int id) {
+    return mApi.deleteLanguage(apiKey, id).catchError((onError){
       throw _createException(onError);
     });
   }

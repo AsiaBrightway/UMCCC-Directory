@@ -186,7 +186,7 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
       padding: const EdgeInsets.symmetric(vertical: 8.0,horizontal: 12),
       child: InkWell(
         onTap: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context) => EmployeeProfilePage(employeeVo: employee),));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => EmployeeProfilePage(userId: employee.id!),));
         },
         child: Container(
           height: 100,
@@ -206,7 +206,7 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
               Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Hero(
-                    tag: employee.getImageWithBaseUrl(),
+                    tag: 112,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(40),
                       child: Image.network(

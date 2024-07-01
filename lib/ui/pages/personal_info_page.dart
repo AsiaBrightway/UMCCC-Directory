@@ -77,6 +77,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   String licenseTypeName = "";
   String licenseColorName = "";
   String? _addressErrorText;
+  bool firstLoading = true;
 
   @override
   void initState() {
@@ -91,14 +92,19 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     _model.getPersonalInfo(_token,'EmployeeId', widget.userId).then((response){
       setState(() {
         if(response.isEmpty){
+          firstLoading = false;
           editMode = true;
         }
         if(response.isNotEmpty){
+          firstLoading = false;
           personalInfo = response;
           bindPersonalInfo(personalInfo);
         }
       });
     }).catchError((error){
+      setState(() {
+        firstLoading = false;
+      });
       showErrorDialog(context, error.toString());
     });
   }
@@ -180,7 +186,9 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
         ],
       ),
       backgroundColor: Theme.of(context).colorScheme.surface,
-      body: SingleChildScrollView(
+      body: (firstLoading)
+          ? const Center(child: CircularProgressIndicator(color: Colors.blue))
+          : SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.only(left: 14,right: 10,top: 10),
           child: Column(
@@ -190,20 +198,20 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.onPrimary,
-                  border: Border.all(color: Colors.grey.shade600),
-                  borderRadius: BorderRadius.circular(8)
+                    color: Theme.of(context).colorScheme.onPrimary,
+                    border: Border.all(color: Colors.grey.shade600),
+                    borderRadius: BorderRadius.circular(8)
                 ),
                 child: TextField(
                   controller: _addressController,
                   readOnly: widget.role != 1,
                   keyboardType: TextInputType.multiline,
                   decoration: InputDecoration(
-                    labelText: 'Address',
-                    errorText: _addressErrorText,
-                    border: InputBorder.none,
-                    labelStyle: const TextStyle(fontWeight: FontWeight.w300),
-                    floatingLabelBehavior: FloatingLabelBehavior.always
+                      labelText: 'Address',
+                      errorText: _addressErrorText,
+                      border: InputBorder.none,
+                      labelStyle: const TextStyle(fontWeight: FontWeight.w300),
+                      floatingLabelBehavior: FloatingLabelBehavior.always
                   ),
                 ),
               ),
@@ -211,7 +219,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
               Row(
                 children: [
                   Expanded(
-                      ///cellular is mobile phone
+                    ///cellular is mobile phone
                       child: CustomTextField(controller: _cellularPhoneController,labelText: 'Cellular Phone',readOnly: _currentUserRole,keyboardType: TextInputType.number,)
                   ),
                   const SizedBox(width: 10),
@@ -281,9 +289,9 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
               Container(
                 height: 50,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  gradient: LinearGradient(stops: const [0.4,1.0], colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade400]) ///////////
-                ), 
+                    borderRadius: BorderRadius.circular(12),
+                    gradient: LinearGradient(stops: const [0.4,1.0], colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade400]) ///////////
+                ),
                 child: (editMode && _currentUserRole == 1)
                     ? ButtonBar(
                   alignment: MainAxisAlignment.start,
@@ -306,25 +314,25 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                   ],
                 )
                     : Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.only(left: 8.0),
-                            child: Text("Gender :",style: TextStyle(fontFamily: 'Ubuntu',fontSize: 16),),
-                          ),
-                          (_selectedGender)
-                              ? const Text(" Male",style: TextStyle(fontSize: 16))
-                              : const Text(" Female",style: TextStyle(fontSize: 16))
-                        ],
-                      ),
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.only(left: 8.0),
+                      child: Text("Gender :",style: TextStyle(fontFamily: 'Ubuntu',fontSize: 16),),
+                    ),
+                    (_selectedGender)
+                        ? const Text(" Male",style: TextStyle(fontSize: 16))
+                        : const Text(" Female",style: TextStyle(fontSize: 16))
+                  ],
+                ),
               ),
               const SizedBox(height: 10),
               ///hand usage radio button
               Container(
                 height: 50,
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    gradient: LinearGradient(stops: const [0.4,1.0], colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade400]
+                  borderRadius: BorderRadius.circular(12),
+                  gradient: LinearGradient(stops: const [0.4,1.0], colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade400]
                   ),
                 ),
                 child: (editMode && _currentUserRole == 1)
@@ -355,7 +363,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                       padding: EdgeInsets.only(left: 8.0),
                       child: Text("Hand Usage :",style: TextStyle(fontFamily: 'Ubuntu',fontSize: 16),),
                     ),
-                    (_selectedHandUsage == 1)
+                    (_selectedHandUsage == 2)
                         ? const Text(" Right",style: TextStyle(fontSize: 16),)
                         : const Text(" Left",style: TextStyle(fontSize: 16))
                   ],
@@ -374,23 +382,23 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                 ],
               )
                   : Container(
-                      height: 50,
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: Theme.of(context).colorScheme.surfaceBright
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Blood Type : $bloodTypeName",
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                          Text("Marriage Status : $marriageStatusName",style: const TextStyle(fontSize: 16),)
-                        ],
-                      ),
+                height: 50,
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: Theme.of(context).colorScheme.surfaceBright
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Blood Type : $bloodTypeName",
+                      style: const TextStyle(fontSize: 16),
                     ),
+                    Text("Marriage Status : $marriageStatusName",style: const TextStyle(fontSize: 16),)
+                  ],
+                ),
+              ),
               const SizedBox(height: 10),
               ///Appearance
               _buildAppearance(),
@@ -404,7 +412,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
             ],
           ),
         ),
-      ),
+      )
     );
   }
 

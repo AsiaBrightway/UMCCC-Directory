@@ -1,5 +1,4 @@
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pahg_group/ui/fragment/graduate_fragment.dart';
 import 'package:pahg_group/ui/fragment/language_fragment.dart';
@@ -43,9 +42,9 @@ class _EducationPageState extends State<EducationPage> with SingleTickerProvider
       controller: _tabController,
       children: [
         SchoolFragment(userId: widget.empId,role: widget.userRole),
-        GraduateFragment(userId: widget.empId,role: widget.userRole,),
-        TrainingFragment(),
-        LanguageFragment()
+        GraduateFragment(userId: widget.empId,role: widget.userRole),
+        TrainingFragment(userId: widget.empId,role: widget.userRole),
+        LanguageFragment(userId: widget.empId,role: widget.userRole)
       ],
     ),
     );

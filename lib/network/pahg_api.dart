@@ -5,8 +5,10 @@ import 'package:pahg_group/data/vos/request_body/add_company_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_department_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_employee_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_graduate_request.dart';
+import 'package:pahg_group/data/vos/request_body/add_language_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_position_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_school_request.dart';
+import 'package:pahg_group/data/vos/request_body/add_training_request.dart';
 import 'package:pahg_group/data/vos/request_body/login_request.dart';
 import 'package:pahg_group/data/vos/request_body/personal_info_request.dart';
 import 'package:pahg_group/data/vos/request_body/update_employee_request.dart';
@@ -18,11 +20,13 @@ import 'package:pahg_group/network/responses/employee_list_response.dart';
 import 'package:pahg_group/network/responses/employee_response.dart';
 import 'package:pahg_group/network/responses/graduate_response.dart';
 import 'package:pahg_group/network/responses/image_upload_response.dart';
+import 'package:pahg_group/network/responses/language_response.dart';
 import 'package:pahg_group/network/responses/login_response.dart';
 import 'package:pahg_group/network/responses/personal_info_response.dart';
 import 'package:pahg_group/network/responses/position_response.dart';
 import 'package:pahg_group/network/responses/post_method_response.dart';
 import 'package:pahg_group/network/responses/school_response.dart';
+import 'package:pahg_group/network/responses/training_response.dart';
 import 'package:pahg_group/network/responses/user_response.dart';
 import 'package:retrofit/http.dart';
 import 'package:retrofit/retrofit.dart';
@@ -206,5 +210,55 @@ abstract class PahgApi{
   Future<PostMethodResponse?> deleteGraduate(
       @Header(kParamAuthorization) String apiKey,
       @Path("id") int id,
+      );
+
+  @POST(kEndPointGetTraining)
+  Future<TrainingResponse?> getTraining(
+      @Header(kParamAuthorization) String apiKey,
+      @Body() List<GetRequest> requestBody
+      );
+
+  @POST(kEndPointAddTraining)
+  Future<PostMethodResponse?> addTraining(
+      @Header(kParamAuthorization) String apiKey,
+      @Body() AddTrainingRequest requestBody
+      );
+
+  @PUT("$kEndPointAddTraining/{id}")
+  Future<PostMethodResponse?> updateTraining(
+      @Header(kParamAuthorization) String apiKey,
+      @Path("id") int id,
+      @Body() AddTrainingRequest request
+      );
+
+  @DELETE("$kEndPointAddTraining/{id}")
+  Future<PostMethodResponse?> deleteTraining(
+      @Header(kParamAuthorization) String apiKey,
+      @Path("id") int id,
+      );
+
+  @POST(kEndPointGetLanguage)
+  Future<LanguageResponse?> getLanguageList(
+      @Header(kParamAuthorization) String apiKey,
+      @Body() List<GetRequest> request
+      );
+
+  @POST(kEndPointAddLanguage)
+  Future<PostMethodResponse?> addLanguage(
+      @Header(kParamAuthorization) String apiKey,
+      @Body() AddLanguageRequest request
+      );
+
+  @PUT("$kEndPointAddLanguage/{id}")
+  Future<PostMethodResponse?> updateLanguage(
+      @Header(kParamAuthorization) String apiKey,
+      @Path("id") int id,
+      @Body() AddLanguageRequest request
+      );
+
+  @DELETE("$kEndPointAddLanguage/{id}")
+  Future<PostMethodResponse?> deleteLanguage(
+      @Header(kParamAuthorization) String apiKey,
+      @Path("id") int id
       );
 }

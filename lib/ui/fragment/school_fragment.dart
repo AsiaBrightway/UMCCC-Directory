@@ -76,8 +76,8 @@ class _SchoolFragmentState extends State<SchoolFragment> {
         context: context,
         builder: (BuildContext context){
           return AlertDialog(
-            icon: const Text('Delete' ,style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold)),
-            content: Text('Are you sure to delete $name?',style: const TextStyle(fontSize: 16),),
+            icon: Text(name ,style: const TextStyle(fontSize: 20,fontWeight: FontWeight.bold)),
+            content: const Text('Are you sure to delete?',style: TextStyle(fontSize: 16),),
             actions: [
               TextButton(
                 child: const Text("cancel"),

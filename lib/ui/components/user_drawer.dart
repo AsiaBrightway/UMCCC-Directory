@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:pahg_group/ui/pages/employee_profile_page.dart';
 
 import '../../exception/helper_functions.dart';
 
-class UserDrawer extends StatelessWidget {
-  const UserDrawer({super.key});
+class UserDrawer extends StatefulWidget {
+  const UserDrawer({super.key, required this.userId});
+  final String userId;
+  @override
+  State<UserDrawer> createState() => _UserDrawerState();
+}
+
+class _UserDrawerState extends State<UserDrawer> {
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +28,7 @@ class UserDrawer extends StatelessWidget {
                 leading: const Icon(Icons.person_outline_outlined),
                 title: const Text('Profile',style: TextStyle(fontWeight: FontWeight.bold),),
                 onTap: (){
-                  //TODO
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => EmployeeProfilePage(userId: widget.userId)));
                 },
               ),
             ),

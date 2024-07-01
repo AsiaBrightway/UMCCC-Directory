@@ -6,8 +6,10 @@ import 'package:pahg_group/data/vos/request_body/add_company_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_department_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_employee_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_graduate_request.dart';
+import 'package:pahg_group/data/vos/request_body/add_language_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_position_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_school_request.dart';
+import 'package:pahg_group/data/vos/request_body/add_training_request.dart';
 import 'package:pahg_group/data/vos/request_body/get_request.dart';
 import 'package:pahg_group/data/vos/request_body/login_request.dart';
 import 'package:pahg_group/data/vos/request_body/personal_info_request.dart';
@@ -21,9 +23,11 @@ import '../responses/department_list_response.dart';
 import '../responses/employee_list_response.dart';
 import '../responses/graduate_response.dart';
 import '../responses/image_upload_response.dart';
+import '../responses/language_response.dart';
 import '../responses/personal_info_response.dart';
 import '../responses/position_response.dart';
 import '../responses/school_response.dart';
+import '../responses/training_response.dart';
 import '../responses/user_response.dart';
 
 abstract class PahgDataAgent{
@@ -83,4 +87,20 @@ abstract class PahgDataAgent{
   Future<PostMethodResponse?> updateGraduate(String apiKey,int id,AddGraduateRequest request);
 
   Future<PostMethodResponse?> deleteGraduate(String apiKey,int id);
+
+  Future<TrainingResponse?> getTrainingList(String apiKey,List<GetRequest> request);
+
+  Future<PostMethodResponse?> addTraining(String apiKey,AddTrainingRequest request);
+
+  Future<PostMethodResponse?> updateTraining(String apiKey,int id,AddTrainingRequest request);
+
+  Future<PostMethodResponse?> deleteTraining(String apiKey,int id);
+
+  Future<LanguageResponse?> getLanguageList(String apiKey,List<GetRequest> request);
+
+  Future<PostMethodResponse?> addLanguage(String apiKey,AddLanguageRequest request);
+
+  Future<PostMethodResponse?> updateLanguage(String apiKey,int id,AddLanguageRequest request);
+
+  Future<PostMethodResponse?> deleteLanguage(String apiKey,int id);
 }

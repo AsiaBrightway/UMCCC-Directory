@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pahg_group/data/models/pahg_model.dart';
 import 'package:pahg_group/data/vos/request_body/add_graduate_request.dart';
@@ -36,8 +35,8 @@ class _GraduateFragmentState extends State<GraduateFragment> {
       context: context,
       builder: (BuildContext context){
         return AlertDialog(
-          icon: const Text('Delete' ,style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold)),
-          content: Text('Are you sure to delete $name?',style: const TextStyle(fontSize: 16),),
+          icon: Text(name ,style: const TextStyle(fontSize: 20,fontWeight: FontWeight.bold)),
+          content: const Text('Are you sure to delete?',style: TextStyle(fontSize: 16),),
           actions: [
             TextButton(
               child: const Text("cancel"),

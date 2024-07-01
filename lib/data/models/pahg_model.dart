@@ -7,19 +7,23 @@ import 'package:pahg_group/data/vos/department_vo.dart';
 import 'package:pahg_group/data/vos/education_school_vo.dart';
 import 'package:pahg_group/data/vos/employee_vo.dart';
 import 'package:pahg_group/data/vos/graduate_vo.dart';
+import 'package:pahg_group/data/vos/language_vo.dart';
 import 'package:pahg_group/data/vos/personal_info_vo.dart';
 import 'package:pahg_group/data/vos/position_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_company_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_department_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_employee_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_graduate_request.dart';
+import 'package:pahg_group/data/vos/request_body/add_language_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_position_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_school_request.dart';
+import 'package:pahg_group/data/vos/request_body/add_training_request.dart';
 import 'package:pahg_group/data/vos/request_body/get_request.dart';
 import 'package:pahg_group/data/vos/request_body/login_request.dart';
 import 'package:pahg_group/data/vos/request_body/personal_info_request.dart';
 import 'package:pahg_group/data/vos/request_body/update_employee_request.dart';
 import 'package:pahg_group/data/vos/token_vo.dart';
+import 'package:pahg_group/data/vos/training_vo.dart';
 import 'package:pahg_group/data/vos/user_vo.dart';
 import 'package:pahg_group/network/data_agents/pahg_data_agent.dart';
 import 'package:pahg_group/network/data_agents/pahg_data_agent_impl.dart';
@@ -187,5 +191,43 @@ class PahgModel {
 
   Future<PostMethodResponse?> deleteGraduate(String apiKey,int id){
     return mDataAgent.deleteGraduate(apiKey, id);
+  }
+
+  ///Training CRUD
+  Future<List<TrainingVo>> getTrainingList(String apiKey,String columnName,String columnValue){
+    GetRequest request = GetRequest(columnName: columnName, columnCondition: 1, columnValue: columnValue);
+    List<GetRequest> requestList = [request];
+    return mDataAgent.getTrainingList(apiKey, requestList).asStream().map((response) => response?.document?.records ?? []).first;
+  }
+
+  Future<PostMethodResponse?> addTraining(String apiKey,AddTrainingRequest request){
+    return mDataAgent.addTraining(apiKey, request);
+  }
+
+  Future<PostMethodResponse?> updateTraining(String apiKey,int id,AddTrainingRequest request){
+    return mDataAgent.updateTraining(apiKey, id, request);
+  }
+
+  Future<PostMethodResponse?> deleteTraining(String apiKey,int id){
+    return mDataAgent.deleteTraining(apiKey, id);
+  }
+
+  ///Language CRUD
+  Future<List<LanguageVo>> getLanguageList(String apiKey,String columnName,String columnValue){
+    GetRequest request = GetRequest(columnName: columnName, columnCondition: 1, columnValue: columnValue);
+    List<GetRequest> requestList = [request];
+    return mDataAgent.getLanguageList(apiKey, requestList).asStream().map((response) => response?.document?.records ?? []).first;
+  }
+
+  Future<PostMethodResponse?> addLanguage(String apiKey,AddLanguageRequest request){
+    return mDataAgent.addLanguage(apiKey, request);
+  }
+
+  Future<PostMethodResponse?> updateLanguage(String apiKey,int id,AddLanguageRequest request){
+    return mDataAgent.updateLanguage(apiKey, id, request);
+  }
+
+  Future<PostMethodResponse?> deleteLanguage(String apiKey,int id){
+    return mDataAgent.deleteLanguage(apiKey, id);
   }
 }

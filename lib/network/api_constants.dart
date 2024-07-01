@@ -1,6 +1,6 @@
 
-const String kBaseUrl = "http://192.168.1.2:86";
-const String kBaseImageUrl = "http://192.168.1.2:86/uploadimage/";
+const String kBaseUrl = "http://192.168.1.10:86";
+const String kBaseImageUrl = "http://192.168.1.10:86/uploadimage/";
 
 //end point
 const String kEndPointLogin = "/v1/api/Token";
@@ -24,6 +24,12 @@ const String kEndPointUpdateSchool = "/v1/api/Educationschools";
 
 const String kEndPointGetGraduate = "/v1/api/Educationgraduates/filter";
 const String kEndPointAddGraduate = "/v1/api/Educationgraduates";
+
+const String kEndPointGetTraining = "/v1/api/Educationtrainings/filter";
+const String kEndPointAddTraining = "/v1/api/Educationtrainings";
+
+const String kEndPointGetLanguage = "/v1/api/Educationlanguages/filter";
+const String kEndPointAddLanguage = "/v1/api/Educationlanguages";
 
 //Param
 const String kParamPage = "page";

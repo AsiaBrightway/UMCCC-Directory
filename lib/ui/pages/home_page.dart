@@ -93,7 +93,9 @@ class _HomePageState extends State<HomePage> {
           )
         ],
       ),
-      drawer:  _role==1 ? const MyDrawer() : const UserDrawer() ,
+      drawer:  _role == 1
+          ? MyDrawer(userId: _userId,)
+          : UserDrawer(userId: _userId),
       body: (companies.isNotEmpty)
           ? RefreshIndicator(
             onRefresh: _refresh,
