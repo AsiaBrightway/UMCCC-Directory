@@ -18,6 +18,7 @@ import 'package:pahg_group/data/vos/request_body/add_language_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_position_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_school_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_training_request.dart';
+import 'package:pahg_group/data/vos/request_body/add_work_request.dart';
 import 'package:pahg_group/data/vos/request_body/get_request.dart';
 import 'package:pahg_group/data/vos/request_body/login_request.dart';
 import 'package:pahg_group/data/vos/request_body/personal_info_request.dart';
@@ -25,6 +26,7 @@ import 'package:pahg_group/data/vos/request_body/update_employee_request.dart';
 import 'package:pahg_group/data/vos/token_vo.dart';
 import 'package:pahg_group/data/vos/training_vo.dart';
 import 'package:pahg_group/data/vos/user_vo.dart';
+import 'package:pahg_group/data/vos/work_vo.dart';
 import 'package:pahg_group/network/data_agents/pahg_data_agent.dart';
 import 'package:pahg_group/network/data_agents/pahg_data_agent_impl.dart';
 import 'package:pahg_group/network/responses/post_method_response.dart';
@@ -229,5 +231,23 @@ class PahgModel {
 
   Future<PostMethodResponse?> deleteLanguage(String apiKey,int id){
     return mDataAgent.deleteLanguage(apiKey, id);
+  }
+
+  Future<List<WorkVo>> getWorkList(String apiKey,String columnName,String columnValue){
+    GetRequest request = GetRequest(columnName: columnName, columnCondition: 1, columnValue: columnValue);
+    List<GetRequest> requestList = [request];
+    return mDataAgent.getWorkList(apiKey, requestList).asStream().map((response) => response?.document?.records ?? []).first;
+  }
+
+  Future<PostMethodResponse?> addWorkExperience(String apiKey,AddWorkRequest request){
+    return mDataAgent.addWorkExperience(apiKey, request);
+  }
+
+  Future<PostMethodResponse?> updateWorkExperience(String apiKey,int id,AddWorkRequest request){
+    return mDataAgent.updateWorkExperience(apiKey, id, request);
+  }
+
+  Future<PostMethodResponse?> deleteWorkExperience(String apiKey,int id){
+    return mDataAgent.deleteWorkExperience(apiKey, id);
   }
 }

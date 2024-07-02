@@ -70,7 +70,7 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
         backgroundColor: Colors.blue[800],
-        title: Text(widget.companyName,style: const TextStyle(fontFamily: 'Ubuntu')),
+        title: Text(widget.companyName,style: const TextStyle(fontFamily: 'Ubuntu',color: Colors.white)),
         centerTitle: true,
       ),
       body: CustomScrollView(
@@ -167,10 +167,12 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                   return Center(child: Text(snapshot.error.toString()),);
                 }
                 if(snapshot.hasData){
-                        return Column(
-                          children: snapshot.data!.map((employee){
-                            return _employeeCard(employee: employee);
-                          }).toList(),
+                        return ListView.builder(
+                          itemCount: snapshot.data!.length,
+                            itemBuilder: (context, index) {
+                              final employee = snapshot.data![index];
+                              return _employeeCard(employee: employee);
+                            },
                         );
                 }
                 return const SizedBox(height: 50,child: Center(child: CircularProgressIndicator()));

@@ -9,6 +9,7 @@ import 'package:pahg_group/data/vos/request_body/add_language_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_position_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_school_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_training_request.dart';
+import 'package:pahg_group/data/vos/request_body/add_work_request.dart';
 import 'package:pahg_group/data/vos/request_body/login_request.dart';
 import 'package:pahg_group/data/vos/request_body/personal_info_request.dart';
 import 'package:pahg_group/data/vos/request_body/update_employee_request.dart';
@@ -28,6 +29,7 @@ import 'package:pahg_group/network/responses/post_method_response.dart';
 import 'package:pahg_group/network/responses/school_response.dart';
 import 'package:pahg_group/network/responses/training_response.dart';
 import 'package:pahg_group/network/responses/user_response.dart';
+import 'package:pahg_group/network/responses/work_response.dart';
 import 'package:retrofit/http.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -260,5 +262,31 @@ abstract class PahgApi{
   Future<PostMethodResponse?> deleteLanguage(
       @Header(kParamAuthorization) String apiKey,
       @Path("id") int id
+      );
+
+  ///work experience CRUD
+  @POST(kEndPointGetWorkExp)
+  Future<WorkResponse?> getWorkList(
+      @Header(kParamAuthorization) String apiKey,
+      @Body() List<GetRequest> requestBody
+      );
+
+  @POST(kEndPointAddWorkExp)
+  Future<PostMethodResponse?> addWorkExperience(
+      @Header(kParamAuthorization) String apiKey,
+      @Body() AddWorkRequest request
+      );
+
+  @PUT("$kEndPointAddWorkExp/{id}")
+  Future<PostMethodResponse?> updateWorkExperience(
+      @Header(kParamAuthorization) String apiKey,
+      @Path("id") int id,
+      @Body() AddWorkRequest request
+      );
+
+  @DELETE("$kEndPointAddWorkExp/{id}")
+  Future<PostMethodResponse?> deleteWorkExp(
+      @Header(kParamAuthorization) String apiKey,
+      @Path("id") int id,
       );
 }

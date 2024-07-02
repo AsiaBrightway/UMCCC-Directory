@@ -13,6 +13,7 @@ import 'package:pahg_group/data/vos/request_body/add_language_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_position_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_school_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_training_request.dart';
+import 'package:pahg_group/data/vos/request_body/add_work_request.dart';
 import 'package:pahg_group/data/vos/request_body/get_request.dart';
 import 'package:pahg_group/data/vos/request_body/login_request.dart';
 import 'package:pahg_group/data/vos/request_body/personal_info_request.dart';
@@ -34,6 +35,7 @@ import 'package:pahg_group/network/responses/post_method_response.dart';
 import 'package:pahg_group/network/responses/school_response.dart';
 import 'package:pahg_group/network/responses/training_response.dart';
 import 'package:pahg_group/network/responses/user_response.dart';
+import 'package:pahg_group/network/responses/work_response.dart';
 
 class PahgDataAgentImpl extends PahgDataAgent{
 
@@ -349,6 +351,34 @@ class PahgDataAgentImpl extends PahgDataAgent{
   @override
   Future<PostMethodResponse?> deleteLanguage(String apiKey, int id) {
     return mApi.deleteLanguage(apiKey, id).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<WorkResponse?> getWorkList(String apiKey, List<GetRequest> request) {
+    return mApi.getWorkList(apiKey, request).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> addWorkExperience(String apiKey, AddWorkRequest request) {
+    return mApi.addWorkExperience(apiKey, request).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> updateWorkExperience(String apiKey, int id, AddWorkRequest request) {
+    return mApi.updateWorkExperience(apiKey, id, request).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> deleteWorkExperience(String apiKey, int id) {
+    return mApi.deleteWorkExp(apiKey, id).catchError((onError){
       throw _createException(onError);
     });
   }

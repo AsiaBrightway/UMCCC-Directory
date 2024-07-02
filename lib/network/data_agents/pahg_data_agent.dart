@@ -10,6 +10,7 @@ import 'package:pahg_group/data/vos/request_body/add_language_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_position_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_school_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_training_request.dart';
+import 'package:pahg_group/data/vos/request_body/add_work_request.dart';
 import 'package:pahg_group/data/vos/request_body/get_request.dart';
 import 'package:pahg_group/data/vos/request_body/login_request.dart';
 import 'package:pahg_group/data/vos/request_body/personal_info_request.dart';
@@ -29,6 +30,7 @@ import '../responses/position_response.dart';
 import '../responses/school_response.dart';
 import '../responses/training_response.dart';
 import '../responses/user_response.dart';
+import '../responses/work_response.dart';
 
 abstract class PahgDataAgent{
 
@@ -103,4 +105,12 @@ abstract class PahgDataAgent{
   Future<PostMethodResponse?> updateLanguage(String apiKey,int id,AddLanguageRequest request);
 
   Future<PostMethodResponse?> deleteLanguage(String apiKey,int id);
+
+  Future<WorkResponse?> getWorkList(String apiKey,List<GetRequest> request);
+
+  Future<PostMethodResponse?> addWorkExperience(String apiKey,AddWorkRequest request);
+
+  Future<PostMethodResponse?> updateWorkExperience(String apiKey,int id,AddWorkRequest request);
+
+  Future<PostMethodResponse?> deleteWorkExperience(String apiKey,int id);
 }

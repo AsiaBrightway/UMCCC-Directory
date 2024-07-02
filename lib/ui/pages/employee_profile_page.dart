@@ -5,6 +5,7 @@ import 'package:pahg_group/data/vos/employee_vo.dart';
 import 'package:pahg_group/ui/pages/add_employee_page.dart';
 import 'package:pahg_group/ui/pages/education_page.dart';
 import 'package:pahg_group/ui/pages/personal_info_page.dart';
+import 'package:pahg_group/ui/pages/work_experience_page.dart';
 import 'package:pahg_group/ui/themes/colors.dart';
 import 'package:provider/provider.dart';
 import '../../exception/helper_functions.dart';
@@ -167,7 +168,9 @@ class _EmployeeProfilePageState extends State<EmployeeProfilePage> {
                     children: [
                       ///Work Experience
                       GestureDetector(
-                        onTap: () => navigateToWorkExperience,
+                        onTap: () {
+                          navigateToWorkExperience(context);
+                          },
                         child: Container(
                           width: MediaQuery.of(context).size.width * 0.42,
                           height: 140,
@@ -406,7 +409,7 @@ class _EmployeeProfilePageState extends State<EmployeeProfilePage> {
     Navigator.push(
       context,
       PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => EducationPage(
+        pageBuilder: (context, animation, secondaryAnimation) => WorkExperiencePage(
           empId: employee!.id ?? 'null',
           userRole: _userRole,
         ),

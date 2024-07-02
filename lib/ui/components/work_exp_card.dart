@@ -1,7 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pahg_group/data/vos/request_body/add_work_request.dart';
 import 'package:pahg_group/data/vos/work_vo.dart';
+import 'package:pahg_group/dialog/work_dialog.dart';
 
 import '../themes/colors.dart';
 
@@ -24,6 +24,10 @@ class _WorkExpCardState extends State<WorkExpCard> {
     setState(() {
       _isExpanded = !_isExpanded;
     });
+  }
+
+  void _updateWork(AddWorkRequest updatedWork){
+    widget.onUpdate(updatedWork);
   }
 
   @override
@@ -54,7 +58,7 @@ class _WorkExpCardState extends State<WorkExpCard> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("${widget.work.companyName}",style: const TextStyle(fontSize: 15,fontFamily: 'Ubuntu'),),
+                      Text("${widget.work.companyName}",style: const TextStyle(fontSize: 16,fontFamily: 'Ubuntu'),),
                       const Icon(Icons.keyboard_arrow_down,size: 20,)
                     ],
                   ),
@@ -63,18 +67,21 @@ class _WorkExpCardState extends State<WorkExpCard> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          const Text("Rank : ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
-                          Text("${widget.work.rank}",style: const TextStyle(fontSize: 15,fontFamily: 'Ubuntu'),),
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            const Text("Rank : ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
+                            Text("${widget.work.rank}",style: const TextStyle(fontSize: 15,fontFamily: 'Ubuntu'),),
+                          ],
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(
                           children: [
-                            const Text("Salary and Allowance : ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
+                            const Text("Salary : ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
 
                             Text("${widget.work.salaryAndAllowance}",style: const TextStyle(fontSize: 13)),
                           ],
@@ -109,7 +116,7 @@ class _WorkExpCardState extends State<WorkExpCard> {
                           children: [
                             ///edit graduate
                             IconButton(onPressed: (){
-
+                              showWorkDialog(context,work: widget.work, onUpdate: _updateWork);
                             }, icon: const Icon(Icons.edit,color: colorAccent)
                             ),
                             IconButton(onPressed: (){
@@ -126,6 +133,6 @@ class _WorkExpCardState extends State<WorkExpCard> {
           ),
         ),
       ),
-    );;
+    );
   }
 }
