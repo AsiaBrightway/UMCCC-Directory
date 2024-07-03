@@ -67,6 +67,8 @@ abstract class PahgApi{
   @POST(kEndPointGetEmployees)
   Future<EmployeeListResponse?> getEmployeesByCompany(
       @Header(kParamAuthorization) String apiKey,
+      @Query("page") int page,
+      @Query("itemsPerPage") int pageSize,
       @Body() List<GetRequest> requestBody
       );
 

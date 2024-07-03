@@ -103,11 +103,6 @@ class _HomePageState extends State<HomePage> {
                 itemCount: companies.length,
                 itemBuilder: (context, index) {
                   return CompanyCardWidget(companies: companies[index], index: index)                   ;// return GestureDetector(
-                    //     onTap: () {
-                    //       String mCompanyName = companies[index].companyName ?? '';
-                    //       navigateToCompany(context, index, mCompanyName);
-                    //     },
-                    //     child: CompanyCardWidget(companies: companies[index]));
                 },
               ),
           )

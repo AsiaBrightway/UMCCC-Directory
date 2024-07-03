@@ -44,7 +44,7 @@ abstract class PahgDataAgent{
 
   Future<CompanyImagesResponse?> getCompanyImages(String apiKey,List<GetRequest> request);
 
-  Future<EmployeeListResponse?> getEmployees(String apiKey, List<GetRequest> request);
+  Future<EmployeeListResponse?> getEmployees(String apiKey, List<GetRequest> request,int pageNo,int pageSize);
 
   Future<DepartmentListResponse?> getDepartmentListByCompanyId(String apiKey,List<GetRequest> request);
 

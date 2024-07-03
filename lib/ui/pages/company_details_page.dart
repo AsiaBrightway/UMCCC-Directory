@@ -2,6 +2,7 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:pahg_group/data/vos/request_body/get_request.dart';
+import 'package:pahg_group/exception/helper_functions.dart';
 import 'package:pahg_group/ui/pages/employee_profile_page.dart';
 import 'package:pahg_group/ui/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
@@ -21,20 +22,30 @@ class CompanyDetailsPage extends StatefulWidget {
 }
 
 class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
+  bool _isLoading = false;
   String _token = '';
-  late Future<List<EmployeeVo>> employeeFuture;
+  List<EmployeeVo> employeeList = [];
   String? _selectedValue;
   final PahgModel _model = PahgModel();
   final String companyName = "";
   List<CompanyImagesVo> companyImages = [];
   List<DepartmentVo> departments = [];
+  final ScrollController _scrollController = ScrollController();
+  bool _hasMore = true;
+  int _pageNumber = 1;
+  final int _pageSize = 20;
 
   @override
-  void didChangeDependencies() {
+  void initState() {
+    super.initState();
+    Future.microtask(() => _initializeData());
+    _scrollController.addListener(_onScroll);
+  }
+
+  Future<void> _initializeData() async{
     AuthProvider authProvider = Provider.of<AuthProvider>(context,listen: false);
     _token = authProvider.token;
     GetRequest request = GetRequest(columnName: "CompanyId", columnCondition : 1, columnValue: widget.companyId.toString());
-    List<GetRequest> requestList = [request];
     _model.getCompanyImages(_token, request).then((response){
       setState(() {
         companyImages = response;
@@ -44,14 +55,48 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
         content: Text("Company Images Error : ${error.toString}"),
       ));
     });
-    ///department call
     _model.getDepartmentListByCompany(_token, request).then((response){
       setState(() {
         departments = response;
       });
     });
-    employeeFuture = _model.getEmployees(_token, requestList);
-    super.didChangeDependencies();
+    _fetchEmployee();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && _hasMore) {
+      _fetchEmployee();
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _fetchEmployee(){
+    if (_isLoading || !_hasMore) return;
+    setState(() {
+      _isLoading = true;
+    });
+    GetRequest request = GetRequest(columnName: "CompanyId", columnCondition : 1, columnValue: widget.companyId.toString());
+    List<GetRequest> requestList = [request];
+    // Check if more data exists
+    _model.getEmployees(_token, requestList,_pageNumber,_pageSize).then((onValue){
+      setState(() {
+        _isLoading = false;
+        employeeList.addAll(onValue);
+        _hasMore = onValue.length == _pageSize; // Check if more data exists
+        _pageNumber++;
+      });
+
+    }).catchError((onError){
+      setState(() {
+        _isLoading = false;
+      });
+      showErrorDialog(context, onError.toString());
+    });
   }
 
   void onDropDownChanged(String newValue){
@@ -59,8 +104,12 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
     int? deptId = departments.firstWhere((department) => department.departmentName == newValue).id;
     GetRequest deptRequest = GetRequest(columnName: "DepartmentId", columnCondition : 1, columnValue: deptId.toString());
     List<GetRequest> requestList = [request,deptRequest];
-    setState(() {
-      employeeFuture = _model.getEmployees(_token, requestList);
+    _model.getEmployees(_token, requestList,1,100).then((onValue){
+      setState(() {
+        employeeList = onValue;
+      });
+    }).catchError((onError){
+      showErrorDialog(context, onError.toString());
     });
   }
 
@@ -74,110 +123,108 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
         centerTitle: true,
       ),
       body: CustomScrollView(
-        slivers: [
+        controller: _scrollController,
+        slivers: <Widget>[
           SliverToBoxAdapter(
-            child: Column(
-              children: [
-                const SizedBox(height: 10),
-                (companyImages.isEmpty)
-                    ? ClipRRect(
-                        borderRadius: BorderRadius.circular(14),
-                        child: Container(
-                          margin: const EdgeInsets.only(bottom: 8),
-                          height: 180,
-                          child: Image.asset('assets/placeholder_image.png',
-                              fit: BoxFit.cover),
-                        ),
-                      )
-                    : CompanyBannerCard(imagesVo: companyImages),
-                const SizedBox(height: 16,),
-                ///drop down button
-                Center(
-                  child: SizedBox(
-                    height: 50,
-                    width: MediaQuery.of(context).size.width -36,
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton2(
-                        isExpanded: true,
-                        value: _selectedValue,
-                        hint: const Text(
-                          'Choose Department',
-                          style: TextStyle(
-                            fontSize: 14,
-                          ),
-                        ),
-                        items: departments.map((DepartmentVo value) {
-                          return DropdownMenuItem<String>(
-                            value: value.departmentName,
-                            child: Text(value.departmentName ?? '',style: TextStyle(
-                                overflow: TextOverflow.ellipsis,color: Theme.of(context).colorScheme.onSurface
-                            ),),
-                          );
-                        }).toList(),
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            _selectedValue = newValue;
-                            onDropDownChanged(newValue!);
-                          });
-                        },
-                        dropdownStyleData: DropdownStyleData(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            color: Theme.of(context).colorScheme.onTertiaryContainer,
-                          ),
-                          scrollbarTheme: const ScrollbarThemeData(
-                            radius: Radius.circular(20),
-                          ),
-                        ),
-                        buttonStyleData: ButtonStyleData(
-                          elevation: 4,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: Colors.black26,
+              child: Column(
+                children : [
+                  const SizedBox(height: 10),
+                  (companyImages.isEmpty)
+                      ? ClipRRect(
+                    borderRadius: BorderRadius.circular(14),
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: 8),
+                      height: 180,
+                      child: Image.asset('assets/placeholder_image.png',
+                          fit: BoxFit.cover),
+                    ),
+                  )
+                      : CompanyBannerCard(imagesVo: companyImages),
+                  const SizedBox(height: 16,),
+                  ///drop down button
+                  Center(
+                    child: SizedBox(
+                      height: 50,
+                      width: MediaQuery.of(context).size.width -36,
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton2(
+                          isExpanded: true,
+                          value: _selectedValue,
+                          hint: const Text(
+                            'Choose Department',
+                            style: TextStyle(
+                              fontSize: 14,
                             ),
-                            color: Theme.of(context).colorScheme.onTertiaryContainer,
                           ),
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          height: 40,
-                          width: 140,
-                        ),
-                        iconStyleData: IconStyleData(
-                          icon: const Icon(
-                            Icons.keyboard_arrow_down_sharp,
+                          items: departments.map((DepartmentVo value) {
+                            return DropdownMenuItem<String>(
+                              value: value.departmentName,
+                              child: Text(value.departmentName ?? '',style: TextStyle(
+                                  overflow: TextOverflow.ellipsis,color: Theme.of(context).colorScheme.onSurface
+                              ),),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              _selectedValue = newValue;
+                              onDropDownChanged(newValue!);
+                            });
+                          },
+                          dropdownStyleData: DropdownStyleData(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: Theme.of(context).colorScheme.onTertiaryContainer,
+                            ),
+                            scrollbarTheme: const ScrollbarThemeData(
+                              radius: Radius.circular(20),
+                            ),
                           ),
-                          iconSize: 22,
-                          iconEnabledColor: Colors.green[700],
-                          iconDisabledColor: Colors.black,
+                          buttonStyleData: ButtonStyleData(
+                            elevation: 4,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color: Colors.black26,
+                              ),
+                              color: Theme.of(context).colorScheme.onTertiaryContainer,
+                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            height: 40,
+                            width: 140,
+                          ),
+                          iconStyleData: IconStyleData(
+                            icon: const Icon(
+                              Icons.keyboard_arrow_down_sharp,
+                            ),
+                            iconSize: 22,
+                            iconEnabledColor: Colors.green[700],
+                            iconDisabledColor: Colors.black,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 10,),
-              ],
+                  const SizedBox(height: 10,),
+                ],
+              )
+          ),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+                  (BuildContext context, int index) {
+                if (index == employeeList.length) {
+                  return Center(child: _isLoading ? CircularProgressIndicator() : SizedBox());
+                }
+                final employee = employeeList[index];
+                return _employeeCard(employee: employee);
+              },
+              childCount: employeeList.length + (_isLoading ? 1 : 0), // Include loading indicator
             ),
           ),
-          ///Employee List
           SliverToBoxAdapter(
-            child: FutureBuilder<List<EmployeeVo>>(
-              future: employeeFuture,
-              builder: (context, snapshot){
-                if(snapshot.hasError){
-                  return Center(child: Text(snapshot.error.toString()),);
-                }
-                if(snapshot.hasData){
-                        return ListView.builder(
-                          itemCount: snapshot.data!.length,
-                            itemBuilder: (context, index) {
-                              final employee = snapshot.data![index];
-                              return _employeeCard(employee: employee);
-                            },
-                        );
-                }
-                return const SizedBox(height: 50,child: Center(child: CircularProgressIndicator()));
-              },)
-          )
+            child: Center(
+              child: _isLoading ? CircularProgressIndicator() : SizedBox(),
+            ),
+          ),
         ],
       ),
     );

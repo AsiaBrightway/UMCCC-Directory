@@ -88,8 +88,8 @@ class PahgModel {
     return mDataAgent.getCompanyImages(apiKey, requestList).asStream().map((response) => response?.document?.records ?? []).first;
   }
 
-  Future<List<EmployeeVo>> getEmployees(String apiKey,List<GetRequest> request){
-    return mDataAgent.getEmployees(apiKey, request).asStream().map((response) => response?.document?.records ?? []).first;
+  Future<List<EmployeeVo>> getEmployees(String apiKey,List<GetRequest> request,int pageNumber,int pageSize){
+    return mDataAgent.getEmployees(apiKey, request,pageNumber,pageSize).asStream().map((response) => response?.document?.records ?? []).first;
   }
 
   Future<List<DepartmentVo>> getDepartmentListByCompany(String apiKey,GetRequest request){

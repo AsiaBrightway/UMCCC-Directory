@@ -18,7 +18,6 @@ class EmployeeProvider extends ChangeNotifier{
     employeeDataStatus = DataStatus.loading;
     notifyListeners();
 
-    employees = await mPahgModel.getEmployees(token, request);
     notifyListeners();
     return true;
   }

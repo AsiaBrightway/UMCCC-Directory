@@ -13,7 +13,7 @@ class _PahgApi implements PahgApi {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'http://192.168.1.6:86';
+    baseUrl ??= 'http://192.168.1.5:86';
   }
 
   final Dio _dio;
@@ -155,10 +155,15 @@ class _PahgApi implements PahgApi {
   @override
   Future<EmployeeListResponse?> getEmployeesByCompany(
     String apiKey,
+    int page,
+    int pageSize,
     List<GetRequest> requestBody,
   ) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'page': page,
+      r'itemsPerPage': pageSize,
+    };
     final _headers = <String, dynamic>{r'Authorization': apiKey};
     _headers.removeWhere((k, v) => v == null);
     final _data = requestBody.map((e) => e.toJson()).toList();

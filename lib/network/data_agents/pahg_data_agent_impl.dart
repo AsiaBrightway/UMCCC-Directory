@@ -115,8 +115,8 @@ class PahgDataAgentImpl extends PahgDataAgent{
   }
 
   @override
-  Future<EmployeeListResponse?> getEmployees(String apiKey, List<GetRequest> request) {
-    return mApi.getEmployeesByCompany(apiKey, request)
+  Future<EmployeeListResponse?> getEmployees(String apiKey, List<GetRequest> request,int pageNo,int pageSize) {
+    return mApi.getEmployeesByCompany(apiKey,pageNo,pageSize,request)
         .catchError((error){
           throw _createException(error);
     });
