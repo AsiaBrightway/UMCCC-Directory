@@ -382,4 +382,18 @@ class PahgDataAgentImpl extends PahgDataAgent{
       throw _createException(onError);
     });
   }
+
+  @override
+  Future<EmployeeListResponse?> searchEmployee(String apiKey, String searchKey) {
+    return mApi.searchEmployee(apiKey, searchKey).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<EmployeeListResponse?> searchEmployeeByCompany(String apiKey, String searchKey, String id) {
+    return mApi.searchEmployeeByCompany(apiKey, searchKey, id).catchError((onError){
+      throw _createException(onError);
+    });
+  }
 }

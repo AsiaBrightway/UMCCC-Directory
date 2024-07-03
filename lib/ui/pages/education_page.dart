@@ -22,14 +22,24 @@ class _EducationPageState extends State<EducationPage> with SingleTickerProvider
     _tabController = TabController(length: 4, vsync: this); // Number of tabs
   }
 
+  void _onBackPressed(){
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Education'),
+        backgroundColor: Colors.blue.shade800,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios,color: Colors.white,),
+          onPressed: _onBackPressed,
+        ),
+        title: const Text('Education',style: TextStyle(fontFamily: 'Ubuntu',color: Colors.white),),
         centerTitle: true,
         bottom: TabBar(
           controller: _tabController,
+          labelColor: Colors.white,
           tabs: const [
             Tab(text: 'School'),
             Tab(text: 'Graduate'),

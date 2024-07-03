@@ -250,4 +250,12 @@ class PahgModel {
   Future<PostMethodResponse?> deleteWorkExperience(String apiKey,int id){
     return mDataAgent.deleteWorkExperience(apiKey, id);
   }
+
+  Future<List<EmployeeVo>> searchEmployeeResult(String apiKey,String searchName){
+    return mDataAgent.searchEmployee(apiKey, searchName).asStream().map((response) => response?.document?.records ?? []).first;
+  }
+
+  Future<List<EmployeeVo>> searchEmployeeByCompany(String apiKey,String searchName,String id){
+    return mDataAgent.searchEmployeeByCompany(apiKey, searchName, id).asStream().map((response) => response?.document?.records ?? []).first;
+  }
 }

@@ -1,6 +1,6 @@
 
-const String kBaseUrl = "http://192.168.1.5:86";
-const String kBaseImageUrl = "http://192.168.1.5:86/uploadimage/";
+const String kBaseUrl = "http://192.168.1.9:86";
+const String kBaseImageUrl = "http://192.168.1.9:86/uploadimage/";
 
 //end point
 const String kEndPointLogin = "/v1/api/Token";
@@ -8,7 +8,10 @@ const String kEndPointGetCompanies = "/v1/api/Companies";
 const String kEndPointGetDepartmentsById = "/v1/api/Departments";
 const String kEndPointGetPositionsById = "/v1/api/Positions";
 const String kEndPointGetCompanyById = "/v1/api/Companies";
+
 const String kEndPointGetCompanyImages = "/v1/api/Companyimages/filter";
+const String kEndPointAddCompanyImages = "/v1/api/Companyimages";
+
 const String kEndPointGetEmployees = "/v1/api/Employees/filter";
 const String kEndPointGetDepartmentByCompanyId = "/v1/api/Departments/filter";
 const String kEndPointGetPositionByCompanyId = "/v1/api/Positions/filter";
@@ -33,6 +36,10 @@ const String kEndPointAddLanguage = "/v1/api/Educationlanguages";
 
 const String kEndPointGetWorkExp = "/v1/api/Workingexperiences/filter";
 const String kEndPointAddWorkExp = "/v1/api/Workingexperiences";
+
+///Search
+const String kEndPointSearchEmployee = "/v1/api/Employees/search";
+const String kEndPointSearchEmployeeCompany = "/v1/api/Employees/searchbycompany";
 
 //Param
 const String kParamPage = "page";

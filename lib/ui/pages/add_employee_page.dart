@@ -626,14 +626,14 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
 
   Widget showUserData(){
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              const Text('Edit Company',style: TextStyle(
+              const Text('Edit',style: TextStyle(
                 fontWeight: FontWeight.w300,color: Colors.grey,
                 fontSize: 11
               ),),
@@ -646,26 +646,30 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                   }, icon: const Icon(Icons.edit,color: colorAccent,))
             ],
           ),
-          const Text('company',style: TextStyle(fontWeight: FontWeight.w300),),
+          const Text('company',style: TextStyle(fontWeight: FontWeight.w300,color: Colors.blue,fontSize: 12),),
           Padding(
-            padding: const EdgeInsets.only(left: 10,bottom: 8),
+            padding: const EdgeInsets.only(bottom: 8),
             child: Text(companyName,style: const TextStyle(fontSize: 18,fontWeight: FontWeight.w600)),
           ),
-          const Text('department',style: TextStyle(fontWeight: FontWeight.w300),),
+          Container(height: 0.6,decoration: BoxDecoration(color: Colors.grey[300]),),
+          const Text('department',style: TextStyle(fontWeight: FontWeight.w300,color: Colors.blue,fontSize: 12),),
           Padding(
-            padding: const EdgeInsets.only(left: 10,bottom: 8),
+            padding: const EdgeInsets.only(bottom: 8),
             child: Text(departmentName,style: const TextStyle(fontSize: 18,fontWeight: FontWeight.w600)),
           ),
-          const Text('position',style: TextStyle(fontWeight: FontWeight.w300),),
+          Container(height: 0.6,decoration: BoxDecoration(color: Colors.grey[300]),),
+          const Text('position',style: TextStyle(fontWeight: FontWeight.w300,color: Colors.blue,fontSize: 12),),
           Padding(
-            padding: const EdgeInsets.only(left: 10),
+            padding: const EdgeInsets.only(bottom: 8),
             child: Text(positionName,style: const TextStyle(fontSize: 18,fontWeight: FontWeight.w600)),
           ),
-          const Text('role',style: TextStyle(fontWeight: FontWeight.w300),),
+          Container(height: 0.6,decoration: BoxDecoration(color: Colors.grey[300]),),
+          const Text('role',style: TextStyle(fontWeight: FontWeight.w300,color: Colors.blue,fontSize: 12),),
           Padding(
-            padding: const EdgeInsets.only(left: 10),
+            padding: const EdgeInsets.only(bottom: 4),
             child: Text('$selectedRole',style: const TextStyle(fontSize: 18,fontWeight: FontWeight.w600)),
           ),
+          Container(height: 0.5,decoration: BoxDecoration(color: Colors.grey[300]),)
         ],
       ),
     );

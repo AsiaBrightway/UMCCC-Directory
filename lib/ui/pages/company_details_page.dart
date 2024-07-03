@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pahg_group/data/vos/request_body/get_request.dart';
 import 'package:pahg_group/exception/helper_functions.dart';
 import 'package:pahg_group/ui/pages/employee_profile_page.dart';
+import 'package:pahg_group/ui/pages/search_page.dart';
 import 'package:pahg_group/ui/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -113,12 +114,28 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
     });
   }
 
+  void _onBackPressed() {
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
         backgroundColor: Colors.blue[800],
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+              onPressed: (){
+                _navigateToSearch();
+              },
+              icon: const Icon(Icons.person_search,color: Colors.white))
+        ],
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios,color: Colors.white,),
+          onPressed: _onBackPressed,
+        ),
         title: Text(widget.companyName,style: const TextStyle(fontFamily: 'Ubuntu',color: Colors.white)),
         centerTitle: true,
       ),
@@ -210,19 +227,18 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
           ),
           SliverList(
             delegate: SliverChildBuilderDelegate(
-                  (BuildContext context, int index) {
+              (BuildContext context, int index) {
                 if (index == employeeList.length) {
-                  return Center(child: _isLoading ? CircularProgressIndicator() : SizedBox());
+                  return Center(
+                      child: _isLoading
+                          ? CircularProgressIndicator()
+                          : SizedBox());
                 }
                 final employee = employeeList[index];
                 return _employeeCard(employee: employee);
               },
-              childCount: employeeList.length + (_isLoading ? 1 : 0), // Include loading indicator
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Center(
-              child: _isLoading ? CircularProgressIndicator() : SizedBox(),
+              childCount: employeeList.length +
+                  (_isLoading ? 1 : 0), // Include loading indicator
             ),
           ),
         ],
@@ -307,6 +323,10 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
       ),
     );
   }
+
+  void _navigateToSearch(){
+    Navigator.push(context, MaterialPageRoute(builder: (context) => SearchPage(companyName: widget.companyName,companyId:widget.companyId,token: _token,searchType: 2)));
+  }
 }
 
 class CompanyBannerCard extends StatelessWidget {
@@ -368,6 +388,7 @@ class CompanyBannerCard extends StatelessWidget {
       ],
     );
   }
+
 }
 
 

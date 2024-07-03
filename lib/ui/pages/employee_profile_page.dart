@@ -45,11 +45,21 @@ class _EmployeeProfilePageState extends State<EmployeeProfilePage> {
     });
   }
 
+  void _onBackPressed() {
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        backgroundColor: Colors.blue.shade800,
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios,color: Colors.white),
+          onPressed: _onBackPressed,
+        ),
+        title: const Text('Profile',style: TextStyle(color: Colors.white,fontFamily: 'Ubuntu'),),
         centerTitle: true,
       ),
       body: SingleChildScrollView(

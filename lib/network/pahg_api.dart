@@ -64,6 +64,11 @@ abstract class PahgApi{
       @Body() List<GetRequest> requestBody
     );
 
+  @POST(kEndPointAddCompanyImages)
+  Future<PostMethodResponse?> addCompanyImages(
+      @Header(kParamAuthorization) String apiKey,
+      
+      );
   @POST(kEndPointGetEmployees)
   Future<EmployeeListResponse?> getEmployeesByCompany(
       @Header(kParamAuthorization) String apiKey,
@@ -290,5 +295,18 @@ abstract class PahgApi{
   Future<PostMethodResponse?> deleteWorkExp(
       @Header(kParamAuthorization) String apiKey,
       @Path("id") int id,
+      );
+
+  @GET(kEndPointSearchEmployee)
+  Future<EmployeeListResponse?> searchEmployee(
+      @Header(kParamAuthorization) String apiKey,
+      @Query("searchKey") String name
+      );
+
+  @GET(kEndPointSearchEmployeeCompany)
+  Future<EmployeeListResponse?> searchEmployeeByCompany(
+      @Header(kParamAuthorization) String apiKey,
+      @Query("searchKey") String name,
+      @Query("companyId") String id
       );
 }

@@ -5,6 +5,7 @@ import 'package:pahg_group/data/models/pahg_model.dart';
 import 'package:pahg_group/data/vos/companies_vo.dart';
 import 'package:pahg_group/exception/helper_functions.dart';
 import 'package:pahg_group/ui/pages/company_details_page.dart';
+import 'package:pahg_group/ui/pages/search_page.dart';
 import 'package:pahg_group/ui/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -88,7 +89,9 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
         actions: [
           IconButton(
-              onPressed: (){},
+              onPressed: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => SearchPage(token: _token,searchType: 1)));
+              },
               icon: const Icon(Icons.search,color: Colors.white)
           )
         ],
@@ -102,7 +105,7 @@ class _HomePageState extends State<HomePage> {
             child: ListView.builder(
                 itemCount: companies.length,
                 itemBuilder: (context, index) {
-                  return CompanyCardWidget(companies: companies[index], index: index)                   ;// return GestureDetector(
+                  return companyCardWidget(companies: companies[index], index: index)                   ;// return GestureDetector(
                 },
               ),
           )
@@ -114,7 +117,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget CompanyCardWidget({required CompaniesVo companies,required int index}){
+  Widget companyCardWidget({required CompaniesVo companies,required int index}){
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Ink(
