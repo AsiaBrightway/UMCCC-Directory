@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pahg_group/data/models/pahg_model.dart';
 import 'package:pahg_group/data/vos/language_vo.dart';
@@ -113,7 +112,7 @@ class _LanguageFragmentState extends State<LanguageFragment> {
         }
       });
     }).catchError((onError){
-      showErrorDialog(context, onError.toString());
+      showErrorRefreshDialog(context, onError.toString(), _initializeData);
     });
   }
 

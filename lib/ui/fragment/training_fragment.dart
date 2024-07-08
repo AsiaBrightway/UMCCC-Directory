@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:pahg_group/data/models/pahg_model.dart';
 import 'package:pahg_group/data/vos/request_body/add_training_request.dart';
 import 'package:pahg_group/data/vos/training_vo.dart';
@@ -38,7 +36,7 @@ class _TrainingFragmentState extends State<TrainingFragment> {
       builder: (BuildContext context){
         return AlertDialog(
           icon: Text(name ,style: const TextStyle(fontSize: 20,fontWeight: FontWeight.bold)),
-          content: Text('Are you sure to delete?',style: const TextStyle(fontSize: 16),),
+          content: const Text('Are you sure to delete?',style: TextStyle(fontSize: 16),),
           actions: [
             TextButton(
               child: const Text("cancel"),
@@ -87,7 +85,7 @@ class _TrainingFragmentState extends State<TrainingFragment> {
         }
       });
     }).catchError((onError){
-      showErrorDialog(context, onError.toString());
+      showErrorRefreshDialog(context, onError.toString(), _initializeData);
     });
   }
 

@@ -25,21 +25,69 @@ void showUnauthorizedDialog(BuildContext context,String errorMessage){
   );
 }
 
-void showConnectionErrorDialog(BuildContext context,String errorMessage){
+void showConnectionErrorDialog(BuildContext context,String errorMessage,Function() onRefresh){
   showDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        icon: Image.asset('lib/icons/no_wifi.png',width: 30,height: 30,),
-        content: Text(errorMessage,style: const TextStyle(fontSize: 16),),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text('OK'),
-          ),
-        ],
+        icon: Image.asset('lib/icons/no_wifi.png', width: 30, height: 30,),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(errorMessage, style: const TextStyle(fontSize: 16),),
+            const SizedBox(height: 20),
+            Center(
+              child: TextButton.icon(
+                onPressed: () {
+                  onRefresh();
+                  Navigator.of(context).pop(); // Close the dialog after refresh
+                },
+                icon: const Icon(Icons.refresh),
+                label: const Text('Retry'),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+
+void showErrorRefreshDialog(BuildContext context,String errorMessage,Function() onRefresh){
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        icon: const Icon(Icons.error_outline_sharp,color: Colors.redAccent,),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(errorMessage, style: const TextStyle(fontSize: 16),),
+            const SizedBox(height: 20),
+            Center(
+              child: TextButton.icon(
+                onPressed: () {
+                  onRefresh();
+                  Navigator.of(context).pop(); // Close the dialog after refresh
+                },
+                icon: const Icon(Icons.refresh),
+                label: const Text('Retry'),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       );
     },
   );
@@ -89,11 +137,37 @@ void showScaffoldMessage(BuildContext context,String name){
   ScaffoldMessenger.of(context).showSnackBar( SnackBar(
     backgroundColor: Colors.grey.shade700,
     content: Text(name,style: const TextStyle(color: Colors.white),),
-    duration: const Duration(milliseconds: 1500),
+    duration: const Duration(milliseconds: 1700),
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     margin: const EdgeInsets.symmetric(horizontal: 50),
     behavior: SnackBarBehavior.floating,
   ));
+}
+
+void showSuccessScaffold(BuildContext context,String name){
+     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Container(
+          padding: const EdgeInsets.all(6),
+          height: 36,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12)
+          ),
+          child: Row(
+            children: [
+              const Icon(Icons.check_circle,size: 20,color: Colors.white,),
+              const SizedBox(width: 12),
+              Text(name,style: const TextStyle(fontSize: 15),)
+            ],
+          ),
+        ),
+       duration: const Duration(milliseconds: 1700),
+       backgroundColor: Colors.green,
+       elevation: 3,
+       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+       margin: const EdgeInsets.only(bottom : 20, left: 40,right: 40),
+       behavior: SnackBarBehavior.floating,
+     )
+    );
 }
 
 void showLogoutDialog(BuildContext context){
@@ -105,6 +179,16 @@ void showLogoutDialog(BuildContext context){
         content: const Text('Are you sure to logout?',style: TextStyle(fontSize: 16),),
         actions: <Widget>[
           TextButton(
+            child: const Text("cancel"),
+            onPressed: (){
+              Navigator.of(context).pop();
+            },
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white
+            ),
             onPressed: () {
               Navigator.of(context).pop();
               AuthProvider authProvider = Provider.of<AuthProvider>(context,listen: false);

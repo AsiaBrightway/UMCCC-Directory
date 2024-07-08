@@ -1,6 +1,6 @@
 
-const String kBaseUrl = "http://192.168.1.9:86";
-const String kBaseImageUrl = "http://192.168.1.9:86/uploadimage/";
+const String kBaseUrl = "http://192.168.1.7:86";
+const String kBaseImageUrl = "http://192.168.1.7:86/uploadimage/";
 
 //end point
 const String kEndPointLogin = "/v1/api/Token";
@@ -40,6 +40,9 @@ const String kEndPointAddWorkExp = "/v1/api/Workingexperiences";
 ///Search
 const String kEndPointSearchEmployee = "/v1/api/Employees/search";
 const String kEndPointSearchEmployeeCompany = "/v1/api/Employees/searchbycompany";
+
+const String kEndPointGetFamily = "/v1/api/Families/filter";
+const String kEndPointAddFamily = "/v1/api/Families";
 
 //Param
 const String kParamPage = "page";

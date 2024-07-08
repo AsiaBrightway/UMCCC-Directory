@@ -41,7 +41,7 @@ class _EmployeeProfilePageState extends State<EmployeeProfilePage> {
         employee = response;
       });
     }).catchError((error){
-      showErrorDialog(context, error.toString());
+      showErrorRefreshDialog(context, error.toString(), _initializeData);
     });
   }
 
@@ -56,7 +56,7 @@ class _EmployeeProfilePageState extends State<EmployeeProfilePage> {
         backgroundColor: Colors.blue.shade800,
         automaticallyImplyLeading: false,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios,color: Colors.white),
+          icon: const Icon(Icons.arrow_back_ios,color: Colors.white),
           onPressed: _onBackPressed,
         ),
         title: const Text('Profile',style: TextStyle(color: Colors.white,fontFamily: 'Ubuntu'),),

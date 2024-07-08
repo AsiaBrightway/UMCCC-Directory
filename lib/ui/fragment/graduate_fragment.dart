@@ -112,7 +112,7 @@ class _GraduateFragmentState extends State<GraduateFragment> {
         }
       });
     }).catchError((onError){
-      showErrorDialog(context, onError.toString());
+      showErrorRefreshDialog(context, onError.toString(), _initializeData);
     });
   }
 

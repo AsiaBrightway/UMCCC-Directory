@@ -6,13 +6,16 @@ import 'package:pahg_group/data/vos/company_images_vo.dart';
 import 'package:pahg_group/data/vos/department_vo.dart';
 import 'package:pahg_group/data/vos/education_school_vo.dart';
 import 'package:pahg_group/data/vos/employee_vo.dart';
+import 'package:pahg_group/data/vos/family_vo.dart';
 import 'package:pahg_group/data/vos/graduate_vo.dart';
 import 'package:pahg_group/data/vos/language_vo.dart';
 import 'package:pahg_group/data/vos/personal_info_vo.dart';
 import 'package:pahg_group/data/vos/position_vo.dart';
+import 'package:pahg_group/data/vos/request_body/add_company_image_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_company_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_department_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_employee_request.dart';
+import 'package:pahg_group/data/vos/request_body/add_family_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_graduate_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_language_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_position_request.dart';
@@ -82,10 +85,20 @@ class PahgModel {
     AddCompanyRequest request = AddCompanyRequest(0, companyName, address, phoneNo, about, companyLogo, startDate, order, isActive);
     return mDataAgent.updateCompany(apiKey, companyId, request);
   }
+
   Future<List<CompanyImagesVo>> getCompanyImages(String apiKey,GetRequest request){
     List<GetRequest> requestList = [];
     requestList.add(request);
     return mDataAgent.getCompanyImages(apiKey, requestList).asStream().map((response) => response?.document?.records ?? []).first;
+  }
+
+  Future<PostMethodResponse?> addCompanyImages(String apiKey,int id,String imageUrl){
+    AddCompanyImageVo addCompanyRequest = AddCompanyImageVo(0, id, imageUrl);
+    return mDataAgent.addCompanyImages(apiKey, addCompanyRequest);
+  }
+
+  Future<PostMethodResponse?> deleteCompanyImage(String apiKey,int id){
+    return mDataAgent.deleteCompanyImage(apiKey, id);
   }
 
   Future<List<EmployeeVo>> getEmployees(String apiKey,List<GetRequest> request,int pageNumber,int pageSize){
@@ -257,5 +270,23 @@ class PahgModel {
 
   Future<List<EmployeeVo>> searchEmployeeByCompany(String apiKey,String searchName,String id){
     return mDataAgent.searchEmployeeByCompany(apiKey, searchName, id).asStream().map((response) => response?.document?.records ?? []).first;
+  }
+
+  Future<List<FamilyVo>> getFamilyList(String apiKey,String columnName,String columnValue){
+    GetRequest request = GetRequest(columnName: columnName, columnCondition: 1, columnValue: columnValue);
+    List<GetRequest> requestList = [request];
+    return mDataAgent.getFamilies(apiKey, requestList).asStream().map((response) => response?.document?.records ?? []).first;
+  }
+
+  Future<PostMethodResponse?> updateFamily(String apiKey,int id,AddFamilyRequest request){
+    return mDataAgent.updateFamily(apiKey, id, request);
+  }
+
+  Future<PostMethodResponse?> addFamily(String apiKey,AddFamilyRequest request){
+    return mDataAgent.addFamily(apiKey, request);
+  }
+
+  Future<PostMethodResponse?> deleteFamily(String apiKey,int id){
+    return mDataAgent.deleteFamily(apiKey, id);
   }
 }

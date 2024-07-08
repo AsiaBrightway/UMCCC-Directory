@@ -67,7 +67,7 @@ class _AddCompanyPageState extends State<AddCompanyPage> {
     ).then((value){
       Navigator.of(context).pop();                                              //dismiss loading
       clearTextField();
-      showSuccessDialog(context, value!.message.toString());
+      showSuccessScaffold(context, value?.message ?? "Success");
     }).catchError((error){
       Navigator.of(context).pop();                                              //dismiss loading
       showErrorDialog(context, error.toString());
@@ -475,8 +475,11 @@ class _AddCompanyPageState extends State<AddCompanyPage> {
         _sortOrderController.text.toString(),
         _isActive
     ).then((value){
-      Navigator.of(context).pop();                                              //dismiss loading
-      showSuccessDialog(context, value!.message.toString());
+      Navigator.of(context).pop();   //dismiss loading
+      setState(() {
+        _selectedValue = null;
+      });
+      showSuccessScaffold(context, value?.message ?? "Success");
     }).catchError((error){
       Navigator.of(context).pop();                                              //dismiss loading
       showErrorDialog(context, error.toString());

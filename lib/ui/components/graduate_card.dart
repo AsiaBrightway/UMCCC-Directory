@@ -81,7 +81,7 @@ class _GraduateCardState extends State<GraduateCard> {
                           children: [
                             const Text("Year : ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
 
-                            Text("${widget.graduate.receivedYear}",style: TextStyle(fontSize: 13)),
+                            Text("${widget.graduate.receivedYear}",style: const TextStyle(fontSize: 13)),
                           ],
                         ),
                       ),

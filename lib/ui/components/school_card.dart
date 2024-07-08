@@ -71,12 +71,12 @@ class _SchoolCardState extends State<SchoolCard> {
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(
                           children: [
-                            Text("${widget.school.fromDate}",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
+                            Text("${widget.school.fromDate}",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
                             Padding(
                               padding: const EdgeInsets.only(left: 8.0,right: 8.0),
                               child: Text("To",style: TextStyle(color: Theme.of(context).colorScheme.primary),),
                             ),
-                            Text("${widget.school.toDate}",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
+                            Text("${widget.school.toDate}",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
                           ],
                         ),
                       ),
@@ -86,7 +86,7 @@ class _SchoolCardState extends State<SchoolCard> {
                           children: [
                             const Text("Secondary: ",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 13),),
 
-                            Text("${widget.school.secondary}",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
+                            Text("${widget.school.secondary}",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
                           ],
                         ),
                       ),
@@ -96,7 +96,7 @@ class _SchoolCardState extends State<SchoolCard> {
                           children: [
                             const Text("Achievements: ",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 13),),
 
-                            Expanded(child: Text("${widget.school.maximumAchievement}",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13))),
+                            Expanded(child: Text("${widget.school.maximumAchievement}",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13))),
                           ],
                         ),
                       ),

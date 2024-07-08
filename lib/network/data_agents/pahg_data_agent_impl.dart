@@ -5,9 +5,11 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:pahg_group/data/vos/companies_vo.dart';
 import 'package:pahg_group/data/vos/error_vo.dart';
+import 'package:pahg_group/data/vos/request_body/add_company_image_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_company_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_department_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_employee_request.dart';
+import 'package:pahg_group/data/vos/request_body/add_family_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_graduate_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_language_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_position_request.dart';
@@ -25,6 +27,7 @@ import 'package:pahg_group/network/responses/company_images_response.dart';
 import 'package:pahg_group/network/responses/department_list_response.dart';
 import 'package:pahg_group/network/responses/employee_list_response.dart';
 import 'package:pahg_group/network/responses/employee_response.dart';
+import 'package:pahg_group/network/responses/family_response.dart';
 import 'package:pahg_group/network/responses/graduate_response.dart';
 import 'package:pahg_group/network/responses/image_upload_response.dart';
 import 'package:pahg_group/network/responses/language_response.dart';
@@ -66,6 +69,13 @@ class PahgDataAgentImpl extends PahgDataAgent{
     return mApi.getCompanyImages(apiKey, request).
     catchError((error){
       throw _createException(error);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> addCompanyImages(String apiKey, AddCompanyImageVo request) {
+    return mApi.addCompanyImages(apiKey, request).catchError((onError){
+      throw _createException(onError);
     });
   }
 
@@ -393,6 +403,41 @@ class PahgDataAgentImpl extends PahgDataAgent{
   @override
   Future<EmployeeListResponse?> searchEmployeeByCompany(String apiKey, String searchKey, String id) {
     return mApi.searchEmployeeByCompany(apiKey, searchKey, id).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> deleteCompanyImage(String apiKey, int id) {
+    return mApi.deleteCompanyImage(apiKey, id).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<FamilyResponse?> getFamilies(String apiKey, List<GetRequest> request) {
+    return mApi.getFamilies(apiKey, request).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> updateFamily(String apiKey, int familyId, AddFamilyRequest request) {
+    return mApi.updateFamily(apiKey, familyId, request).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> addFamily(String apiKey, AddFamilyRequest request) {
+    return mApi.addFamily(apiKey, request).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> deleteFamily(String apiKey, int id) {
+    return mApi.deleteFamily(apiKey, id).catchError((onError){
       throw _createException(onError);
     });
   }

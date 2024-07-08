@@ -22,7 +22,7 @@ class _LoginPageState extends State<LoginPage> {
   bool isSuccess = false;
   final PahgModel _pahgModel = PahgModel();
 
-  void userLogin() async{
+  Future<void> userLogin() async{
       try {
         showDialog(context: context, barrierDismissible: false,builder: (context) => const LoadingWidget());
         TokenVo tokenVo = await _pahgModel.userLogin(_emailController.text.toString(),_passwordController.text.toString());
@@ -39,7 +39,7 @@ class _LoginPageState extends State<LoginPage> {
       }catch(e) {
         Navigator.of(context).pop();
         if(e.toString()=='Connection') {
-          showConnectionErrorDialog(context, 'Check internet connection');
+          showConnectionErrorDialog(context, 'Check internet connection',userLogin);
         }else {
           showErrorDialog(e.toString());
         }

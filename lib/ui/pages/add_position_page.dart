@@ -59,7 +59,7 @@ class _AddPositionPageState extends State<AddPositionPage> {
         _selectedPosition = null;
         positions.clear();
       });
-      showSuccessDialog(context, response!.message.toString());
+      showSuccessScaffold(context, response?.message ?? "Success");
     }).catchError((error){
       Navigator.of(context).pop();
       showErrorDialog(context, error.toString());
@@ -71,7 +71,7 @@ class _AddPositionPageState extends State<AddPositionPage> {
     _model.addPosition(_token, departmentId, _positionController.text.toString(), _isActive).then((response){
       Navigator.of(context).pop();                                              //dismiss loading
       _positionController.clear();
-      showSuccessDialog(context, response!.message.toString());
+      showSuccessScaffold(context, response?.message ?? "Success");
     }).catchError((error){
       showErrorDialog(context, error.toString());
     });

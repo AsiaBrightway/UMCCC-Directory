@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
@@ -106,7 +105,7 @@ class _TrainingCardState extends State<TrainingCard> {
                         child: Row(
                           children: [
                             const Text("Type : ",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 13),),
-                            Text(_trainingTypeName(widget.training.trainingType ?? 0),style: TextStyle(fontWeight: FontWeight.w300),)
+                            Text(_trainingTypeName(widget.training.trainingType ?? 0),style: const TextStyle(fontWeight: FontWeight.w300),)
                           ],
                         ),
                       ),
@@ -116,7 +115,7 @@ class _TrainingCardState extends State<TrainingCard> {
                           children: [
                             const Text("Provided by: ",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 13)),
 
-                            Text("${widget.training.trainingProvidedBy}",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
+                            Text("${widget.training.trainingProvidedBy}",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
                           ],
                         ),
                       ),
@@ -124,12 +123,12 @@ class _TrainingCardState extends State<TrainingCard> {
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(
                           children: [
-                            Text("${widget.training.startDate}",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
+                            Text("${widget.training.startDate}",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
                             Padding(
                               padding: const EdgeInsets.only(left: 8.0,right: 8.0),
                               child: Text("To",style: TextStyle(color: Theme.of(context).colorScheme.primary),),
                             ),
-                            Text("${widget.training.endDate}",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
+                            Text("${widget.training.endDate}",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
                           ],
                         ),
                       ),

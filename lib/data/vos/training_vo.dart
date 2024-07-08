@@ -1,5 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:pahg_group/network/responses/training_response.dart';
 part 'training_vo.g.dart';
 
 @JsonSerializable()

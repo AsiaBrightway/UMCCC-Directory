@@ -12,7 +12,6 @@ import 'package:flutter/material.dart';
      onPrimary: Colors.white,
      onSecondary: Colors.white,
      onSurface: Colors.black,
-     onBackground: Colors.black,
      surfaceBright: Colors.blue.shade100,
      onError: Colors.white,
      brightness: Brightness.light,

@@ -5,10 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:pahg_group/data/models/pahg_model.dart';
 import 'package:pahg_group/data/vos/data_class_for_search_bloc.dart';
 import 'package:pahg_group/data/vos/employee_vo.dart';
-import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../ui/providers/auth_provider.dart';
 
 class SearchEmployeeBloc{
 

@@ -29,7 +29,7 @@ class _SplashPageState extends State<SplashPage> {
     AuthProvider authProvider = Provider.of<AuthProvider>(context,listen: false);
     await Provider.of<AuthProvider>(context,listen: false).loadTokenAndRoleAndId();
     String userId = authProvider.userId;
-    String token = await authProvider.token;
+    String token = authProvider.token;
 
     ///token မရှိရင် login ,network call fail ရင် login
     if (token.isNotEmpty && userId.isNotEmpty) {
@@ -48,7 +48,7 @@ class _SplashPageState extends State<SplashPage> {
               showUnauthorizedDialog(context, 'Access Token Timeout.\nPlease login Again!');
               break;
             case 'Connection Error':
-              showConnectionErrorDialog(context, 'Check your internet connection.');
+              showConnectionErrorDialog(context, 'Check your internet connection.',_checkLoginStatus);
               break;
             default :
               ///error ကို toString မပြောင်းရင် exception တက်

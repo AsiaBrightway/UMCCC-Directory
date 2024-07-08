@@ -95,7 +95,7 @@ class _SchoolDialogState extends State<SchoolDialog> {
                     return null;
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextFormField(
                   controller: _secondaryController,
                   decoration: InputDecoration(
@@ -134,7 +134,7 @@ class _SchoolDialogState extends State<SchoolDialog> {
                 const SizedBox(height: 12),
                 Row(
                   children: [
-                    Text("From :$startDate",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
+                    Text("From :$startDate",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
                     const SizedBox(width: 4),
                     GestureDetector(
                       onTap: (){ _selectStartDate(context); },
@@ -145,7 +145,7 @@ class _SchoolDialogState extends State<SchoolDialog> {
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    Text("To : $endDate",style: TextStyle(fontWeight: FontWeight.w300)),
+                    Text("To : $endDate",style: const TextStyle(fontWeight: FontWeight.w300)),
                     const SizedBox(width: 4),
                     GestureDetector(
                         onTap: () async{

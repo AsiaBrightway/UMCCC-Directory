@@ -13,7 +13,7 @@ class MyDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: Theme.of(context).colorScheme.onTertiaryContainer,
+      backgroundColor: Theme.of(context).colorScheme.onPrimary,
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,7 +38,7 @@ class MyDrawer extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: ListTile(
-                leading: Image.asset('lib/icons/add_employee.png',width: 25,color: Colors.black,),
+                leading: Image.asset('lib/icons/add_person.png',width: 25,color: Colors.black,),
                 title: const Text('Add Employee',style: TextStyle(fontWeight: FontWeight.w400),),
                 onTap: (){
                   Navigator.push(context, MaterialPageRoute(builder: (context) => const AddEmployeePage(isAdd: true, userId: '',),));
@@ -46,6 +46,7 @@ class MyDrawer extends StatelessWidget {
               ),
             ),
             const Padding(padding:  EdgeInsets.symmetric(horizontal: 8.0), child: Divider()),
+            const Padding(padding: EdgeInsets.only(left: 12), child: Text('Company',style: TextStyle(fontSize: 12,color: Colors.grey,fontFamily: 'Ubuntu'))),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: ListTile(
@@ -68,7 +69,7 @@ class MyDrawer extends StatelessWidget {
             ),
             const Padding(padding:  EdgeInsets.symmetric(horizontal: 8.0), child: Divider(),
             ),
-            const Padding(padding: EdgeInsets.only(left: 12), child: Text('Department',style: TextStyle(fontSize: 16,color: Colors.grey),),
+            const Padding(padding: EdgeInsets.only(left: 12), child: Text('Department',style: TextStyle(fontSize: 12,color: Colors.grey,fontFamily: 'Ubuntu'),),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -91,7 +92,7 @@ class MyDrawer extends StatelessWidget {
               ),
             ),
             const Padding(padding:  EdgeInsets.symmetric(horizontal: 8.0), child: Divider(),),
-            const Padding(padding: EdgeInsets.only(left: 12), child: Text('Position',style: TextStyle(fontSize: 16,color: Colors.grey))),
+            const Padding(padding: EdgeInsets.only(left: 12), child: Text('Position',style: TextStyle(fontSize: 12,color: Colors.grey,fontFamily: 'Ubuntu'))),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: ListTile(

@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:pahg_group/data/vos/request_body/add_company_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_department_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_employee_request.dart';
+import 'package:pahg_group/data/vos/request_body/add_family_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_graduate_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_language_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_position_request.dart';
@@ -19,6 +20,7 @@ import 'package:pahg_group/network/responses/company_list_response.dart';
 import 'package:pahg_group/network/responses/department_list_response.dart';
 import 'package:pahg_group/network/responses/employee_list_response.dart';
 import 'package:pahg_group/network/responses/employee_response.dart';
+import 'package:pahg_group/network/responses/family_response.dart';
 import 'package:pahg_group/network/responses/graduate_response.dart';
 import 'package:pahg_group/network/responses/image_upload_response.dart';
 import 'package:pahg_group/network/responses/language_response.dart';
@@ -33,6 +35,7 @@ import 'package:pahg_group/network/responses/work_response.dart';
 import 'package:retrofit/http.dart';
 import 'package:retrofit/retrofit.dart';
 
+import '../data/vos/request_body/add_company_image_vo.dart';
 import '../data/vos/request_body/get_request.dart';
 part 'pahg_api.g.dart';
 
@@ -67,8 +70,15 @@ abstract class PahgApi{
   @POST(kEndPointAddCompanyImages)
   Future<PostMethodResponse?> addCompanyImages(
       @Header(kParamAuthorization) String apiKey,
-      
+      @Body() AddCompanyImageVo addRequest
       );
+
+  @DELETE("$kEndPointAddCompanyImages/{id}")
+  Future<PostMethodResponse?> deleteCompanyImage(
+      @Header(kParamAuthorization) String apiKey,
+      @Path('id') int imageId
+      );
+
   @POST(kEndPointGetEmployees)
   Future<EmployeeListResponse?> getEmployeesByCompany(
       @Header(kParamAuthorization) String apiKey,
@@ -308,5 +318,30 @@ abstract class PahgApi{
       @Header(kParamAuthorization) String apiKey,
       @Query("searchKey") String name,
       @Query("companyId") String id
+      );
+
+  @POST(kEndPointGetFamily)
+  Future<FamilyResponse?> getFamilies(
+      @Header(kParamAuthorization) String apiKey,
+      @Body() List<GetRequest> requestBody
+      );
+  
+  @PUT("$kEndPointAddFamily/{id}")
+  Future<PostMethodResponse?> updateFamily(
+      @Header(kParamAuthorization) String apiKey,
+      @Path("id") int id,
+      @Body() AddFamilyRequest request
+      );
+
+  @POST(kEndPointAddFamily)
+  Future<PostMethodResponse?> addFamily(
+      @Header(kParamAuthorization) String apiKey,
+      @Body() AddFamilyRequest request
+      );
+
+  @DELETE("$kEndPointAddFamily/{id}")
+  Future<PostMethodResponse?> deleteFamily(
+      @Header(kParamAuthorization) String apiKey,
+      @Path("id") int id,
       );
 }

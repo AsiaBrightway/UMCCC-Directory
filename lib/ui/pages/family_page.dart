@@ -1,48 +1,51 @@
+
 import 'package:flutter/material.dart';
 import 'package:pahg_group/data/models/pahg_model.dart';
-import 'package:pahg_group/data/vos/request_body/add_work_request.dart';
-import 'package:pahg_group/data/vos/work_vo.dart';
-import 'package:pahg_group/dialog/work_dialog.dart';
+import 'package:pahg_group/data/vos/request_body/add_family_request.dart';
+import 'package:pahg_group/dialog/family_dialog.dart';
 import 'package:pahg_group/exception/helper_functions.dart';
-import 'package:pahg_group/ui/components/work_exp_card.dart';
+import 'package:pahg_group/ui/components/family_card.dart';
 import 'package:provider/provider.dart';
 
+import '../../data/vos/family_vo.dart';
 import '../providers/auth_provider.dart';
 
-class WorkExperiencePage extends StatefulWidget {
-  const WorkExperiencePage({super.key, required this.empId, required this.userRole});
+class FamilyPage extends StatefulWidget {
+  const FamilyPage({super.key, required this.empId, required this.userRole});
+
   final String empId;
   final int userRole;
   @override
-  State<WorkExperiencePage> createState() => _WorkExperiencePageState();
+  State<FamilyPage> createState() => _FamilyPageState();
 }
 
-class _WorkExperiencePageState extends State<WorkExperiencePage> {
-  final PahgModel _model = PahgModel();
-  String _token = "";
-  List<WorkVo> workList = [];
+class _FamilyPageState extends State<FamilyPage> {
+  List<FamilyVo> familyList = [];
   bool isLoading = true;
+  String _token = "";
+  final PahgModel _model = PahgModel();
+
   @override
   void initState() {
     super.initState();
     Future.microtask(() => _initializeData());
   }
 
-  void _onSave(AddWorkRequest work){
-    work.id = 0;
-    work.employeeId = widget.empId;
-    _model.addWorkExperience(_token, work).then((onValue){
-      showScaffoldMessage(context, onValue?.message ?? 'Created');
+  void _onAdd(AddFamilyRequest request){
+    request.id = 0;
+    request.employeeId = widget.empId;
+    _model.addFamily(_token, request).then((onValue){
       _onRefresh();
+      showSuccessScaffold(context, onValue?.message ?? "Success");
     }).catchError((onError){
       showErrorDialog(context, onError.toString());
     });
   }
 
-  void _onUpdate(AddWorkRequest updatedWork){
-    _model.updateWorkExperience(_token, updatedWork.id!, updatedWork).then((onValue){
-      showScaffoldMessage(context, onValue?.message ?? 'Updated');
+  void _onUpdate(AddFamilyRequest family){
+    _model.updateFamily(_token, family.id!, family).then((onValue){
       _onRefresh();
+      showSuccessScaffold(context, onValue?.message ?? '');
     }).catchError((onError){
       showErrorDialog(context, onError.toString());
     });
@@ -64,13 +67,12 @@ class _WorkExperiencePageState extends State<WorkExperiencePage> {
             ),
             ElevatedButton(
               onPressed: () {
-                _model.deleteWorkExperience(_token, id).then((onValue){
-                  showScaffoldMessage(context, onValue?.message ?? "Successfully deleted");
+                _model.deleteFamily(_token, id).then((onValue){
                   _onRefresh();
                   Navigator.of(context).pop();
+                  showSuccessScaffold(context, onValue?.message ?? "Success");
                 }).catchError((onError){
                   showErrorDialog(context, onError.toString());
-                  Navigator.of(context).pop();
                 });
               },
               child: const Text('OK'),
@@ -82,19 +84,16 @@ class _WorkExperiencePageState extends State<WorkExperiencePage> {
   }
 
   Future<void> _onRefresh() async{
-    _model.getWorkList(_token,"employeeId", widget.empId).then((onValue){
+    _model.getFamilyList(_token, "employeeId", widget.empId).then((onValue){
       setState(() {
         if(onValue.isNotEmpty){
-          workList = onValue;
+          familyList = onValue;
         }else{
-          workList = [];
+          familyList = [];
           isLoading = false;
         }
       });
     }).catchError((onError){
-      setState(() {
-        isLoading = false;
-      });
       showErrorDialog(context, onError.toString());
     });
   }
@@ -102,19 +101,12 @@ class _WorkExperiencePageState extends State<WorkExperiencePage> {
   Future<void> _initializeData() async{
     final authModel = Provider.of<AuthProvider>(context,listen: false);
     _token = authModel.token;
-    _model.getWorkList(_token,"employeeId", widget.empId).then((onValue){
+    _model.getFamilyList(_token, "employeeId", widget.empId).then((onValue){
       setState(() {
-        if(onValue.isNotEmpty){
-          workList = onValue;
-        }else{
-          isLoading = false;
-        }
+        familyList = onValue;
       });
     }).catchError((onError){
-      setState(() {
-        isLoading = false;
-      });
-      showErrorRefreshDialog(context, onError.toString(), _initializeData);
+      showErrorDialog(context, onError.toString());
     });
   }
 
@@ -123,7 +115,7 @@ class _WorkExperiencePageState extends State<WorkExperiencePage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text("Work Experience"),
+        title: const Text("Family Member"),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -139,32 +131,32 @@ class _WorkExperiencePageState extends State<WorkExperiencePage> {
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: ElevatedButton(
                         onPressed: (){
-                          showWorkDialog(context,work: null, onUpdate: _onSave);
+                          showFamilyDialog(context,family: null, onUpdate: _onAdd);
                         },
-                        child: const Text("Add Work Exp")
+                        child: const Text("Add Family")
                     ),
                   )
                       : const SizedBox(height: 1),
                 ],
               ),
-              (workList.isNotEmpty)
+              (familyList.isNotEmpty)
                   ? Column(
-                      children: workList.map((work) {
-                        return WorkExpCard(work: work, token: _token, userRole: widget.userRole, onUpdate: _onUpdate, onDelete: _onDelete);
-                      }).toList(),
-                    )
+                children: familyList.map((family) {
+                  return FamilyCard(token: _token, userRole: widget.userRole, onUpdate: _onUpdate, onDelete: _onDelete, family: family);
+                }).toList(),
+              )
                   : isLoading
-                      ? const Padding(
-                          padding: EdgeInsets.all(16.0),
-                          child: CircularProgressIndicator(),
-                        )
-                      : const Padding(
-                          padding: EdgeInsets.all(16.0),
-                          child: Text(
-                            "Empty",
-                            style: TextStyle(fontFamily: 'Ubuntu'),
-                          ),
-                        ),
+                  ? const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: CircularProgressIndicator(),
+              )
+                  : const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                  "Empty",
+                  style: TextStyle(fontFamily: 'Ubuntu'),
+                ),
+              ),
             ],
           ),
         ),

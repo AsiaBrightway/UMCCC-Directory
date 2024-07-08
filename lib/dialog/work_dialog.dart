@@ -122,7 +122,7 @@ class _WorkDialogState extends State<WorkDialog> {
                 const SizedBox(height: 14),
                 Row(
                   children: [
-                    Text("Start :$startDate",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
+                    Text("Start :$startDate",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
                     const SizedBox(width: 6),
                     GestureDetector(
                         onTap: (){ _selectStartDate(context); },
@@ -132,7 +132,7 @@ class _WorkDialogState extends State<WorkDialog> {
                 ),
                 Row(
                   children: [
-                    Text("End :$endDate",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
+                    Text("End :$endDate",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
                     const SizedBox(width: 8),
                     GestureDetector(
                         onTap: (){ _selectEndDate(context); },

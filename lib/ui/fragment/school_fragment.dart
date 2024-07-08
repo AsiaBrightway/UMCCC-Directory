@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pahg_group/data/vos/education_school_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_school_request.dart';
@@ -45,7 +44,7 @@ class _SchoolFragmentState extends State<SchoolFragment> {
         }
       });
     }).catchError((onError){
-      showErrorDialog(context, onError.toString());
+      showErrorRefreshDialog(context, onError.toString(), _initializeData);
     });
   }
 

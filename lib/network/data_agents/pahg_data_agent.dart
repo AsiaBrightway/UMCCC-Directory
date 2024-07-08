@@ -2,9 +2,11 @@
 import 'dart:io';
 
 import 'package:pahg_group/data/vos/companies_vo.dart';
+import 'package:pahg_group/data/vos/request_body/add_company_image_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_company_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_department_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_employee_request.dart';
+import 'package:pahg_group/data/vos/request_body/add_family_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_graduate_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_language_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_position_request.dart';
@@ -22,6 +24,7 @@ import 'package:pahg_group/network/responses/post_method_response.dart';
 import '../responses/company_images_response.dart';
 import '../responses/department_list_response.dart';
 import '../responses/employee_list_response.dart';
+import '../responses/family_response.dart';
 import '../responses/graduate_response.dart';
 import '../responses/image_upload_response.dart';
 import '../responses/language_response.dart';
@@ -43,6 +46,10 @@ abstract class PahgDataAgent{
   Future<PostMethodResponse?> updateCompany(String apiKey,int companyId,AddCompanyRequest request);
 
   Future<CompanyImagesResponse?> getCompanyImages(String apiKey,List<GetRequest> request);
+
+  Future<PostMethodResponse?> addCompanyImages(String apiKey,AddCompanyImageVo request);
+
+  Future<PostMethodResponse?> deleteCompanyImage(String apiKey,int id);
 
   Future<EmployeeListResponse?> getEmployees(String apiKey, List<GetRequest> request,int pageNo,int pageSize);
 
@@ -117,4 +124,12 @@ abstract class PahgDataAgent{
   Future<EmployeeListResponse?> searchEmployee(String apiKey,String searchKey);
 
   Future<EmployeeListResponse?> searchEmployeeByCompany(String apiKey,String searchKey,String id);
+
+  Future<FamilyResponse?> getFamilies(String apiKey,List<GetRequest> request);
+
+  Future<PostMethodResponse?> updateFamily(String apiKey,int familyId,AddFamilyRequest request);
+
+  Future<PostMethodResponse?> deleteFamily(String apiKey,int id);
+
+  Future<PostMethodResponse?> addFamily(String apiKey,AddFamilyRequest request);
 }

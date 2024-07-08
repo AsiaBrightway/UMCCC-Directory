@@ -74,7 +74,7 @@ class _AddDepartmentPageState extends State<AddDepartmentPage> {
         _selectedDepartment = null;
         departments.clear();
       });
-      showSuccessDialog(context, response!.message.toString());
+      showSuccessScaffold(context, response?.message ?? "Success");
     }).catchError((error){
       Navigator.of(context).pop();                                              //dismiss loading
       showErrorDialog(context, error.toString());
@@ -87,7 +87,7 @@ class _AddDepartmentPageState extends State<AddDepartmentPage> {
     _model.addDepartment(_token, companyId, _departmentController.text.toString(), _isActive).then((response){
       Navigator.of(context).pop();                                              //dismiss loading
       _departmentController.clear();
-      showSuccessDialog(context, response!.message.toString());
+      showSuccessScaffold(context, response?.message ?? "Success");
     }).catchError((error){
       Navigator.of(context).pop();                                              //dismiss loading
       showErrorDialog(context, error.toString());

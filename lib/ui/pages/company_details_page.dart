@@ -1,6 +1,9 @@
 
+import 'dart:io';
+
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pahg_group/data/vos/request_body/get_request.dart';
 import 'package:pahg_group/exception/helper_functions.dart';
 import 'package:pahg_group/ui/pages/employee_profile_page.dart';
@@ -25,6 +28,7 @@ class CompanyDetailsPage extends StatefulWidget {
 class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
   bool _isLoading = false;
   String _token = '';
+  int _role = 0;
   List<EmployeeVo> employeeList = [];
   String? _selectedValue;
   final PahgModel _model = PahgModel();
@@ -33,8 +37,9 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
   List<DepartmentVo> departments = [];
   final ScrollController _scrollController = ScrollController();
   bool _hasMore = true;
+  File? _image;
   int _pageNumber = 1;
-  final int _pageSize = 20;
+  final int _pageSize = 10;
 
   @override
   void initState() {
@@ -43,9 +48,10 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
     _scrollController.addListener(_onScroll);
   }
 
-  Future<void> _initializeData() async{
+  Future<void> _initializeData() async {
     AuthProvider authProvider = Provider.of<AuthProvider>(context,listen: false);
     _token = authProvider.token;
+    _role = authProvider.role;
     GetRequest request = GetRequest(columnName: "CompanyId", columnCondition : 1, columnValue: widget.companyId.toString());
     _model.getCompanyImages(_token, request).then((response){
       setState(() {
@@ -58,10 +64,23 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
     });
     _model.getDepartmentListByCompany(_token, request).then((response){
       setState(() {
-        departments = response;
+        departments = [DepartmentVo(0, widget.companyId, "All", true),...response];
       });
     });
     _fetchEmployee();
+  }
+
+  Future<void> _onRefreshBanner() async{
+    GetRequest request = GetRequest(columnName: "CompanyId", columnCondition : 1, columnValue: widget.companyId.toString());
+    _model.getCompanyImages(_token, request).then((response){
+      setState(() {
+        companyImages = response;
+      });
+    }).catchError((error){
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Company Images Error : ${error.toString}"),
+      ));
+    });
   }
 
   void _onScroll() {
@@ -91,24 +110,62 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
         _hasMore = onValue.length == _pageSize; // Check if more data exists
         _pageNumber++;
       });
-
     }).catchError((onError){
       setState(() {
         _isLoading = false;
       });
-      showErrorDialog(context, onError.toString());
+      showErrorRefreshDialog(context, onError.toString(),_initializeData);
     });
   }
 
   void onDropDownChanged(String newValue){
-    GetRequest request = GetRequest(columnName: "CompanyId", columnCondition : 1, columnValue: widget.companyId.toString());
-    int? deptId = departments.firstWhere((department) => department.departmentName == newValue).id;
-    GetRequest deptRequest = GetRequest(columnName: "DepartmentId", columnCondition : 1, columnValue: deptId.toString());
-    List<GetRequest> requestList = [request,deptRequest];
-    _model.getEmployees(_token, requestList,1,100).then((onValue){
-      setState(() {
-        employeeList = onValue;
+    if(newValue == "All"){
+      employeeList = [];
+      _hasMore = true;
+      _fetchEmployee();
+    }else{
+      GetRequest request = GetRequest(columnName: "CompanyId", columnCondition : 1, columnValue: widget.companyId.toString());
+      int? deptId = departments.firstWhere((department) => department.departmentName == newValue).id;
+      GetRequest deptRequest = GetRequest(columnName: "DepartmentId", columnCondition : 1, columnValue: deptId.toString());
+      List<GetRequest> requestList = [request,deptRequest];
+      _model.getEmployees(_token, requestList,1,100).then((onValue){
+        setState(() {
+          _pageNumber = 1;
+          _hasMore = false;
+          employeeList = onValue;
+        });
+      }).catchError((onError){
+        showErrorDialog(context, onError.toString());
       });
+    }
+  }
+
+  Future<void> deleteImage(int id) async{
+    _model.deleteCompanyImage(_token, id).then((onValue){
+      if(onValue?.document != null){
+        showSuccessScaffold(context, onValue?.message ?? "Success");
+      }else{
+        showErrorDialog(context, onValue?.message ?? "Not deleted");
+      }
+    }).catchError((onError){
+      showErrorDialog(context, onError.toString());
+    });
+  }
+
+  Future<void> _uploadImage(File image) async{
+    _model.uploadImage(_token, image).then((onValue){
+      _uploadImageToCompany(onValue!.file!);
+    }).catchError((onError){
+      showScaffoldMessage(context, onError.toString());
+    });
+  }
+
+  Future<void> _uploadImageToCompany(String imageUrl) async{
+    _model.addCompanyImages(_token, widget.companyId, imageUrl).then((response){
+      setState(() {
+        _onRefreshBanner();
+      });
+      showScaffoldMessage(context, response?.message ?? "success");
     }).catchError((onError){
       showErrorDialog(context, onError.toString());
     });
@@ -130,14 +187,26 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
               onPressed: (){
                 _navigateToSearch();
               },
-              icon: const Icon(Icons.person_search,color: Colors.white))
+              icon: const Icon(Icons.person_search,color: Colors.white)),
+          (_role == 1)
+              ? IconButton(
+              onPressed: () async {
+                ImagePicker imagePicker = ImagePicker();
+                XFile? file = await imagePicker.pickImage(source: ImageSource.gallery);
+                if(file != null){
+                  _image = File(file.path);
+                  _uploadImage(_image!);
+                }
+              },
+              icon: const Icon(Icons.add_a_photo,color: Colors.white))
+              : const SizedBox(width: 1),
         ],
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios,color: Colors.white,),
           onPressed: _onBackPressed,
         ),
         title: Text(widget.companyName,style: const TextStyle(fontFamily: 'Ubuntu',color: Colors.white)),
-        centerTitle: true,
+        centerTitle: (_role != 1),
       ),
       body: CustomScrollView(
         controller: _scrollController,
@@ -231,8 +300,8 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                 if (index == employeeList.length) {
                   return Center(
                       child: _isLoading
-                          ? CircularProgressIndicator()
-                          : SizedBox());
+                          ? const CircularProgressIndicator()
+                          : const SizedBox());
                 }
                 final employee = employeeList[index];
                 return _employeeCard(employee: employee);
@@ -345,25 +414,30 @@ class CompanyBannerCard extends StatelessWidget {
             controller: _pageController,
             itemCount: imagesVo.length,
               itemBuilder: (context, index) {
-                  return Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 8),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.network(
-                        imagesVo[index].getImageWithBaseUrl(),
-                        fit: BoxFit.cover,
-                        loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                          if (loadingProgress == null) {
-                            return child;
-                          }
-                          return Center(
-                            child: CircularProgressIndicator(
-                              value: loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
-                                  : null,
-                            ),
-                          );
-                        },
+                  return GestureDetector(
+                    onLongPress: (){
+
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 8),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.network(
+                          imagesVo[index].getImageWithBaseUrl(),
+                          fit: BoxFit.cover,
+                          loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                            if (loadingProgress == null) {
+                              return child;
+                            }
+                            return Center(
+                              child: CircularProgressIndicator(
+                                value: loadingProgress.expectedTotalBytes != null
+                                    ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
+                                    : null,
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ),
                   );

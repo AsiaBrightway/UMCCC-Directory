@@ -1,5 +1,4 @@
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pahg_group/data/models/pahg_model.dart';
 import 'package:pahg_group/data/vos/companies_vo.dart';
@@ -54,14 +53,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> _refresh() async{
     if(_role == 1 || _role == 2){
       _model.getCompanies(_token).then((companies) {
-        ScaffoldMessenger.of(context).showSnackBar( SnackBar(
-          backgroundColor: Colors.grey,
-          content: const Text("Refresh Complete",style: TextStyle(color: Colors.white),),
-          duration: Duration(seconds: 1),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          margin: const EdgeInsets.symmetric(horizontal: 50),
-          behavior: SnackBarBehavior.floating,
-        ));
+        showSuccessScaffold(context, "Refresh Complete");
         setState(() {
           this.companies = companies;
         });

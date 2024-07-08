@@ -97,7 +97,7 @@ class _LanguageCardState extends State<LanguageCard> {
                           children: [
                             const Text("Proficiency: ",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 13),),
 
-                            Text(_proficiencyName(widget.language.proficiency ?? 0),style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
+                            Text(_proficiencyName(widget.language.proficiency ?? 0),style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
                           ],
                         ),
                       ),
@@ -107,7 +107,7 @@ class _LanguageCardState extends State<LanguageCard> {
                           children: [
                             const Text("Can teach: ",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 13),),
 
-                            Expanded(child: Text(_canTeachAndShare(widget.language.teach ?? false),style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13))),
+                            Expanded(child: Text(_canTeachAndShare(widget.language.teach ?? false),style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13))),
                           ],
                         ),
                       ),

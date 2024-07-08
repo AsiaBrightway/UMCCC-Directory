@@ -12,7 +12,7 @@ class CustomDropdownButton<T> extends StatelessWidget {
   final BoxDecoration buttonDecoration;
 
   const CustomDropdownButton({
-    Key? key,
+    super.key,
     required this.value,
     required this.hint,
     required this.items,
@@ -24,7 +24,7 @@ class CustomDropdownButton<T> extends StatelessWidget {
       borderRadius: BorderRadius.all(Radius.circular(8)),
       border: Border.fromBorderSide(BorderSide(color: Colors.black26)),
     ),
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

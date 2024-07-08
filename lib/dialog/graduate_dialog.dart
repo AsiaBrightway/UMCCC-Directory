@@ -91,7 +91,7 @@ class _GraduateDialogState extends State<GraduateDialog> {
                 const SizedBox(height: 14),
                 Row(
                   children: [
-                    Text("From :$receivedYear",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
+                    Text("From :$receivedYear",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
                     const SizedBox(width: 4),
                     GestureDetector(
                         onTap: (){ _selectStartDate(context); },

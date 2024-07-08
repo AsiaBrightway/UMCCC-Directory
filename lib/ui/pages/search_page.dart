@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pahg_group/bloc/search_employee_bloc.dart';
 import 'package:pahg_group/data/vos/data_class_for_search_bloc.dart';
-import 'package:pahg_group/exception/helper_functions.dart';
 
 import '../../data/vos/employee_vo.dart';
 import 'employee_profile_page.dart';

@@ -85,7 +85,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
           departmentName = response.departmentName ?? '';
           positionName = response.position ?? '';
           imageUrl = response.imageUrl ?? '';
-          imageUrlForProfile = response.getImageWithBaseUrl() ?? '';
+          imageUrlForProfile = response.getImageWithBaseUrl();
         });
       }).catchError((error){
         showErrorDialog(context, error.toString());
@@ -105,7 +105,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
   void updateEmployeeWithoutImage(){
     _model.updateEmployee(_token, widget.userId, getEmployeeRequest()).then((response){
       Navigator.of(context).pop();
-      showSuccessDialog(context, response?.message ?? '');
+      showSuccessScaffold(context, response?.message ?? "Success");
     }).catchError((error){
       Navigator.of(context).pop();
       showErrorDialog(context, error.toString());
@@ -136,7 +136,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
         isImageSelected = false;
         _image = null;
       });
-      showSuccessDialog(context, value!.message.toString());
+      showSuccessScaffold(context, value?.message ?? "Success");
     }).catchError((error){
       Navigator.of(context).pop();                                              //dismiss loading
       showErrorDialog(context,error.toString());

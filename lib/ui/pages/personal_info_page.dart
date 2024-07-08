@@ -1,12 +1,11 @@
-import 'dart:ui';
 
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pahg_group/data/vos/request_body/personal_info_request.dart';
 import 'package:pahg_group/exception/helper_functions.dart';
 import 'package:pahg_group/ui/components/custom_drop_down_button.dart';
+import 'package:pahg_group/ui/pages/family_page.dart';
 import 'package:pahg_group/ui/themes/colors.dart';
 import 'package:provider/provider.dart';
 import '../../data/models/pahg_model.dart';
@@ -105,7 +104,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
       setState(() {
         firstLoading = false;
       });
-      showErrorDialog(context, error.toString());
+      showErrorRefreshDialog(context, error.toString(), _initializeData);
     });
   }
 
@@ -126,7 +125,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     if(personalInfoId != null){
       _model.updatePersonalInfo(_token,personalInfoId!, getPersonalData()).then((response){
         Navigator.of(context).pop();
-        showSuccessDialog(context, response!.message.toString());
+        showSuccessScaffold(context, response?.message ?? "Success");
         _initializeData();
       }).catchError((error){
         Navigator.of(context).pop();
@@ -142,12 +141,37 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     showDialog(context: context, barrierDismissible: false,builder: (context) => const LoadingWidget());
     _model.addPersonalInfo(_token, getPersonalData()).then((response){
       Navigator.of(context).pop();
-      showSuccessDialog(context, response!.message.toString());
+      showSuccessScaffold(context, response?.message ?? "Success");
       _initializeData();
     }).catchError((error){
       Navigator.of(context).pop();
       showErrorDialog(context, error.toString());
     });
+  }
+
+  @override
+  void dispose() {
+    _addressController.dispose();
+    _cellularPhoneController.dispose();
+    _homePhoneController.dispose();
+    _placeOfBirthController.dispose();
+    _nationalityController.dispose();
+    _religionController.dispose();
+    _raceController.dispose();
+    _healthController.dispose();
+    _sportsHobbyController.dispose();
+    _socialActivitiesController.dispose();
+    _hairColorController.dispose();
+    _skinColorController.dispose();
+    _eyeColorController.dispose();
+    _emergencyName.dispose();
+    _emergencyRelation.dispose();
+    _emergencyAddress.dispose();
+    _emergencyCellularPhone.dispose();
+    _emergencyHomePhone.dispose();
+    _vehiclePunishmentDescription.dispose();
+    _previousAppliedDescription.dispose();
+    super.dispose();
   }
 
   @override
@@ -169,7 +193,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                       if(validatePersonalInfo()){
                         _updatePersonalInfo();
                       }
-                  }, icon: const Icon(Icons.system_update_alt,color: colorAccent,))
+                  }, icon: const Icon(Icons.cloud_upload,color: colorAccent,))
                     : const SizedBox(width: 1)
                     : const SizedBox(width: 1),
             (widget.role == 1 && personalInfo.isNotEmpty)
@@ -408,7 +432,22 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
               _buildDrivingLicense(),
               const SizedBox(height: 20),
               _buildPreviousApplied(),
-              const SizedBox(height: 40)
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white
+                    ),
+                      onPressed: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => FamilyPage(empId: widget.userId, userRole: _currentUserRole),));
+                      },
+                      child: Text("Go To Family"))
+                ],
+              ),
+              const SizedBox(height: 20)
             ],
           ),
         ),
@@ -426,22 +465,32 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: Colors.deepPurple)
       ),
-      padding: const EdgeInsets.symmetric(horizontal:20,vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal:18,vertical: 10),
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text('Emergency Contact'),
-              IconButton(
-                icon: Icon(_isEmergencyExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
-                onPressed: () {
-                  setState(() {
-                    _isEmergencyExpanded = !_isEmergencyExpanded;
-                  });
-                },
+          GestureDetector(
+            onTap: (){
+              setState(() {
+                _isEmergencyExpanded = !_isEmergencyExpanded;
+              });
+            },
+            child: Container(
+              color: Colors.transparent,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('Emergency Contact'),
+                  IconButton(
+                    icon: Icon(_isEmergencyExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
+                    onPressed: () {
+                      setState(() {
+                        _isEmergencyExpanded = !_isEmergencyExpanded;
+                      });
+                    },
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
           AnimatedContainer(
             duration: const Duration(milliseconds: 400),
@@ -496,19 +545,29 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
       padding: const EdgeInsets.symmetric(horizontal:20,vertical: 10),
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text('Appearance',style: TextStyle(fontFamily: 'Ubuntu'),),
-              IconButton(
-                icon: Icon(_isAppearanceExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
-                onPressed: () {
-                  setState(() {
-                    _isAppearanceExpanded = !_isAppearanceExpanded;
-                  });
-                },
+          GestureDetector(
+            onTap: (){
+              setState(() {
+                _isAppearanceExpanded = !_isAppearanceExpanded;
+              });
+            },
+            child: Container(
+              color: Colors.transparent,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('Appearance',style: TextStyle(fontFamily: 'Ubuntu'),),
+                  IconButton(
+                    icon: Icon(_isAppearanceExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
+                    onPressed: () {
+                      setState(() {
+                        _isAppearanceExpanded = !_isAppearanceExpanded;
+                      });
+                    },
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
           AnimatedContainer(
             height: _isAppearanceExpanded ? 230 : 0.0,
@@ -550,19 +609,29 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
       ),
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text('Driving License',style: TextStyle(fontFamily: 'Ubuntu')),
-              IconButton(
-                icon: Icon(_isDrivingLicenseExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
-                onPressed: () {
-                  setState(() {
-                    _isDrivingLicenseExpanded = !_isDrivingLicenseExpanded;
-                  });
-                },
+          GestureDetector(
+            onTap: (){
+              setState(() {
+                _isDrivingLicenseExpanded = !_isDrivingLicenseExpanded;
+              });
+            },
+            child: Container(
+              color: Colors.transparent,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('Driving License',style: TextStyle(fontFamily: 'Ubuntu')),
+                  IconButton(
+                    icon: Icon(_isDrivingLicenseExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
+                    onPressed: () {
+                      setState(() {
+                        _isDrivingLicenseExpanded = !_isDrivingLicenseExpanded;
+                      });
+                    },
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
           AnimatedContainer(
                 duration: const Duration(milliseconds: 400),
