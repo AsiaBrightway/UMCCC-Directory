@@ -30,7 +30,7 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
   String _token = '';
   int _role = 0;
   List<EmployeeVo> employeeList = [];
-  String? _selectedValue;
+  String? _selectedValue = "All";
   final PahgModel _model = PahgModel();
   final String companyName = "";
   List<CompanyImagesVo> companyImages = [];
@@ -140,16 +140,46 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
     }
   }
 
-  Future<void> deleteImage(int id) async{
-    _model.deleteCompanyImage(_token, id).then((onValue){
-      if(onValue?.document != null){
-        showSuccessScaffold(context, onValue?.message ?? "Success");
-      }else{
-        showErrorDialog(context, onValue?.message ?? "Not deleted");
-      }
-    }).catchError((onError){
-      showErrorDialog(context, onError.toString());
-    });
+  void _deleteBannerImage(int id) {
+    if(_role == 1){
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            icon: const Text('Delete' ,style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+            content: const Text('Are you sure to delete image?',style: TextStyle(fontSize: 16),),
+            actions: <Widget>[
+              TextButton(
+                child: const Text("cancel"),
+                onPressed: (){
+                  Navigator.of(context).pop();
+                },
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  _model.deleteCompanyImage(_token, id).then((onValue){
+                    if(onValue?.code == 1){
+                      _onRefreshBanner();
+                      showSuccessScaffold(context, onValue?.message ?? "Success");
+                    }else{
+                      showErrorDialog(context, onValue?.message ?? "Not deleted");
+                    }
+                  }).catchError((onError){
+                    showErrorDialog(context, onError.toString());
+                  });
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   Future<void> _uploadImage(File image) async{
@@ -165,7 +195,7 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
       setState(() {
         _onRefreshBanner();
       });
-      showScaffoldMessage(context, response?.message ?? "success");
+      showSuccessScaffold(context, response?.message ?? "success");
     }).catchError((onError){
       showErrorDialog(context, onError.toString());
     });
@@ -225,7 +255,7 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                           fit: BoxFit.cover),
                     ),
                   )
-                      : CompanyBannerCard(imagesVo: companyImages),
+                      : CompanyBannerCard(imagesVo: companyImages,onDelete: _deleteBannerImage,),
                   const SizedBox(height: 16,),
                   ///drop down button
                   Center(
@@ -398,9 +428,16 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
   }
 }
 
-class CompanyBannerCard extends StatelessWidget {
+class CompanyBannerCard extends StatefulWidget {
   final List<CompanyImagesVo> imagesVo ;
-  CompanyBannerCard({super.key, required this.imagesVo });
+  final Function(int id) onDelete;
+  const CompanyBannerCard({super.key, required this.imagesVo, required this.onDelete});
+
+  @override
+  State<CompanyBannerCard> createState() => _CompanyBannerCardState();
+}
+
+class _CompanyBannerCardState extends State<CompanyBannerCard> {
   final _pageController = PageController(viewportFraction: 0.9);
 
   @override
@@ -412,18 +449,18 @@ class CompanyBannerCard extends StatelessWidget {
           height: 180,
           child: PageView.builder(
             controller: _pageController,
-            itemCount: imagesVo.length,
+            itemCount: widget.imagesVo.length,
               itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onLongPress: (){
-
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 8),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
+                  return Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 8),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: GestureDetector(
+                        onLongPress: (){
+                          widget.onDelete(widget.imagesVo[index].id!);
+                        },
                         child: Image.network(
-                          imagesVo[index].getImageWithBaseUrl(),
+                          widget.imagesVo[index].getImageWithBaseUrl(),
                           fit: BoxFit.cover,
                           loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
                             if (loadingProgress == null) {
@@ -448,7 +485,7 @@ class CompanyBannerCard extends StatelessWidget {
         ///dots indicator
         SmoothPageIndicator(
             controller: _pageController,
-            count: imagesVo.length,
+            count: widget.imagesVo.length,
           effect: const SlideEffect(
             dotColor: Colors.grey,
             activeDotColor: Colors.blueAccent,
@@ -462,7 +499,6 @@ class CompanyBannerCard extends StatelessWidget {
       ],
     );
   }
-
 }
 
 

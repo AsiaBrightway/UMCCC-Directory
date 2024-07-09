@@ -22,6 +22,7 @@ class _WorkExperiencePageState extends State<WorkExperiencePage> {
   String _token = "";
   List<WorkVo> workList = [];
   bool isLoading = true;
+
   @override
   void initState() {
     super.initState();
@@ -118,12 +119,22 @@ class _WorkExperiencePageState extends State<WorkExperiencePage> {
     });
   }
 
+  void _onBackPressed() {
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.blue.shade800,
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios,color: Colors.white),
+          onPressed: _onBackPressed,
+        ),
         centerTitle: true,
-        title: const Text("Work Experience"),
+        title: const Text("Work Experience",style: TextStyle(color: Colors.white,fontFamily: 'Ubuntu'),),
       ),
       body: SingleChildScrollView(
         child: Padding(

@@ -21,11 +21,10 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    _checkLoginStatus();
+    Future.microtask(() => _checkLoginStatus());
   }
 
   Future<void> _checkLoginStatus() async {
-    await Future.delayed(const Duration(seconds: 1));
     AuthProvider authProvider = Provider.of<AuthProvider>(context,listen: false);
     await Provider.of<AuthProvider>(context,listen: false).loadTokenAndRoleAndId();
     String userId = authProvider.userId;
@@ -52,7 +51,7 @@ class _SplashPageState extends State<SplashPage> {
               break;
             default :
               ///error ကို toString မပြောင်းရင် exception တက်
-              showErrorDialog(context, error.toString());
+              showConnectionErrorDialog(context, error.toString(), _checkLoginStatus);
               break;
           }
         });
@@ -83,20 +82,3 @@ class _SplashPageState extends State<SplashPage> {
     );
   }
 }
-
-
-// Token exists, navigate to home page
-// FutureBuilder<UserResponse?>(
-//   future: _pahgModel.getUserById("error token","3291338b-5aa4-4282-8ff5-b11410b9c402"),
-//   builder: (context, snapshot){
-//     if(snapshot.connectionState == ConnectionState.done){
-//       if(snapshot.hasData){
-//
-//       }
-//       if(snapshot.hasError){
-//         print(snapshot.error);
-//       }
-//     }
-//     return const SizedBox();
-//   },
-// );

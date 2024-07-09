@@ -9,6 +9,7 @@ import 'package:pahg_group/exception/helper_functions.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/models/pahg_model.dart';
+import '../../utils/image_compress.dart';
 import '../../widgets/loading_widget.dart';
 import '../providers/auth_provider.dart';
 
@@ -213,15 +214,25 @@ class _AddCompanyPageState extends State<AddCompanyPage> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 20.0),
                       child : GestureDetector(
-                          onTap: () async{
+                          onTap: () async {
+                            // Create an instance of ImagePicker
                             ImagePicker imagePicker = ImagePicker();
+
+                            // Pick an image from the gallery
                             XFile? file = await imagePicker.pickImage(source: ImageSource.gallery);
-                            setState(() {
-                              if(file != null){
-                                _image = File(file.path);
-                                isImageSelected = true;
+
+                            if (file != null) {
+                              // Compress the image
+                              File? compressFile = await compressAndGetFile(File(file.path), file.path);
+
+                              // Update the state with the compressed file
+                              if (compressFile != null) {
+                                setState(() {
+                                  _image = compressFile;
+                                  isImageSelected = true;
+                                });
                               }
-                            });
+                            }
                           },
                           child: (_image == null)
                               ? ClipRRect(
@@ -255,7 +266,10 @@ class _AddCompanyPageState extends State<AddCompanyPage> {
                                   ))
                               : ClipRRect(
                                 borderRadius: BorderRadius.circular(16),
-                                  child: Image.file(_image!,width: 90,height: 90,fit: BoxFit.cover,)
+                                  child: Image.file(_image!,width: 90,height: 90,fit: BoxFit.cover,
+                                    errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+                                      return const Center(child: SizedBox(height: 90,width: 90,child: CircularProgressIndicator(color: Colors.blue)));
+                                    },)
                               )
                       )
                   ),
@@ -462,6 +476,7 @@ class _AddCompanyPageState extends State<AddCompanyPage> {
     );
   }
 
+  
   void updateCompanyWithoutImage() {
     _model.updateCompany(
         _token,
@@ -520,6 +535,11 @@ class _AddCompanyPageState extends State<AddCompanyPage> {
     _date = company.startDate ?? '';
     _sortOrderController.text = company.sortOrder.toString();
     _isActive = company.isActive!;
+  }
+
+  Future<File> xFileToFile(XFile xFile) async {
+    // Use the path property of XFile to create a File
+    return File(xFile.path);
   }
 }
 

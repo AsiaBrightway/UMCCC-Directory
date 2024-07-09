@@ -17,6 +17,7 @@ import 'package:pahg_group/data/vos/request_body/get_request.dart';
 import 'package:pahg_group/data/vos/request_body/login_request.dart';
 import 'package:pahg_group/data/vos/request_body/personal_info_request.dart';
 import 'package:pahg_group/data/vos/request_body/update_employee_request.dart';
+import 'package:pahg_group/network/responses/company_by_id_response.dart';
 import 'package:pahg_group/network/responses/employee_response.dart';
 import 'package:pahg_group/network/responses/login_response.dart';
 import 'package:pahg_group/network/responses/post_method_response.dart';
@@ -42,6 +43,8 @@ abstract class PahgDataAgent{
   Future<List<CompaniesVo>> getCompanies(String apiKey);
 
   Future<PostMethodResponse?> addCompany(String apiKey,AddCompanyRequest request);
+
+  Future<CompanyByIdResponse?> getCompanyById(String apiKey,int companyId);
 
   Future<PostMethodResponse?> updateCompany(String apiKey,int companyId,AddCompanyRequest request);
 

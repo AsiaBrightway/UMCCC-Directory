@@ -63,6 +63,11 @@ class PahgModel {
     return mDataAgent.getCompanies(apiKey);
   }
 
+  Future<CompaniesVo> getCompanyId(String apiKey,int companyId){
+    CompaniesVo company = CompaniesVo(0, '', '', '', '', '', null, 10, false);
+    return mDataAgent.getCompanyById(apiKey, companyId).asStream().map((response) => response?.document ?? company).first;
+  }
+
   Future<PostMethodResponse?> addCompany(
       String apiKey,String companyName,String address,
       String phoneNo,String about,String companyLogo,

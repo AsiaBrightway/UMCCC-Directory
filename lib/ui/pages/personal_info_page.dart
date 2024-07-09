@@ -149,6 +149,10 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     });
   }
 
+  void _onBackPressed() {
+    Navigator.of(context).pop();
+  }
+
   @override
   void dispose() {
     _addressController.dispose();
@@ -178,6 +182,12 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios,color: Colors.white),
+          onPressed: _onBackPressed,
+        ),
+        title: const Text('Personal Info',style: TextStyle(color: Colors.white,fontFamily: 'Ubuntu'),),
         backgroundColor: Colors.blue[800],
         centerTitle: true,
         actions: [

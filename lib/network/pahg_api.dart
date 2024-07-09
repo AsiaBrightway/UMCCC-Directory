@@ -15,6 +15,7 @@ import 'package:pahg_group/data/vos/request_body/login_request.dart';
 import 'package:pahg_group/data/vos/request_body/personal_info_request.dart';
 import 'package:pahg_group/data/vos/request_body/update_employee_request.dart';
 import 'package:pahg_group/network/api_constants.dart';
+import 'package:pahg_group/network/responses/company_by_id_response.dart';
 import 'package:pahg_group/network/responses/company_images_response.dart';
 import 'package:pahg_group/network/responses/company_list_response.dart';
 import 'package:pahg_group/network/responses/department_list_response.dart';
@@ -52,6 +53,12 @@ abstract class PahgApi{
   Future<PostMethodResponse?> addCompany(
       @Header(kParamAuthorization) String apiKey,
       @Body() AddCompanyRequest requestBody
+      );
+
+  @GET("$kEndPointGetCompanyById/{id}")
+  Future<CompanyByIdResponse?> getCompanyById(
+      @Header(kParamAuthorization) String apiKey,
+      @Path('id') int companyId
       );
 
   @PUT("$kEndPointGetCompanyById/{id}")

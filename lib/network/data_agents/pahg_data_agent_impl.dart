@@ -23,6 +23,7 @@ import 'package:pahg_group/data/vos/request_body/update_employee_request.dart';
 import 'package:pahg_group/exception/custom_exception.dart';
 import 'package:pahg_group/network/data_agents/pahg_data_agent.dart';
 import 'package:pahg_group/network/pahg_api.dart';
+import 'package:pahg_group/network/responses/company_by_id_response.dart';
 import 'package:pahg_group/network/responses/company_images_response.dart';
 import 'package:pahg_group/network/responses/department_list_response.dart';
 import 'package:pahg_group/network/responses/employee_list_response.dart';
@@ -438,6 +439,13 @@ class PahgDataAgentImpl extends PahgDataAgent{
   @override
   Future<PostMethodResponse?> deleteFamily(String apiKey, int id) {
     return mApi.deleteFamily(apiKey, id).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<CompanyByIdResponse?> getCompanyById(String apiKey, int companyId) {
+    return mApi.getCompanyById(apiKey, companyId).catchError((onError){
       throw _createException(onError);
     });
   }

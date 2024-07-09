@@ -85,6 +85,39 @@ class _PahgApi implements PahgApi {
   }
 
   @override
+  Future<CompanyByIdResponse?> getCompanyById(
+    String apiKey,
+    int companyId,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': apiKey};
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio.fetch<Map<String, dynamic>?>(
+        _setStreamType<CompanyByIdResponse>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/v1/api/Companies/${companyId}',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = _result.data == null
+        ? null
+        : CompanyByIdResponse.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
   Future<PostMethodResponse?> updateCompany(
     String apiKey,
     int companyId,

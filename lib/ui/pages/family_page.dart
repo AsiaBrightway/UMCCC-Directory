@@ -103,7 +103,12 @@ class _FamilyPageState extends State<FamilyPage> {
     _token = authModel.token;
     _model.getFamilyList(_token, "employeeId", widget.empId).then((onValue){
       setState(() {
-        familyList = onValue;
+        if(onValue.isNotEmpty){
+          familyList = onValue;
+        }else{
+          familyList = [];
+          isLoading = false;
+        }
       });
     }).catchError((onError){
       showErrorDialog(context, onError.toString());

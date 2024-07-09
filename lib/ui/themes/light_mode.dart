@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
      onTertiaryContainer: Colors.grey.shade300,
      secondary: Colors.green,
      secondaryContainer: const Color.fromRGBO(242, 255, 249, 1),
-     surface: Colors.grey.shade300,
+     surface: Colors.grey.shade100,
      error: Colors.red,
      onPrimary: Colors.white,
      onSecondary: Colors.white,

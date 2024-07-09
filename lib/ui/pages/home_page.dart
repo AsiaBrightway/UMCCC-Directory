@@ -42,7 +42,20 @@ class _HomePageState extends State<HomePage> {
         ///exception found without toString()
         showErrorDialog(context, error.toString());
       });
-    }else{
+    }else if(_role == 3) {
+      _model.getEmployeeById(_token, _userId).then((onValue){
+        _model.getCompanyId(_token, onValue.companyId ?? 0).then((onValue) {
+          setState(() {
+            companies = [onValue];
+          });
+        }).catchError((onError) {
+          showErrorDialog(context, onError.toString());
+        });
+      }).catchError((error){
+        showErrorDialog(context, error.toString());
+      });
+    }
+    else{
       setState(() {
         isLoading = false;
       });
@@ -80,12 +93,14 @@ class _HomePageState extends State<HomePage> {
         title: const Text('P A H G', style: TextStyle(color: Colors.white),),
         centerTitle: true,
         actions: [
-          IconButton(
+          (_role == 1 || _role == 2)
+            ? IconButton(
               onPressed: (){
                 Navigator.push(context, MaterialPageRoute(builder: (context) => SearchPage(token: _token,searchType: 1)));
               },
               icon: const Icon(Icons.search,color: Colors.white)
           )
+            : const SizedBox(width: 1),
         ],
       ),
       drawer:  _role == 1
@@ -141,7 +156,6 @@ class _HomePageState extends State<HomePage> {
                       errorBuilder: (context, error, stackTrace){
                         return Image.asset('assets/simple_placeholder.png',width: 90,height: 90,fit: BoxFit.cover,);
                       },
-
                     ),
                   )
               ),
