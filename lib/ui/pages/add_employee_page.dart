@@ -65,7 +65,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
   Future<void> _initializeData() async{
     final authModel = Provider.of<AuthProvider>(context,listen: false);
     _token = authModel.token;
-    _model.getAllCompanies(_token).then((companies){
+    _model.getActiveCompanies(_token).then((companies){
       setState(() {
         this.companies = companies;
       });

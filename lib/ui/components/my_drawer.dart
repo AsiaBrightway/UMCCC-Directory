@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pahg_group/dialog/change_password_dialog.dart';
 import 'package:pahg_group/ui/pages/add_company_page.dart';
 import 'package:pahg_group/ui/pages/add_department_page.dart';
 import 'package:pahg_group/ui/pages/add_employee_page.dart';
@@ -18,12 +19,9 @@ class MyDrawer extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              color: Colors.blueGrey.shade700,
-              child: Center(
-                child: DrawerHeader(
-                child: Image.asset('assets/pahg_logo.png',width: 100,)),
-              ),
+            Center(
+              child: DrawerHeader(
+              child: Image.asset('assets/pahg_logo.png',width: 100,)),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -120,7 +118,7 @@ class MyDrawer extends StatelessWidget {
                 leading: const Icon(Icons.lock),
                 title: const Text('Change Password',style: TextStyle(fontWeight: FontWeight.w400),),
                 onTap: (){
-                  //TODO
+                  showChangePasswordDialog(context);
                 },
               ),
             ),
