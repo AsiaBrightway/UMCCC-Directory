@@ -18,6 +18,7 @@ import 'package:pahg_group/data/vos/request_body/add_training_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_work_request.dart';
 import 'package:pahg_group/data/vos/request_body/get_request.dart';
 import 'package:pahg_group/data/vos/request_body/login_request.dart';
+import 'package:pahg_group/data/vos/request_body/path_user_request.dart';
 import 'package:pahg_group/data/vos/request_body/personal_info_request.dart';
 import 'package:pahg_group/data/vos/request_body/update_employee_request.dart';
 import 'package:pahg_group/exception/custom_exception.dart';
@@ -446,6 +447,13 @@ class PahgDataAgentImpl extends PahgDataAgent{
   @override
   Future<CompanyByIdResponse?> getCompanyById(String apiKey, int companyId) {
     return mApi.getCompanyById(apiKey, companyId).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> changeUserInfo(String apiKey,String id, List<PathUserRequest> request) {
+    return mApi.changeUserInfo(apiKey, id, request).catchError((onError){
       throw _createException(onError);
     });
   }

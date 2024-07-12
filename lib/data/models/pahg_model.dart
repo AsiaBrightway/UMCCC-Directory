@@ -24,6 +24,7 @@ import 'package:pahg_group/data/vos/request_body/add_training_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_work_request.dart';
 import 'package:pahg_group/data/vos/request_body/get_request.dart';
 import 'package:pahg_group/data/vos/request_body/login_request.dart';
+import 'package:pahg_group/data/vos/request_body/path_user_request.dart';
 import 'package:pahg_group/data/vos/request_body/personal_info_request.dart';
 import 'package:pahg_group/data/vos/request_body/update_employee_request.dart';
 import 'package:pahg_group/data/vos/token_vo.dart';
@@ -63,6 +64,12 @@ class PahgModel {
     return mDataAgent.getCompanies(apiKey);
   }
 
+  Future<List<CompaniesVo>> getActiveCompanies(String apiKey) async{
+    var companies = await mDataAgent.getCompanies(apiKey);
+    var activeCompanies = companies.where((company) => company.isActive!).toList();
+    return activeCompanies;
+  }
+  
   Future<CompaniesVo> getCompanyId(String apiKey,int companyId){
     CompaniesVo company = CompaniesVo(0, '', '', '', '', '', null, 10, false);
     return mDataAgent.getCompanyById(apiKey, companyId).asStream().map((response) => response?.document ?? company).first;
@@ -293,5 +300,10 @@ class PahgModel {
 
   Future<PostMethodResponse?> deleteFamily(String apiKey,int id){
     return mDataAgent.deleteFamily(apiKey, id);
+  }
+
+  Future<PostMethodResponse?> changeUserInfo(String apiKey,String id,PathUserRequest request){
+    List<PathUserRequest> requestList = [request];
+    return mDataAgent.changeUserInfo(apiKey, id, requestList);
   }
 }

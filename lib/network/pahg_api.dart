@@ -12,6 +12,7 @@ import 'package:pahg_group/data/vos/request_body/add_school_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_training_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_work_request.dart';
 import 'package:pahg_group/data/vos/request_body/login_request.dart';
+import 'package:pahg_group/data/vos/request_body/path_user_request.dart';
 import 'package:pahg_group/data/vos/request_body/personal_info_request.dart';
 import 'package:pahg_group/data/vos/request_body/update_employee_request.dart';
 import 'package:pahg_group/network/api_constants.dart';
@@ -350,5 +351,12 @@ abstract class PahgApi{
   Future<PostMethodResponse?> deleteFamily(
       @Header(kParamAuthorization) String apiKey,
       @Path("id") int id,
+      );
+
+  @PATCH("$kEndPointPatchUserPassword/{user_id}")
+  Future<PostMethodResponse?> changeUserInfo(
+      @Header(kParamAuthorization) String apiKey,
+      @Path("user_id") String id,
+      @Body() List<PathUserRequest> requestBody
       );
 }

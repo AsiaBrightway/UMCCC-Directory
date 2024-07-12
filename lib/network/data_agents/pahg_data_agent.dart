@@ -15,6 +15,7 @@ import 'package:pahg_group/data/vos/request_body/add_training_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_work_request.dart';
 import 'package:pahg_group/data/vos/request_body/get_request.dart';
 import 'package:pahg_group/data/vos/request_body/login_request.dart';
+import 'package:pahg_group/data/vos/request_body/path_user_request.dart';
 import 'package:pahg_group/data/vos/request_body/personal_info_request.dart';
 import 'package:pahg_group/data/vos/request_body/update_employee_request.dart';
 import 'package:pahg_group/network/responses/company_by_id_response.dart';
@@ -135,4 +136,6 @@ abstract class PahgDataAgent{
   Future<PostMethodResponse?> deleteFamily(String apiKey,int id);
 
   Future<PostMethodResponse?> addFamily(String apiKey,AddFamilyRequest request);
+
+  Future<PostMethodResponse?> changeUserInfo(String apiKey,String id,List<PathUserRequest> request);
 }
