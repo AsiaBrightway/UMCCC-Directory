@@ -1,0 +1,88 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'personal_info_vo.dart';
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+PersonalInfoVo _$PersonalInfoVoFromJson(Map<String, dynamic> json) =>
+    PersonalInfoVo(
+      id: (json['Id'] as num?)?.toInt(),
+      employeeId: json['EmployeeId'] as String?,
+      gender: json['Gender'] as bool?,
+      address: json['Address'] as String?,
+      telNoOffice: json['TelNoOffice'] as String?,
+      telNoHome: json['TelNoHome'] as String?,
+      dateOfBirth: json['DateOfBirth'] as String?,
+      age: (json['Age'] as num?)?.toInt(),
+      placeOfBirth: json['PlaceOfBirth'] as String?,
+      nationality: json['Nationality'] as String?,
+      religion: json['Religion'] as String?,
+      race: json['Race'] as String?,
+      health: json['Health'] as String?,
+      bloodType: (json['BloodType'] as num?)?.toInt(),
+      handUsage: (json['HandUsage'] as num?)?.toInt(),
+      hairColor: json['HairColor'] as String?,
+      eyeColor: json['EyeColor'] as String?,
+      skinColor: json['SkinColor'] as String?,
+      marriageStatus: (json['MarriageStatus'] as num?)?.toInt(),
+      emergencyContactName: json['EmmergencyContactName'] as String?,
+      emergencyContactRelation: json['EmmergencyContactRelation'] as String?,
+      emergencyContactAddress: json['EmmergencyContactAddress'] as String?,
+      emergencyContactHomePhone: json['EmmergencyContactHomePhone'] as String?,
+      emergencyContactOfficePhone:
+          json['EmmergencyContactOfficePhone'] as String?,
+      emergencyContactMobilePhone:
+          json['EmmergencyContactMobilePhone'] as String?,
+      sportAndHobby: json['SportAndHobby'] as String?,
+      socialActivities: json['SocialActivities'] as String?,
+      drivingLicenceStatus: (json['DrivingLicenceStatus'] as num?)?.toInt(),
+      drivingLicenceType: (json['DrivingLicenceType'] as num?)?.toInt(),
+      drivingLicenceColor: (json['DrivingLicenceColor'] as num?)?.toInt(),
+      vehiclePunishment: json['VehiclePunishment'] as bool?,
+      vehiclePunishmentDescription:
+          json['VehiclePunishmentDescription'] as String?,
+      previousApplied: json['PreviousApplied'] as bool?,
+      previousAppliedDescription: json['PreviousAppliedDescription'] as String?,
+      hRDepartmentRecord: json['HRDepartmentRecord'] as String?,
+    );
+
+Map<String, dynamic> _$PersonalInfoVoToJson(PersonalInfoVo instance) =>
+    <String, dynamic>{
+      'Id': instance.id,
+      'EmployeeId': instance.employeeId,
+      'Gender': instance.gender,
+      'Address': instance.address,
+      'TelNoOffice': instance.telNoOffice,
+      'TelNoHome': instance.telNoHome,
+      'DateOfBirth': instance.dateOfBirth,
+      'Age': instance.age,
+      'PlaceOfBirth': instance.placeOfBirth,
+      'Nationality': instance.nationality,
+      'Religion': instance.religion,
+      'Race': instance.race,
+      'Health': instance.health,
+      'BloodType': instance.bloodType,
+      'HandUsage': instance.handUsage,
+      'HairColor': instance.hairColor,
+      'EyeColor': instance.eyeColor,
+      'SkinColor': instance.skinColor,
+      'MarriageStatus': instance.marriageStatus,
+      'EmmergencyContactName': instance.emergencyContactName,
+      'EmmergencyContactRelation': instance.emergencyContactRelation,
+      'EmmergencyContactAddress': instance.emergencyContactAddress,
+      'EmmergencyContactHomePhone': instance.emergencyContactHomePhone,
+      'EmmergencyContactOfficePhone': instance.emergencyContactOfficePhone,
+      'EmmergencyContactMobilePhone': instance.emergencyContactMobilePhone,
+      'SportAndHobby': instance.sportAndHobby,
+      'SocialActivities': instance.socialActivities,
+      'DrivingLicenceStatus': instance.drivingLicenceStatus,
+      'DrivingLicenceType': instance.drivingLicenceType,
+      'DrivingLicenceColor': instance.drivingLicenceColor,
+      'VehiclePunishment': instance.vehiclePunishment,
+      'VehiclePunishmentDescription': instance.vehiclePunishmentDescription,
+      'PreviousApplied': instance.previousApplied,
+      'PreviousAppliedDescription': instance.previousAppliedDescription,
+      'HRDepartmentRecord': instance.hRDepartmentRecord,
+    };
