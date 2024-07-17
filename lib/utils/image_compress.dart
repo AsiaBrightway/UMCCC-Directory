@@ -4,7 +4,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path_provider/path_provider.dart';
 
 ///compress image file size
-Future<File?> compressAndGetFile(File file, String targetPath) async {
+Future<File?> compressAndGetFile(File file, String targetPath,int quality) async {
   Directory tempDir = await getTemporaryDirectory();
   String tempPath = tempDir.path;
 
@@ -14,12 +14,11 @@ Future<File?> compressAndGetFile(File file, String targetPath) async {
     var result = await FlutterImageCompress.compressAndGetFile(
       file.absolute.path,
       targetPath,
-      quality: 48,
+      quality: quality,
       rotate: 0,
     );
     return result != null ? File(result.path) : null;
   } catch (e) {
-    print("Error during image compression: $e");
     return null;
   }
 }

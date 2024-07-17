@@ -313,6 +313,7 @@ class _AddDepartmentPageState extends State<AddDepartmentPage> {
               _selectedDepartment = newValue!;
               _departmentController.text = newValue;
               DepartmentVo department = departments.firstWhere((company) => company.departmentName == newValue);
+              _isActive = department.isActive!;
               departmentId = department.id ?? 0;
             });
         },

@@ -251,12 +251,12 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                     child: Container(
                       margin: const EdgeInsets.only(bottom: 8),
                       height: 180,
-                      child: Image.asset('assets/placeholder_image.png',
+                      child: Image.asset('assets/placeholder_image.png',color: Theme.of(context).colorScheme.onSurface,
                           fit: BoxFit.cover),
                     ),
                   )
                       : CompanyBannerCard(imagesVo: companyImages,onDelete: _deleteBannerImage,),
-                  const SizedBox(height: 16,),
+                  const SizedBox(height: 16),
                   ///drop down button
                   Center(
                     child: SizedBox(
@@ -369,34 +369,31 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
             children: [
               Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Hero(
-                    tag: 112,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(40),
-                      child: Image.network(
-                        employee.getImageWithBaseUrl(),
-                        width: 80,
-                        height: 80,
-                        fit: BoxFit.cover,
-                        loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                          if (loadingProgress == null) {
-                            return child;
-                          }
-                          return Center(
-                            child: SizedBox(
-                              width: 80,height: 80,
-                              child: CircularProgressIndicator(
-                                value: loadingProgress.expectedTotalBytes != null
-                                    ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
-                                    : null,
-                              ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(40),
+                    child: Image.network(
+                      employee.getImageWithBaseUrl(),
+                      width: 80,
+                      height: 80,
+                      fit: BoxFit.cover,
+                      loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                        if (loadingProgress == null) {
+                          return child;
+                        }
+                        return Center(
+                          child: SizedBox(
+                            width: 80,height: 80,
+                            child: CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
+                                  : null,
                             ),
-                          );
-                        },
-                        errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
-                          return Image.asset('lib/icons/profile.png',width: 80,height: 90); // Show error image
-                        },
-                      ),
+                          ),
+                        );
+                      },
+                      errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+                        return Image.asset('assets/person_placeholder.jpg',width: 80,height: 90); // Show error image
+                      },
                     ),
                   )
               ),

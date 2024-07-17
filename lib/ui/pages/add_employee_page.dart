@@ -1,8 +1,7 @@
 import 'dart:io';
 
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+comimport 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pahg_group/data/vos/request_body/add_employee_request.dart';
 import 'package:pahg_group/data/vos/request_body/update_employee_request.dart';
@@ -16,6 +15,7 @@ import '../../data/vos/department_vo.dart';
 import '../../data/vos/position_vo.dart';
 import '../../data/vos/request_body/get_request.dart';
 import '../../exception/helper_functions.dart';
+import '../../utils/image_compress.dart';
 import '../../widgets/loading_widget.dart';
 import '../providers/auth_provider.dart';
 
@@ -106,6 +106,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
     _model.updateEmployee(_token, widget.userId, getEmployeeRequest()).then((response){
       Navigator.of(context).pop();
       showSuccessScaffold(context, response?.message ?? "Success");
+      Navigator.pop(context,true);
     }).catchError((error){
       Navigator.of(context).pop();
       showErrorDialog(context, error.toString());
@@ -172,7 +173,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
     _model.getDepartmentListByCompany(_token, request).then((response){
       setState(() {
         departments.clear();
-        departments = response;
+        departments = response.where((department) => department.isActive!).toList();
       });
     }).catchError((error){
       showErrorDialog(context, error.toString());
@@ -206,15 +207,22 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                   child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 20.0),
                       child : GestureDetector(
-                          onTap: () async{
+                          onTap: () async {
                             ImagePicker imagePicker = ImagePicker();
-                            XFile? file = await imagePicker.pickImage(source: ImageSource.gallery);
-                            setState(() {
-                              if(file != null){
-                                _image = File(file.path);
-                                isImageSelected = true;
+                              XFile? file = await imagePicker.pickImage(source: ImageSource.gallery);
+
+                              if (file != null) {
+                                // Compress the image
+                                File? compressFile = await compressAndGetFile(File(file.path), file.path,96);
+
+                                // Update the state with the compressed file
+                                if (compressFile != null) {
+                                  setState(() {
+                                    _image = compressFile;
+                                    isImageSelected = true;
+                                  });
+                                }
                               }
-                            });
                           },
                           child: (_image == null)
                               ? ClipRRect(

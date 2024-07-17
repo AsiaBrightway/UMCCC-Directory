@@ -14,7 +14,7 @@ class MyDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
+      backgroundColor: Theme.of(context).colorScheme.onError,
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -26,7 +26,7 @@ class MyDrawer extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: ListTile(
-                leading: Image.asset('lib/icons/profile.png',width: 25),
+                leading: Image.asset('lib/icons/profile.png',width: 25,color: Theme.of(context).colorScheme.onSurface,),
                 title: const Text('My Profile',style: TextStyle(fontFamily: 'Roboto',fontWeight: FontWeight.w400),),
                 onTap: (){
                   Navigator.push(context, MaterialPageRoute(builder: (context) => EmployeeProfilePage(userId: userId),));
@@ -36,7 +36,7 @@ class MyDrawer extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: ListTile(
-                leading: Image.asset('lib/icons/add_person.png',width: 25,color: Colors.black,),
+                leading: Image.asset('lib/icons/add_person.png',width: 25,color: Theme.of(context).colorScheme.onSurface),
                 title: const Text('Add Employee',style: TextStyle(fontWeight: FontWeight.w400),),
                 onTap: (){
                   Navigator.push(context, MaterialPageRoute(builder: (context) => const AddEmployeePage(isAdd: true, userId: '',),));
@@ -48,7 +48,7 @@ class MyDrawer extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: ListTile(
-                leading: Image.asset('lib/icons/edit_company.png',width: 25),
+                leading: Image.asset('lib/icons/edit_company.png',width: 25,color: Theme.of(context).colorScheme.onSurface,),
                 title: const Text('Add Company',style: TextStyle(fontWeight: FontWeight.w400),),
                 onTap: (){
                   Navigator.push(context, MaterialPageRoute(builder: (context) => const AddCompanyPage(isAdd: true)));
@@ -72,7 +72,7 @@ class MyDrawer extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: ListTile(
-                leading: Image.asset('lib/icons/add_dept.png',width: 25),
+                leading: Image.asset('lib/icons/add_dept.png',width: 25,color: Theme.of(context).colorScheme.onSurface,),
                 title: const Text('Add Department',style: TextStyle(fontWeight: FontWeight.w400),),
                 onTap: (){
                   Navigator.push(context, MaterialPageRoute(builder: (context) => const AddDepartmentPage(isAdd: true)));
@@ -94,7 +94,7 @@ class MyDrawer extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: ListTile(
-                leading: Image.asset('lib/icons/add_chair.png',width: 25),
+                leading: Image.asset('lib/icons/add_chair.png',width: 25,color: Theme.of(context).colorScheme.onSurface,),
                 title: const Text('Add Position',style: TextStyle(fontWeight: FontWeight.w400),),
                 onTap: (){
                   Navigator.push(context, MaterialPageRoute(builder: (context) => const AddPositionPage(isAdd: true),));
