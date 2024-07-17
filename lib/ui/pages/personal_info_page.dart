@@ -644,108 +644,115 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
             ),
           ),
           AnimatedContainer(
+                height: _isDrivingLicenseExpanded ? 240 : 0.0,
                 duration: const Duration(milliseconds: 400),
-                child: Visibility(
-                  visible: _isDrivingLicenseExpanded,
-                  child: AnimatedOpacity(
-                    opacity: _isDrivingLicenseExpanded ? 1.0 : 0.0,
-                    curve: Curves.easeInOutBack,
-                    duration: const Duration(milliseconds: 400),
-                    child: Column(
-                      children: [
-                        (editMode && _currentUserRole == 1)
-                            ? CustomDropdownButton(
-                                value: _selectedLicenseStatus,
-                                hint: 'License Status',
-                                items: licenseStatus,
-                                onChanged: (int? newValue) {
-                                  setState(() {
-                                    _selectedLicenseStatus = newValue!;
-                                  });
-                                })
-                            : Padding(
-                                padding: const EdgeInsets.only(left: 8.0),
-                                child: Row(
-                                  children: [
-                                    const Text("License Status : "),
-                                    Text(licenseStatusName)
-                                  ],
-                                ),
+                child: Column(
+                  children: [
+                    (editMode && _currentUserRole == 1)
+                        ? Flexible(
+                          child: CustomDropdownButton(
+                              value: _selectedLicenseStatus,
+                              hint: 'License Status',
+                              items: licenseStatus,
+                              onChanged: (int? newValue) {
+                                setState(() {
+                                  _selectedLicenseStatus = newValue!;
+                                });
+                              }),
+                        )
+                        : Flexible(
+                          child: Padding(
+                              padding: const EdgeInsets.only(left: 8.0),
+                              child: Row(
+                                children: [
+                                  const Text("License Status : "),
+                                  Text(licenseStatusName)
+                                ],
                               ),
-                        const SizedBox(height: 10),
-                        (editMode && _currentUserRole == 1)
-                            ? CustomDropdownButton(
-                                value: _selectedLicenseType,
-                                hint: 'License Type',
-                                items: licenseType,
-                                onChanged: (int? newValue) {
-                                  setState(() {
-                                    _selectedLicenseType = newValue!;
-                                  });
-                                })
-                            : Padding(
-                                padding: const EdgeInsets.only(left: 8),
-                                child: Row(
-                                  children: [
-                                    const Text("License Type : "),
-                                    Text(licenseTypeName)
-                                  ],
-                                ),
-                              ),
-                        const SizedBox(height: 10),
-
-                        ///license color drop down
-                        (editMode && _currentUserRole == 1)
-                            ? CustomDropdownButton(
-                                value: _selectedLicenseColor,
-                                hint: 'License Color',
-                                items: licenseColor,
-                                onChanged: (int? value) {
-                                  setState(() {
-                                    _selectedLicenseColor = value!;
-                                  });
-                                })
-                            : Padding(
-                                padding: const EdgeInsets.only(left: 8),
-                                child: Row(
-                                  children: [
-                                    const Text("License Color : "),
-                                    Text(licenseColorName)
-                                  ],
-                                ),
-                              ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-
-                        ///toggle vehicle punishment
-                        Row(
-                          children: [
-                            const Text(
-                              'Vehicle Punishment:',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w500, fontSize: 14),
                             ),
-                            const SizedBox(width: 5),
-                            Switch(
-                                value: _isVehiclePunished,
-                                activeColor: Colors.red.shade500,
-                                onChanged: (bool value) {
-                                  setState(() {
-                                    _isVehiclePunished = value;
-                                  });
-                                })
-                          ],
                         ),
-                        (_isVehiclePunished)
-                            ? CustomTextField(
-                                controller: _vehiclePunishmentDescription,
-                                labelText: 'Vehicle Punishment Description',
-                                readOnly: _currentUserRole)
-                            : const SizedBox(height: 1)
+                    const SizedBox(height: 10),
+                    (editMode && _currentUserRole == 1)
+                        ? CustomDropdownButton(
+                            value: _selectedLicenseType,
+                            hint: 'License Type',
+                            items: licenseType,
+                            onChanged: (int? newValue) {
+                              setState(() {
+                                _selectedLicenseType = newValue!;
+                              });
+                            })
+                        : Flexible(
+                          child: Padding(
+                              padding: const EdgeInsets.only(left: 8),
+                              child: Row(
+                                children: [
+                                  const Text("License Type : "),
+                                  Text(licenseTypeName)
+                                ],
+                              ),
+                            ),
+                        ),
+                    const SizedBox(height: 10),
+
+                    ///license color drop down
+                    (editMode && _currentUserRole == 1)
+                        ? CustomDropdownButton(
+                            value: _selectedLicenseColor,
+                            hint: 'License Color',
+                            items: licenseColor,
+                            onChanged: (int? value) {
+                              setState(() {
+                                _selectedLicenseColor = value!;
+                              });
+                            })
+                        : Flexible(
+                          child: Padding(
+                              padding: const EdgeInsets.only(left: 8),
+                              child: Row(
+                                children: [
+                                  const Text("License Color : "),
+                                  Text(licenseColorName)
+                                ],
+                              ),
+                            ),
+                        ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+
+                    ///toggle vehicle punishment
+                    Row(
+                      children: [
+                        const Flexible(
+                          child: Text(
+                            'Vehicle Punishment:',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w500, fontSize: 14),
+                          ),
+                        ),
+                        const SizedBox(width: 5),
+                        Flexible(
+                          child: Switch(
+                              value: _isVehiclePunished,
+                              activeColor: Colors.red.shade500,
+                              onChanged: (bool value) {
+                                setState(() {
+                                  _isVehiclePunished = value;
+                                });
+                              }),
+                        )
                       ],
                     ),
-                  ),
+                    (_isVehiclePunished)
+                        ? Flexible(
+                          child: CustomTextField(
+                              controller: _vehiclePunishmentDescription,
+                              labelText: 'Vehicle Punishment Description',
+                              readOnly: _currentUserRole),
+                        )
+                        : const SizedBox(height: 1)
+                  ],
                 ))
           ],
       )

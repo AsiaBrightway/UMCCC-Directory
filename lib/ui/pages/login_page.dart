@@ -79,7 +79,7 @@ class _LoginPageState extends State<LoginPage> {
         backgroundColor: Colors.blue.shade800,
         automaticallyImplyLeading: false,
       ),
-      backgroundColor: Colors.grey[200],
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -109,7 +109,7 @@ class _LoginPageState extends State<LoginPage> {
                       height: 50,
                       width: double.infinity,
                       decoration: BoxDecoration(
-                          color: Colors.grey[200],
+                          color: Theme.of(context).colorScheme.surface,
                           borderRadius: const BorderRadius.only(topLeft: Radius.circular(50))
                       ),
                     ),

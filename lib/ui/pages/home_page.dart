@@ -24,12 +24,16 @@ class _HomePageState extends State<HomePage> {
   int _role = 0;
   final PahgModel _model = PahgModel();
   bool isLoading = true;
-  String errorMessage = '';
   List<CompaniesVo> companies = [];
 
   @override
   void didChangeDependencies() {
-    final authModel = Provider.of<AuthProvider>(context);
+    super.didChangeDependencies();
+    _initializeData();
+  }
+
+  Future<void> _initializeData() async {
+    final authModel = Provider.of<AuthProvider>(context,listen: true);
     _token = authModel.token;
     _userId = authModel.userId;
     _role = authModel.role;
@@ -52,7 +56,7 @@ class _HomePageState extends State<HomePage> {
           showErrorDialog(context, onError.toString());
         });
       }).catchError((error){
-        showErrorDialog(context, error.toString());
+        showErrorRefreshDialog(context, error.toString(),_initializeData);
       });
     }
     else{
@@ -60,7 +64,6 @@ class _HomePageState extends State<HomePage> {
         isLoading = false;
       });
     }
-    super.didChangeDependencies();
   }
 
   Future<void> _refresh() async{
@@ -120,7 +123,13 @@ class _HomePageState extends State<HomePage> {
               ? const Center(
                   child: CircularProgressIndicator(),
                 )
-              : Center(child: Text(errorMessage)),
+              : Center(
+                child: Column(
+                  children: [
+                    Image.asset('lib/icons/team_vector.png',)
+                  ],
+                ),
+              )
     );
   }
 

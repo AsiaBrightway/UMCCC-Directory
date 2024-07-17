@@ -1,6 +1,6 @@
 
-const String kBaseUrl = "http://192.168.1.6:86";
-const String kBaseImageUrl = "http://192.168.1.6:86/uploadimage/";
+const String kBaseUrl = "http://192.168.1.13:86";
+const String kBaseImageUrl = "http://192.168.1.13:86/uploadimage/";
 
 //end point
 const String kEndPointLogin = "/v1/api/Token";

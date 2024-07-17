@@ -223,7 +223,7 @@ class _AddCompanyPageState extends State<AddCompanyPage> {
 
                             if (file != null) {
                               // Compress the image
-                              File? compressFile = await compressAndGetFile(File(file.path), file.path);
+                              File? compressFile = await compressAndGetFile(File(file.path), file.path,48);
 
                               // Update the state with the compressed file
                               if (compressFile != null) {

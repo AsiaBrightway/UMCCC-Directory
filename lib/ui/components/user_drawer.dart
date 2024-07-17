@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pahg_group/ui/pages/employee_profile_page.dart';
 
+import '../../dialog/change_password_dialog.dart';
 import '../../exception/helper_functions.dart';
 
 class UserDrawer extends StatefulWidget {
@@ -38,7 +39,7 @@ class _UserDrawerState extends State<UserDrawer> {
                 leading: const Icon(Icons.lock),
                 title: const Text('Change Password',style: TextStyle(fontWeight: FontWeight.bold),),
                 onTap: (){
-                  //TODO
+                  showChangePasswordDialog(context);
                 },
               ),
             ),
