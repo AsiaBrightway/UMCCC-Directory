@@ -109,7 +109,7 @@ Future<void> showChangePasswordDialog(
   return showDialog<void>(
     context: context,
     builder: (BuildContext context) {
-      return ChangePasswordDialog();
+      return const ChangePasswordDialog();
     },
   );
 }
