@@ -133,9 +133,15 @@ class _EmployeeProfilePageState extends State<EmployeeProfilePage> {
                         ///Personal Info
                         GestureDetector(
                           onTap: (){
-                            navigateToPersonal(context);
+                            if(employee != null){
+                              navigateToPersonal(context);
+                            }
+                            else{
+                              showScaffoldMessage(context, "Please wait, the network operation is still in progress.");
+                            }
                           },
                           child: Container(
+
                             width: MediaQuery.of(context).size.width * 0.42,
                             height: 140,
                             decoration: BoxDecoration(
@@ -165,7 +171,11 @@ class _EmployeeProfilePageState extends State<EmployeeProfilePage> {
                         ///Education
                         GestureDetector(
                           onTap: (){
-                            navigateToEducation(context);
+                            if(employee != null){
+                              navigateToEducation(context);
+                            }else{
+                              showScaffoldMessage(context, "Please wait,the network operation is still in progress");
+                            }
                           },
                           child: Container(
                             width: MediaQuery.of(context).size.width * 0.42,
@@ -205,7 +215,11 @@ class _EmployeeProfilePageState extends State<EmployeeProfilePage> {
                         ///Work Experience
                         GestureDetector(
                           onTap: () {
-                            navigateToWorkExperience(context);
+                            if(employee != null){
+                              navigateToWorkExperience(context);
+                            }else{
+                              showScaffoldMessage(context,"Please wait,the operation is still in progress");
+                            }
                             },
                           child: Container(
                             width: MediaQuery.of(context).size.width * 0.42,
