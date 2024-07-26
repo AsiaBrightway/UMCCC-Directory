@@ -454,7 +454,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                       onPressed: (){
                         Navigator.push(context, MaterialPageRoute(builder: (context) => FamilyPage(empId: widget.userId, userRole: _currentUserRole),));
                       },
-                      child: Text("Go To Family"))
+                      child: const Text("Go To Family"))
                 ],
               ),
               const SizedBox(height: 20)

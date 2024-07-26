@@ -46,7 +46,6 @@ class _GraduateDialogState extends State<GraduateDialog> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -153,4 +152,3 @@ Future<void> showGraduateDialog(
     },
   );
 }
-

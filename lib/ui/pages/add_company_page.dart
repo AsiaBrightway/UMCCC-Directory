@@ -260,7 +260,11 @@ class _AddCompanyPageState extends State<AddCompanyPage> {
                                       return const Center(
                                         child: SizedBox(
                                             height: 90,
-                                            child: CircularProgressIndicator()),
+                                            width: 90,
+                                            child: Padding(
+                                              padding: EdgeInsets.all(24.0),
+                                              child: CircularProgressIndicator(color: Colors.blue,),
+                                            )),
                                       );
                                     },
                                   ))
@@ -268,7 +272,12 @@ class _AddCompanyPageState extends State<AddCompanyPage> {
                                 borderRadius: BorderRadius.circular(16),
                                   child: Image.file(_image!,width: 90,height: 90,fit: BoxFit.cover,
                                     errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
-                                      return const Center(child: SizedBox(height: 90,width: 90,child: CircularProgressIndicator(color: Colors.blue)));
+                                      return const Center(
+                                          child: SizedBox(height: 90,width: 90,child: Padding(
+                                            padding: EdgeInsets.symmetric(vertical: 16.0),
+                                            child: CircularProgressIndicator(color: Colors.red),
+                                          ))
+                                      );
                                     },)
                               )
                       )

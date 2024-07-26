@@ -428,6 +428,8 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
               departments.clear();
             });
           },
+
+          
           dropdownStyleData: DropdownStyleData(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
