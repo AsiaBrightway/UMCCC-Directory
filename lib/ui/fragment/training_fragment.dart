@@ -65,7 +65,7 @@ class _TrainingFragmentState extends State<TrainingFragment> {
 
   void _onUpdate(AddTrainingRequest updatedTraining){
     _model.updateTraining(_token, updatedTraining.id!, updatedTraining).then((onValue){
-      showScaffoldMessage(context, onValue?.message ?? 'Update');
+      showSuccessScaffold(context, onValue?.message ?? 'Update');
       _onRefresh();
     }).catchError((onError){
       showErrorDialog(context, onError.toString());
@@ -109,7 +109,7 @@ class _TrainingFragmentState extends State<TrainingFragment> {
     request.employeeId = widget.userId;
     _model.addTraining(_token, request).then((onValue){
       _onRefresh();
-      showScaffoldMessage(context, onValue?.message ?? "Successful");
+      showSuccessScaffold(context, onValue?.message ?? "Successful");
     }).catchError((onError){
       showErrorDialog(context, onError.toString());
     });

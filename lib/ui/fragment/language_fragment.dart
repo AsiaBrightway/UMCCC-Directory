@@ -35,7 +35,7 @@ class _LanguageFragmentState extends State<LanguageFragment> {
     language.id = 0;
     language.employeeId = widget.userId;
     _model.addLanguage(_token, language).then((onValue){
-      showScaffoldMessage(context, onValue?.message ?? "Successfully Added");
+      showSuccessScaffold(context, onValue?.message ?? "Successfully Added");
       _onRefresh();
     }).catchError((onError){
       showErrorDialog(context, onError.toString());
@@ -92,7 +92,7 @@ class _LanguageFragmentState extends State<LanguageFragment> {
 
   void _onUpdate(AddLanguageRequest updatedLanguage){
     _model.updateLanguage(_token,updatedLanguage.id!, updatedLanguage).then((onValue){
-      showScaffoldMessage(context, onValue?.message ?? "Language Update is successful");
+      showSuccessScaffold(context, onValue?.message ?? "Language Update is successful");
       _onRefresh();
     }).catchError((onError){
       showErrorDialog(context, onError.toString());

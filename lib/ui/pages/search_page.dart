@@ -178,7 +178,7 @@ class _SearchPageState extends State<SearchPage> {
                   )),
                   const SizedBox(height: 8),
                   Text(
-                      employee.companyName!,
+                      employee.companyName ?? "empty company",
                       style: const TextStyle(
                           fontFamily: 'Ubuntu',
                           fontWeight: FontWeight.w300
@@ -186,7 +186,7 @@ class _SearchPageState extends State<SearchPage> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                      employee.departmentName!,
+                      employee.departmentName ?? "empty dept",
                       style: const TextStyle(
                         fontSize: 12,
                         fontFamily: 'Roboto',

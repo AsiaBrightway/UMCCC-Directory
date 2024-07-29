@@ -55,7 +55,7 @@ class _SchoolFragmentState extends State<SchoolFragment> {
     addRequest.employeeId = widget.userId;
     _model.addSchool(_token, addRequest).then((onValue){
       _onRefresh();
-      showScaffoldMessage(context, onValue?.message ?? "Successfully added");
+      showSuccessScaffold(context, onValue?.message ?? "Successfully added");
     }).catchError((onError){
       showErrorDialog(context, onError.toString());
     });
@@ -64,7 +64,7 @@ class _SchoolFragmentState extends State<SchoolFragment> {
   void _onUpdate(AddSchoolRequest updatedSchool){
     _model.updateSchool(_token, updatedSchool.id!, updatedSchool).then((onValue){
       _onRefresh();
-      showScaffoldMessage(context, onValue?.message ?? "Successfully updated");
+      showSuccessScaffold(context, onValue?.message ?? "Successfully updated");
     }).catchError((onError){
       showErrorDialog(context, onError.toString());
     });

@@ -42,9 +42,10 @@ class _EducationPageState extends State<EducationPage> with SingleTickerProvider
           labelColor: Colors.white,
           tabs: const [
             Tab(text: 'School'),
+
             Tab(text: 'Graduate'),
             Tab(text: 'Training'),
-            Tab(text: 'Language',)
+            Tab(text: 'Language')
           ],
         ),
       ),

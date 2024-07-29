@@ -68,7 +68,7 @@ class _GraduateFragmentState extends State<GraduateFragment> {
     addRequest.id = 0;
     addRequest.employeeId = widget.userId;
     _model.addGraduate(_token, request).then((onValue){
-      showScaffoldMessage(context, onValue?.message ?? "Successfully added");
+      showSuccessScaffold(context, onValue?.message ?? "Successfully added");
       _onRefresh();
     }).catchError((onError){
       showErrorDialog(context, onError.toString());
@@ -77,7 +77,7 @@ class _GraduateFragmentState extends State<GraduateFragment> {
 
   void _onUpdate(AddGraduateRequest updatedRequest){
     _model.updateGraduate(_token, updatedRequest.id!, updatedRequest).then((onValue){
-      showScaffoldMessage(context, onValue?.message ?? "Successfully added");
+      showSuccessScaffold(context, onValue?.message ?? "Successfully added");
       _onRefresh();
     }).catchError((onError){
       showErrorDialog(context, onError.toString());

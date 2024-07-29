@@ -287,10 +287,11 @@ class _EmployeeProfilePageState extends State<EmployeeProfilePage> {
   }
 
   Widget disciplineCard(){
+
     double screenWidth = MediaQuery.of(context).size.width;
     bool isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
 
-    double paddingWidth = isPortrait ? 24 : screenWidth * 0.07;
+    double paddingWidth = isPortrait ? screenWidth * 0.064 : screenWidth * 0.07;
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: paddingWidth,vertical: 12),
       child: Row(
@@ -332,7 +333,7 @@ class _EmployeeProfilePageState extends State<EmployeeProfilePage> {
     bool isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
 
     double imageWidth = isPortrait ? screenWidth * 0.3 : screenWidth * 0.2;
-    double imageHeight = 140;
+    double imageHeight = MediaQuery.of(context).size.height * 0.2;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -346,7 +347,7 @@ class _EmployeeProfilePageState extends State<EmployeeProfilePage> {
               height: imageHeight,
               fit: BoxFit.cover,
               errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
-                return Image.asset('assets/placeholder_image.png',width: 130,height: 160,); // Show error image
+                return Image.asset('assets/placeholder_image.png',width: 130,height: MediaQuery.of(context).size.height * 0.2,); // Show error image
               },
             ),
             ),
@@ -360,7 +361,6 @@ class _EmployeeProfilePageState extends State<EmployeeProfilePage> {
                 const SizedBox(height: 16),
                 Text(employee?.employeeName! ?? "loading..",style: const TextStyle(
                   fontWeight: FontWeight.w400,
-                  overflow: TextOverflow.ellipsis,
                   fontSize: 18,
                   color: Colors.white
                 ),),

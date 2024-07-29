@@ -250,7 +250,7 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                     borderRadius: BorderRadius.circular(14),
                     child: Container(
                       margin: const EdgeInsets.only(bottom: 8),
-                      height: 180,
+                      height: MediaQuery.of(context).size.height * 0.22,
                       child: Image.asset('assets/placeholder_image.png',color: Theme.of(context).colorScheme.onSurface,
                           fit: BoxFit.cover),
                     ),
@@ -398,20 +398,23 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                   )
               ),
               const SizedBox(width: 16,),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(employee.employeeName!,style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500
-                  )),
-                  const SizedBox(height: 10),
-                  Text(employee.departmentName!,style: const TextStyle(
-                    fontFamily: 'Roboto',
-                    fontWeight: FontWeight.w300
-                  ),)
-                ],
+              Flexible(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(employee.employeeName!,style: const TextStyle(
+                        fontSize: 18,
+                        overflow: TextOverflow.ellipsis,
+                        fontWeight: FontWeight.w500
+                    )),
+                    const SizedBox(height: 10),
+                    Text(employee.departmentName!,style: const TextStyle(
+                      fontFamily: 'Roboto',
+                      fontWeight: FontWeight.w300
+                    ),)
+                  ],
+                ),
               )
             ],
           ),
@@ -443,7 +446,7 @@ class _CompanyBannerCardState extends State<CompanyBannerCard> {
       children: [
         ///Banner Page View
         SizedBox(
-          height: 180,
+          height: MediaQuery.of(context).size.height * 0.22,
           child: PageView.builder(
             controller: _pageController,
             itemCount: widget.imagesVo.length,

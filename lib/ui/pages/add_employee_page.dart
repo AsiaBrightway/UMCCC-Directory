@@ -46,6 +46,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
   String? _selectedCompany;
   String? _selectedPosition;
   String? _emailErrorText;
+  String? _nameErrorText;
   String companyName = 'Loading..';
   String departmentName = 'Loading..';
   String positionName = 'Loading..';
@@ -229,15 +230,15 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                   borderRadius: BorderRadius.circular(16),
                                   child: Image.network(
                                     imageUrlForProfile,
-                                    width: 90,
-                                    height: 96,
+                                    width: MediaQuery.of(context).size.width * 0.22,
+                                    height: MediaQuery.of(context).size.height * 0.15,
                                     fit: BoxFit.cover,
                                     errorBuilder: (context, error, stackTrace) {
                                       return Image.asset(
                                         'lib/icons/add_photo.png',
-                                        width: 80,
-                                        height: 80,
-                                        fit: BoxFit.cover,
+                                        width: MediaQuery.of(context).size.width * 0.22,
+                                        height: MediaQuery.of(context).size.height * 0.15,
+                                        fit: BoxFit.contain,
                                         color: Theme.of(context)
                                             .colorScheme
                                             .onSurface,
@@ -260,11 +261,16 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                   borderRadius: BorderRadius.circular(16),
                                   child: Image.file(
                                     _image!,
-                                    width: 90,
-                                    height: 90,
+                                    width: MediaQuery.of(context).size.width * 0.22,
+                                    height: MediaQuery.of(context).size.height * 0.15,
                                     fit: BoxFit.cover,
                                     errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
-                                      return const Center(child: SizedBox(height: 90,width: 90,child: CircularProgressIndicator(color: Colors.blue)));
+                                      return const Center(
+                                          child: SizedBox(
+                                              height: 90,
+                                              width: 90,
+                                              child: CircularProgressIndicator(color: Colors.blue))
+                                      );
                                     },
                                   )))
                   ),
@@ -280,6 +286,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                   decoration: InputDecoration(
                     floatingLabelStyle: const TextStyle(color: Colors.blue),
                     prefixIcon: const Icon(Icons.person_pin),
+                    errorText: _nameErrorText,
                     labelStyle: TextStyle(color: Colors.grey[700],fontFamily:'Roboto',fontWeight: FontWeight.w300),
                     labelText: 'Name',
                     border: OutlineInputBorder(
@@ -772,21 +779,34 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
 
   bool validateInput() {
     if(widget.isAdd){
-      if(_emailController.text.toString().isEmpty){
+      if(_emailController.text.toString().isEmpty ){
         setState(() {
           _emailErrorText = "Email is required";
         });
         return false;
-      }else{
+      }else if(!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(_emailController.text.toString())){
+        setState(() {
+          _emailErrorText = "Email format is invalid";
+        });
+        return false;
+      }
+        else {
         setState(() {
           _emailErrorText = null;
         });
       }
     }
     if(_userNameController.text.isEmpty){
-      showErrorDialog(context, 'Name is required');
+      setState(() {
+        _nameErrorText = "Name is require";
+      });
       return false;
+    }else{
+      setState(() {
+        _emailErrorText = null;
+      });
     }
+
     if(companyId == 0){
       showErrorDialog(context, 'Check your company');
       return false;

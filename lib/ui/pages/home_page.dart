@@ -169,17 +169,19 @@ class _HomePageState extends State<HomePage> {
                   )
               ),
               const SizedBox(width: 16,),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(companies.companyName!,style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold
-                  )),
-                  const SizedBox(height: 10),
-                  Text(companies.address!)
-                ],
+              Flexible(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(companies.companyName!,style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold
+                    )),
+                    const SizedBox(height: 10),
+                    Text(companies.address!)
+                  ],
+                ),
               )
             ],
           ),
