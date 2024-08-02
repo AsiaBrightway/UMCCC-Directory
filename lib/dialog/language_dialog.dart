@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:pahg_group/data/vos/language_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_language_request.dart';
+import 'package:pahg_group/exception/helper_functions.dart';
 import 'package:pahg_group/ui/themes/colors.dart';
 
 class LanguageDialog extends StatefulWidget {
@@ -122,10 +123,10 @@ class _LanguageDialogState extends State<LanguageDialog> {
         ElevatedButton(
           child: Text(widget.language == null ? 'Add' : 'Update'),
           onPressed: () {
-            if (_formKey.currentState!.validate()) {
+            if (_formKey.currentState!.validate() && proficiency != null) {
               ///data should be null if user doesn't add date.the exception can found when the date is empty string
               ///employeeId is null if add school
-              AddLanguageRequest updatedGraduate = AddLanguageRequest(
+              AddLanguageRequest updatedLanguage = AddLanguageRequest(
                   widget.language?.id!,
                   widget.language?.employeeId,
                   _nameController.text,
@@ -133,8 +134,10 @@ class _LanguageDialogState extends State<LanguageDialog> {
                   canTeach
               );
               // Pass the updated school to the onUpdate callback
-              widget.onSave(updatedGraduate);
+              widget.onSave(updatedLanguage);
               Navigator.of(context).pop();
+            }else if(proficiency == null){
+              showScaffoldMessage(context, "Please select proficiency");
             }
           },
         ),

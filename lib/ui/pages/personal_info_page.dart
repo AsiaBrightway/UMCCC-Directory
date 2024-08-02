@@ -1,6 +1,9 @@
 
+import 'dart:io';
+
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:pahg_group/data/vos/request_body/personal_info_request.dart';
 import 'package:pahg_group/exception/helper_functions.dart';
@@ -10,6 +13,7 @@ import 'package:pahg_group/ui/themes/colors.dart';
 import 'package:provider/provider.dart';
 import '../../data/models/pahg_model.dart';
 import '../../data/vos/personal_info_vo.dart';
+import '../../utils/image_compress.dart';
 import '../../widgets/loading_widget.dart';
 import '../components/custom_text_field.dart';
 import '../providers/auth_provider.dart';
@@ -27,6 +31,7 @@ class PersonalInfoPage extends StatefulWidget {
 class _PersonalInfoPageState extends State<PersonalInfoPage> {
   final PahgModel _model = PahgModel();
   List<PersonalInfoVo> personalInfo = [];
+  File? _image;
   String _token = '';
   int _currentUserRole = 0;
   int? personalInfoId;
@@ -77,6 +82,8 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   String licenseColorName = "";
   String? _addressErrorText;
   bool firstLoading = true;
+  String frontDrivingImageUrl = "";
+  String backDrivingImageUrl = "";
 
   @override
   void initState() {
@@ -84,6 +91,21 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     Future.microtask(() => _initializeData());
   }
 
+  Future<void> uploadImage(int imageType) async{
+    _model.uploadImage(_token, _image!).then((response){
+      switch(imageType){
+        case 1 :
+          frontDrivingImageUrl = response!.file!;
+          break;
+        case 2 :
+          backDrivingImageUrl = response!.file!;
+
+      }
+    }).catchError((error){
+      Navigator.of(context).pop();                                            //dismiss loading
+      showErrorDialog(context, 'Image : ${error.toString()}');
+    });
+  }
   Future<void> _initializeData() async{
     final authModel = Provider.of<AuthProvider>(context,listen: false);
     _token = authModel.token;
@@ -108,6 +130,20 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     });
   }
 
+  Future<void> selectImage(int imageType) async{
+    // Create an instance of ImagePicker
+    ImagePicker imagePicker = ImagePicker();
+    XFile? file = await imagePicker.pickImage(source: ImageSource.gallery);
+    if (file != null) {
+      File? compressFile = await compressAndGetFile(File(file.path), file.path,48);
+      if (compressFile != null) {
+        setState(() {
+          _image = compressFile;
+          uploadImage(imageType);
+        });
+      }
+    }
+  }
   void _handleGenderChange(bool? value) {
     setState(() {
       _selectedGender = value!;
@@ -121,9 +157,28 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   }
 
   void _updatePersonalInfo(){
-    showDialog(context: context, barrierDismissible: false,builder: (context) => const LoadingWidget());
-    if(personalInfoId != null){
-      _model.updatePersonalInfo(_token,personalInfoId!, getPersonalData()).then((response){
+    if(validatePersonalInfo()){
+      showDialog(context: context, barrierDismissible: false,builder: (context) => const LoadingWidget());
+      if(personalInfoId != null){
+        _model.updatePersonalInfo(_token,personalInfoId!, getPersonalData()).then((response){
+          Navigator.of(context).pop();
+          showSuccessScaffold(context, response?.message ?? "Success");
+          _initializeData();
+        }).catchError((error){
+          Navigator.of(context).pop();
+          showErrorDialog(context, error.toString());
+        });
+      }else{
+        Navigator.of(context).pop();
+        showErrorDialog(context, "Personal Id is null");
+      }
+    }
+  }
+
+  void _addPersonalInfo(){
+    if(validatePersonalInfo()){
+      showDialog(context: context, barrierDismissible: false,builder: (context) => const LoadingWidget());
+      _model.addPersonalInfo(_token, getPersonalData()).then((response){
         Navigator.of(context).pop();
         showSuccessScaffold(context, response?.message ?? "Success");
         _initializeData();
@@ -131,22 +186,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
         Navigator.of(context).pop();
         showErrorDialog(context, error.toString());
       });
-    }else{
-      Navigator.of(context).pop();
-      showErrorDialog(context, "Personal Id is null");
     }
-  }
-
-  void _addPersonalInfo(){
-    showDialog(context: context, barrierDismissible: false,builder: (context) => const LoadingWidget());
-    _model.addPersonalInfo(_token, getPersonalData()).then((response){
-      Navigator.of(context).pop();
-      showSuccessScaffold(context, response?.message ?? "Success");
-      _initializeData();
-    }).catchError((error){
-      Navigator.of(context).pop();
-      showErrorDialog(context, error.toString());
-    });
   }
 
   void _onBackPressed() {
@@ -194,15 +234,11 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
           (widget.role == 1 )
               ? (personalInfo.isEmpty)
                 ? IconButton(onPressed: (){
-                  if(validatePersonalInfo()){
-                    _addPersonalInfo();
-                  }
+                  _addPersonalInfo();
                   }, icon: const Icon(Icons.save,color: Colors.green,))
                   : (editMode)
                     ? IconButton(onPressed: (){
-                      if(validatePersonalInfo()){
-                        _updatePersonalInfo();
-                      }
+                      _updatePersonalInfo();
                   }, icon: const Icon(Icons.cloud_upload,color: colorAccent,))
                     : const SizedBox(width: 1)
                     : const SizedBox(width: 1),
@@ -510,7 +546,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
               child: AnimatedOpacity(
                 opacity: _isEmergencyExpanded ? 1.0 : 0.0,
                 curve: Curves.easeInOutBack,
-                duration: const Duration(milliseconds: 400),
+                duration: const Duration(milliseconds: 300),
                 child: Column(
                   children: [
                     Expanded(child: CustomTextField(controller: _emergencyName, labelText: 'Name',readOnly: _currentUserRole)),
@@ -581,7 +617,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
           ),
           AnimatedContainer(
             height: _isAppearanceExpanded ? 230 : 0.0,
-            duration: const Duration(milliseconds: 400),
+            duration: const Duration(milliseconds: 300),
             child: Visibility(
               visible: _isAppearanceExpanded,
               child: AnimatedOpacity(
@@ -644,79 +680,82 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
             ),
           ),
           AnimatedContainer(
-                height: _isDrivingLicenseExpanded ? 240 : 0.0,
-                duration: const Duration(milliseconds: 400),
+                height: 230 + MediaQuery.of(context).size.height * 0.17,
+                curve: Curves.fastOutSlowIn,
+                duration: const Duration(milliseconds: 100),
                 child: Column(
                   children: [
                     (editMode && _currentUserRole == 1)
                         ? Flexible(
-                          child: CustomDropdownButton(
-                              value: _selectedLicenseStatus,
-                              hint: 'License Status',
-                              items: licenseStatus,
-                              onChanged: (int? newValue) {
-                                setState(() {
-                                  _selectedLicenseStatus = newValue!;
-                                });
-                              }),
-                        )
+                      child: CustomDropdownButton(
+                          value: _selectedLicenseStatus,
+                          hint: 'License Status',
+                          items: licenseStatus,
+                          onChanged: (int? newValue) {
+                            setState(() {
+                              _selectedLicenseStatus = newValue!;
+                            });
+                          }),
+                    )
                         : Flexible(
-                          child: Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
-                              child: Row(
-                                children: [
-                                  const Text("License Status : "),
-                                  Text(licenseStatusName)
-                                ],
-                              ),
-                            ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8.0,bottom: 8,top: 14),
+                        child: Row(
+                          children: [
+                            const Text("License Status : "),
+                            Text(licenseStatusName,style: TextStyle(fontFamily: 'Ubuntu'),)
+                          ],
                         ),
+                      ),
+                    ),
                     const SizedBox(height: 10),
                     (editMode && _currentUserRole == 1)
-                        ? CustomDropdownButton(
-                            value: _selectedLicenseType,
-                            hint: 'License Type',
-                            items: licenseType,
-                            onChanged: (int? newValue) {
-                              setState(() {
-                                _selectedLicenseType = newValue!;
-                              });
-                            })
+                        ? Flexible(
+                      child: CustomDropdownButton(
+                          value: _selectedLicenseType,
+                          hint: 'License Type',
+                          items: licenseType,
+                          onChanged: (int? newValue) {
+                            setState(() {
+                              _selectedLicenseType = newValue!;
+                            });
+                          }),
+                    )
                         : Flexible(
-                          child: Padding(
-                              padding: const EdgeInsets.only(left: 8),
-                              child: Row(
-                                children: [
-                                  const Text("License Type : "),
-                                  Text(licenseTypeName)
-                                ],
-                              ),
-                            ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8,bottom: 8),
+                        child: Row(
+                          children: [
+                            const Text("License Type : "),
+                            Text(licenseTypeName,style: TextStyle(fontFamily: 'Ubuntu'))
+                          ],
                         ),
+                      ),
+                    ),
                     const SizedBox(height: 10),
 
                     ///license color drop down
                     (editMode && _currentUserRole == 1)
                         ? CustomDropdownButton(
-                            value: _selectedLicenseColor,
-                            hint: 'License Color',
-                            items: licenseColor,
-                            onChanged: (int? value) {
-                              setState(() {
-                                _selectedLicenseColor = value!;
-                              });
-                            })
+                        value: _selectedLicenseColor,
+                        hint: 'License Color',
+                        items: licenseColor,
+                        onChanged: (int? value) {
+                          setState(() {
+                            _selectedLicenseColor = value!;
+                          });
+                        })
                         : Flexible(
-                          child: Padding(
-                              padding: const EdgeInsets.only(left: 8),
-                              child: Row(
-                                children: [
-                                  const Text("License Color : "),
-                                  Text(licenseColorName)
-                                ],
-                              ),
-                            ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8,bottom: 8),
+                        child: Row(
+                          children: [
+                            const Text("License Color : "),
+                            Text(licenseColorName,style: TextStyle(fontFamily: 'Ubuntu'))
+                          ],
                         ),
+                      ),
+                    ),
                     const SizedBox(
                       height: 10,
                     ),
@@ -746,12 +785,92 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                     ),
                     (_isVehiclePunished)
                         ? Flexible(
-                          child: CustomTextField(
-                              controller: _vehiclePunishmentDescription,
-                              labelText: 'Vehicle Punishment Description',
-                              readOnly: _currentUserRole),
-                        )
-                        : const SizedBox(height: 1)
+                      child: CustomTextField(
+                          controller: _vehiclePunishmentDescription,
+                          labelText: 'Vehicle Punishment Description',
+                          readOnly: _currentUserRole),
+                    )
+                        : const SizedBox(height: 1),
+                    const SizedBox(height: 8),
+                    ///driving license image
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Stack(
+                            alignment: Alignment.bottomRight,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: Flexible(
+                                  child: Image.network(
+                                    "https://buffr.com/library/content/images/size/w1200/2023/10/free-images.jpg",
+                                    height: MediaQuery.of(context).size.height * 0.17,
+                                    width: MediaQuery.of(context).size.width * 0.4,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Container(
+                                          height: MediaQuery.of(context).size.height * 0.17,
+                                          width: MediaQuery.of(context).size.width * 0.4,
+                                          color: Colors.black12,
+                                          child: const Center(child: Text("Front Image"))
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                              GestureDetector(
+                                  onTap: (){
+                                    //todo front image
+                                  },
+                                  child: Image.asset(
+                                    "lib/icons/add_camera.png",
+                                    width: 30,
+                                    height: 30,
+                                    color: Colors.grey,
+                                  ))
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 10,),
+                        Expanded(
+                          child: Stack(
+                            alignment: Alignment.bottomRight,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: Flexible(
+                                  child: Image.network(
+                                    "https://buffe.com/library/content/images/size/w1200/2023/10/free-images.jpg",
+
+                                    height: MediaQuery.of(context).size.height * 0.16,
+                                    width: MediaQuery.of(context).size.width * 0.4,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Container(
+                                          height: MediaQuery.of(context).size.height * 0.17,
+                                          width: MediaQuery.of(context).size.width * 0.4,
+                                          color: Colors.black12,
+                                          child: const Center(child: Text("Back Image"))
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                              GestureDetector(
+                                  onTap: (){
+                                    //todo back image
+                                  },
+                                  child: Image.asset(
+                                    "lib/icons/add_camera.png",
+                                    width: 30,
+                                    height: 30,
+                                    color: Colors.grey,
+                                  ))
+                            ],
+                          ),
+                        ),
+                      ],
+                    )
                   ],
                 ))
           ],

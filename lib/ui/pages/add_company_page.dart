@@ -485,7 +485,6 @@ class _AddCompanyPageState extends State<AddCompanyPage> {
     );
   }
 
-  
   void updateCompanyWithoutImage() {
     _model.updateCompany(
         _token,

@@ -3,7 +3,7 @@
     <application
         android:label="P A H G"
         android:name="${applicationName}"
-        android:icon="@mipmap/pahg_logo">
+        android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
             android:exported="true"
