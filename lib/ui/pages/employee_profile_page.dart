@@ -1,4 +1,5 @@
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:pahg_group/data/models/pahg_model.dart';
 import 'package:pahg_group/data/vos/employee_vo.dart';
@@ -10,6 +11,7 @@ import 'package:pahg_group/ui/themes/colors.dart';
 import 'package:provider/provider.dart';
 import '../../exception/helper_functions.dart';
 import '../providers/auth_provider.dart';
+import 'image_details_page.dart';
 
 class EmployeeProfilePage extends StatefulWidget {
   final String userId;
@@ -141,7 +143,6 @@ class _EmployeeProfilePageState extends State<EmployeeProfilePage> {
                             }
                           },
                           child: Container(
-
                             width: MediaQuery.of(context).size.width * 0.42,
                             height: 140,
                             decoration: BoxDecoration(
@@ -341,15 +342,27 @@ class _EmployeeProfilePageState extends State<EmployeeProfilePage> {
             padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 8),
             child: ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: Image.network(
-              employee?.getImageWithBaseUrl() ?? "",
-              width: imageWidth,
-              height: imageHeight,
-              fit: BoxFit.cover,
-              errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
-                return Image.asset('assets/placeholder_image.png',width: 130,height: MediaQuery.of(context).size.height * 0.2,); // Show error image
-              },
-            ),
+            child: Hero(
+              tag: "image-hero",
+              child: CachedNetworkImage(
+                imageUrl: employee?.getImageWithBaseUrl() ?? "",
+                width: imageWidth,
+                height: imageHeight,
+                fit: BoxFit.cover,
+                placeholder: (context, url) => Container(
+                  height: 200,
+                  width: double.infinity,
+                  color: Colors.grey[200],
+                  child: const Center(child: CircularProgressIndicator()),
+                ),
+                errorWidget: (context, url, error) => Container(
+                  height: 200,
+                  width: double.infinity,
+                  color: Colors.grey[200],
+                  child: const Center(child: Icon(Icons.error)),
+                ),
+              ),
+            )
             ),
           ),
           const SizedBox(width: 10),
@@ -408,28 +421,7 @@ class _EmployeeProfilePageState extends State<EmployeeProfilePage> {
   }
 
   void navigateToPersonal(BuildContext context) {
-    Navigator.push(
-      context,
-      PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => PersonalInfoPage(
-            name: employee!.employeeName ?? 'name null',
-            role: _userRole,
-            userId: employee!.id!
-        ),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          const begin = Offset(1.0, 0.0);
-          const end = Offset.zero;
-          const curve = Curves.ease;
-
-          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-          return SlideTransition(
-            position: animation.drive(tween),
-            child: child,
-          );
-        },
-      ),
-    );
+    Navigator.push(context, MaterialPageRoute(builder: (context) => PersonalInfoPage(name: employee?.employeeName ?? "", userId: employee?.id ?? "", role: _userRole),));
   }
 
   void navigateToEducation(BuildContext context) {

@@ -1,6 +1,8 @@
 
 import 'dart:io';
 
+import 'package:animations/animations.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -10,6 +12,7 @@ import 'package:pahg_group/exception/helper_functions.dart';
 import 'package:pahg_group/ui/components/custom_drop_down_button.dart';
 import 'package:pahg_group/ui/pages/family_page.dart';
 import 'package:pahg_group/ui/themes/colors.dart';
+import 'package:pahg_group/utils/size_config.dart';
 import 'package:provider/provider.dart';
 import '../../data/models/pahg_model.dart';
 import '../../data/vos/personal_info_vo.dart';
@@ -17,6 +20,7 @@ import '../../utils/image_compress.dart';
 import '../../widgets/loading_widget.dart';
 import '../components/custom_text_field.dart';
 import '../providers/auth_provider.dart';
+import 'image_details_page.dart';
 
 class PersonalInfoPage extends StatefulWidget {
   final String name;
@@ -51,6 +55,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   final _hairColorController = TextEditingController();
   final _skinColorController = TextEditingController();
   final _eyeColorController = TextEditingController();
+  final _nationalCardController = TextEditingController();
   final _emergencyName = TextEditingController();
   final _emergencyRelation = TextEditingController();
   final _emergencyAddress = TextEditingController();
@@ -72,6 +77,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   bool _isEmergencyExpanded = false;
   bool _isAppearanceExpanded = false;
   bool _isDrivingLicenseExpanded = false;
+  bool _isNRCExpanded = false;
   int age = 0;
   String _date = '';
   bool editMode = false;
@@ -84,28 +90,35 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   bool firstLoading = true;
   String frontDrivingImageUrl = "";
   String backDrivingImageUrl = "";
-
+  File? _frontDrivingImage;
+  File? _backDrivingImage;
   @override
   void initState() {
     super.initState();
+
     Future.microtask(() => _initializeData());
   }
 
   Future<void> uploadImage(int imageType) async{
     _model.uploadImage(_token, _image!).then((response){
-      switch(imageType){
-        case 1 :
-          frontDrivingImageUrl = response!.file!;
-          break;
-        case 2 :
-          backDrivingImageUrl = response!.file!;
+      setState(() {
+        switch(imageType){
+          case 1 :
+            frontDrivingImageUrl = response!.file!;
+            _frontDrivingImage = _image;
+            break;
+          case 2 :
+            backDrivingImageUrl = response!.file!;
+            _backDrivingImage = _image;
 
-      }
+        }
+      });
     }).catchError((error){
       Navigator.of(context).pop();                                            //dismiss loading
       showErrorDialog(context, 'Image : ${error.toString()}');
     });
   }
+
   Future<void> _initializeData() async{
     final authModel = Provider.of<AuthProvider>(context,listen: false);
     _token = authModel.token;
@@ -130,10 +143,40 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     });
   }
 
-  Future<void> selectImage(int imageType) async{
+  void _showPickerDialog(BuildContext context,int imageType) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext bc) {
+        return SafeArea(
+          child: Wrap(
+            children: <Widget>[
+              ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: const Text('Gallery'),
+                onTap: () {
+                  selectImage(imageType,ImageSource.gallery);
+                  Navigator.of(context).pop();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.camera_alt),
+                title: const Text('Camera'),
+                onTap: () {
+                  selectImage(imageType,ImageSource.camera);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> selectImage(int imageType,ImageSource source) async{
     // Create an instance of ImagePicker
     ImagePicker imagePicker = ImagePicker();
-    XFile? file = await imagePicker.pickImage(source: ImageSource.gallery);
+    XFile? file = await imagePicker.pickImage(source: source);
     if (file != null) {
       File? compressFile = await compressAndGetFile(File(file.path), file.path,48);
       if (compressFile != null) {
@@ -144,6 +187,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
       }
     }
   }
+
   void _handleGenderChange(bool? value) {
     setState(() {
       _selectedGender = value!;
@@ -220,6 +264,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -470,6 +515,8 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                 ),
               ),
               const SizedBox(height: 10),
+              _buildNationCard(),
+              const SizedBox(height: 10),
               ///Appearance
               _buildAppearance(),
               const SizedBox(height: 10),
@@ -578,6 +625,185 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     );
   }
 
+  ///build national id card
+  Widget _buildNationCard(){
+    return Container(
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+              stops: const [0.4,1.0],
+              colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade400]
+          ),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Colors.deepPurple)
+      ),
+      padding: const EdgeInsets.symmetric(horizontal:20,vertical: 10),
+      child: Column(
+        children: [
+          GestureDetector(
+            onTap: (){
+              setState(() {
+                _isNRCExpanded = !_isNRCExpanded;
+              });
+            },
+            child: Container(
+              color: Colors.transparent,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('National Card',style: TextStyle(fontFamily: 'Ubuntu'),),
+                  IconButton(
+                    icon: Icon(_isNRCExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
+                    onPressed: () {
+                      setState(() {
+                        _isNRCExpanded = !_isNRCExpanded;
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+          AnimatedContainer(
+              height: _isNRCExpanded ? 230 : 0.0,
+              duration: const Duration(milliseconds: 300),
+              child: Visibility(
+                visible: _isNRCExpanded,
+                child: AnimatedOpacity(
+                  opacity: _isNRCExpanded ? 1.0 : 0.0,
+                  curve: Curves.easeInOutBack,
+                  duration: const Duration(milliseconds: 400),
+                  child: Column(
+                    children: [
+                      Expanded(child: CustomTextField(controller: _nationalCardController, labelText: 'NRC',readOnly: _currentUserRole)),
+                      const SizedBox(height: 6,),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Stack(
+                              alignment: Alignment.bottomRight,
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: Flexible(
+                                      child: _frontDrivingImage == null
+                                          ? OpenContainer(
+                                            closedBuilder:(context,action) => CachedNetworkImage(
+                                                //todo
+                                                imageUrl: "https://buffer.com/library/content/images/size/w1200/2023/10/free-images.jpg",
+                                                height: SizeConfig.blockSizeVertical * 17,
+                                                width: SizeConfig.blockSizeHorizontal * 41,
+                                                fit: BoxFit.cover,
+                                                errorWidget: (context, error, stackTrace) {
+                                                  return Container(
+                                                      height: SizeConfig.blockSizeVertical * 17,
+                                                      width: SizeConfig.blockSizeHorizontal * 40,
+                                                      color: Colors.black12,
+                                                      child: const Center(child: Text("Front Image")));
+                                                },
+                                              ),
+                                            closedColor: Colors.black,
+                                            openBuilder: (context,action) => ImageDetailsPage(imageUrl: "https://buffer.com/library/content/images/size/w1200/2023/10/free-images.jpg"),
+                                          )
+                                          : Image.file(
+                                              _frontDrivingImage!,
+                                              width: SizeConfig.blockSizeHorizontal * 41,
+                                              height: SizeConfig.blockSizeVertical * 16,
+                                              fit: BoxFit.cover,
+                                              errorBuilder:
+                                                  (BuildContext context, Object error, StackTrace? stackTrace) {
+                                                    return const Center(
+                                                      child: SizedBox(
+                                                        height: 90,
+                                                        width: 90,
+                                                        child: Padding(
+                                                          padding: EdgeInsets.symmetric(vertical: 16.0),
+                                                          child: CircularProgressIndicator(color: Colors.red),
+                                                        )));
+                                              },
+                                            )),
+                                ),
+                                GestureDetector(
+                                    onTap: (){
+                                      _showPickerDialog(context,1);
+                                    },
+                                    child: Image.asset(
+                                      "lib/icons/add_camera.png",
+                                      width: 30,
+                                      height: 30,
+                                      color: Colors.grey,
+                                    ))
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 10,),
+                          Expanded(
+                            child: Stack(
+                              alignment: Alignment.bottomRight,
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: Flexible(
+                                      child: _backDrivingImage == null
+                                          ? OpenContainer(
+                                            closedBuilder: (context, action) =>  CachedNetworkImage(
+                                                //todo
+                                                imageUrl: "https://www.researchgate.net/publication/287556385/figure/fig1/AS:372855406645258@1465907064654/Sample-of-Myanmar-National-Registration-Card.png",
+                                                height: SizeConfig.blockSizeVertical * 17,
+                                                width: SizeConfig.blockSizeHorizontal * 40,
+                                                fit: BoxFit.cover,
+                                                errorWidget: (context, error, stackTrace) {
+                                                  return Container(
+                                                      height: SizeConfig.blockSizeVertical * 17,
+                                                      width: SizeConfig.blockSizeHorizontal * 40,
+                                                      color: Colors.black12,
+                                                      child: const Center(child: Text("Back Image")));
+                                                },
+                                              ),
+                                            openBuilder: (context, action) => ImageDetailsPage(imageUrl: "https://www.researchgate.net/publication/287556385/figure/fig1/AS:372855406645258@1465907064654/Sample-of-Myanmar-National-Registration-Card.png"),
+                                            closedColor: Colors.black,
+                                          )
+                                          : Image.file(
+                                              _backDrivingImage!,
+                                              width: MediaQuery.of(context).size.width * 0.4,
+                                              height: MediaQuery.of(context).size.height * 0.16,
+                                              fit: BoxFit.cover,
+                                              errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+                                                return const Center(child: SizedBox(height: 90, width: 90,
+                                                    child: Padding(
+                                                      padding: EdgeInsets.symmetric(vertical: 16.0),
+                                                      child: CircularProgressIndicator(color: Colors.red),
+                                                    )
+                                                    )
+                                                );
+                                              },
+                                            )),
+                                ),
+                                GestureDetector(
+                                    onTap: (){
+                                      _showPickerDialog(context,2);
+                                    },
+                                    child: Image.asset(
+                                      "lib/icons/add_camera.png",
+                                      width: 30,
+                                      height: 30,
+                                      color: Colors.grey,
+                                    ))
+                              ],
+                            ),
+                          ),
+                        ],
+                      )
+
+                    ],
+                  ),
+                ),
+              )
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildAppearance(){
     return Container(
       decoration: BoxDecoration(
@@ -651,7 +877,6 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
           ),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: Colors.deepPurple),
-
       ),
       child: Column(
         children: [
@@ -680,7 +905,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
             ),
           ),
           AnimatedContainer(
-                height: 230 + MediaQuery.of(context).size.height * 0.17,
+                height: _isDrivingLicenseExpanded ? 230 + MediaQuery.of(context).size.height * 0.17 : 0.0,
                 curve: Curves.fastOutSlowIn,
                 duration: const Duration(milliseconds: 100),
                 child: Column(
@@ -703,7 +928,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                         child: Row(
                           children: [
                             const Text("License Status : "),
-                            Text(licenseStatusName,style: TextStyle(fontFamily: 'Ubuntu'),)
+                            Text(licenseStatusName,style: const TextStyle(fontFamily: 'Ubuntu'),)
                           ],
                         ),
                       ),
@@ -727,7 +952,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                         child: Row(
                           children: [
                             const Text("License Type : "),
-                            Text(licenseTypeName,style: TextStyle(fontFamily: 'Ubuntu'))
+                            Text(licenseTypeName,style: const TextStyle(fontFamily: 'Ubuntu'))
                           ],
                         ),
                       ),
@@ -802,25 +1027,44 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
                                 child: Flexible(
-                                  child: Image.network(
-                                    "https://buffr.com/library/content/images/size/w1200/2023/10/free-images.jpg",
-                                    height: MediaQuery.of(context).size.height * 0.17,
-                                    width: MediaQuery.of(context).size.width * 0.4,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Container(
-                                          height: MediaQuery.of(context).size.height * 0.17,
-                                          width: MediaQuery.of(context).size.width * 0.4,
-                                          color: Colors.black12,
-                                          child: const Center(child: Text("Front Image"))
-                                      );
-                                    },
-                                  ),
+                                  child: _frontDrivingImage == null
+                                      ? OpenContainer(
+                                          closedBuilder: (context,action) => CachedNetworkImage(
+                                            //todo
+                                            imageUrl: "https://buffr.com/library/content/images/size/w1200/2023/10/free-images.jpg",
+                                            height: SizeConfig.blockSizeVertical * 17,
+                                            width: SizeConfig.blockSizeHorizontal * 41,
+                                            fit: BoxFit.cover,
+                                            errorWidget: (context, error, stackTrace) {
+                                              return Container(
+                                                  height: MediaQuery.of(context).size.height * 0.17,
+                                                  width: MediaQuery.of(context).size.width * 0.4,
+                                                  color: Colors.black12,
+                                                  child: const Center(child: Text("Front Image"))
+                                              );
+                                            },
+                                          ),
+                                          openBuilder: (context,action) => ImageDetailsPage(imageUrl: "https://buffr.com/library/content/images/size/w1200/2023/10/free-images.jpg"))
+                                      : Image.file(
+                                        _frontDrivingImage!,
+                                        width: SizeConfig.blockSizeHorizontal * 41,
+                                        height: SizeConfig.blockSizeVertical * 16,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (BuildContext context,
+                                            Object error,
+                                            StackTrace? stackTrace) {
+                                          return const Center(
+                                              child: SizedBox(height: 90, width: 90, child: Padding(
+                                                padding: EdgeInsets.symmetric(vertical: 16.0),
+                                                child: CircularProgressIndicator(color: Colors.red),
+                                              )));
+                                        },
+                                      )
                                 ),
                               ),
                               GestureDetector(
                                   onTap: (){
-                                    //todo front image
+                                    _showPickerDialog(context,1);
                                   },
                                   child: Image.asset(
                                     "lib/icons/add_camera.png",
@@ -839,26 +1083,46 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
                                 child: Flexible(
-                                  child: Image.network(
-                                    "https://buffe.com/library/content/images/size/w1200/2023/10/free-images.jpg",
+                                    child: _backDrivingImage == null
+                                        ? OpenContainer(
+                                        closedBuilder: (context,action) => CachedNetworkImage(
+                                          //todo
+                                          imageUrl: "https://buffer.com/library/content/images/size/w1200/2023/10/free-images.jpg",
+                                          height: SizeConfig.blockSizeVertical * 16,
+                                          width: SizeConfig.blockSizeHorizontal * 40,
+                                          fit: BoxFit.cover,
 
-                                    height: MediaQuery.of(context).size.height * 0.16,
-                                    width: MediaQuery.of(context).size.width * 0.4,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Container(
-                                          height: MediaQuery.of(context).size.height * 0.17,
+                                          errorWidget: (context, error, stackTrace) {
+                                            return Container(
+                                                height: MediaQuery.of(context).size.height * 0.17,
+                                                width: MediaQuery.of(context).size.width * 0.4,
+                                                color: Colors.black12,
+                                                child: const Center(child: Text("Back Image")));
+                                          },
+                                        ),
+                                        closedColor: Colors.black,
+                                        openBuilder: (context,action) =>
+                                            const ImageDetailsPage(imageUrl: "https://buffer.com/library/content/images/size/w1200/2023/10/free-images.jpg")
+                                    )
+                                        : Image.file(
+                                          _backDrivingImage!,
                                           width: MediaQuery.of(context).size.width * 0.4,
-                                          color: Colors.black12,
-                                          child: const Center(child: Text("Back Image"))
-                                      );
-                                    },
-                                  ),
-                                ),
+                                          height: MediaQuery.of(context).size.height * 0.16,
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (BuildContext context,
+                                              Object error,
+                                              StackTrace? stackTrace) {
+                                            return const Center(
+                                                child: SizedBox(height: 90, width: 90, child: Padding(
+                                                  padding: EdgeInsets.symmetric(vertical: 16.0),
+                                                  child: CircularProgressIndicator(color: Colors.red),
+                                                )));
+                                          },
+                                        )),
                               ),
                               GestureDetector(
                                   onTap: (){
-                                    //todo back image
+                                    _showPickerDialog(context,2);
                                   },
                                   child: Image.asset(
                                     "lib/icons/add_camera.png",
@@ -1116,4 +1380,5 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     _isPreviousApplied = personal.previousApplied!;
     _previousAppliedDescription.text = personal.previousAppliedDescription ?? "";
   }
+
 }

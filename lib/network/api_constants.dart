@@ -2,8 +2,8 @@
 // const String kBaseUrl = "https://www.jlarpyi.com";
 // const String kBaseImageUrl = "https://www.jlarpyi.com/uploadimage/";
 
-const String kBaseUrl = "http://192.168.1.8:86";
-const String kBaseImageUrl = "http://192.168.1.8:86/uploadimage/";
+const String kBaseUrl = "http://192.168.1.6:86";
+const String kBaseImageUrl = "http://192.168.1.6:86/uploadimage/";
 
 //end point
 const String kEndPointLogin = "/v1/api/Token";
@@ -46,6 +46,7 @@ const String kEndPointSearchEmployeeCompany = "/v1/api/Employees/searchbycompany
 
 const String kEndPointGetFamily = "/v1/api/Families/filter";
 const String kEndPointAddFamily = "/v1/api/Families";
+
 
 const String kEndPointPatchUserPassword = "/v1/api/Users";
 

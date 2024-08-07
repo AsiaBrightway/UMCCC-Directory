@@ -1,6 +1,8 @@
 
 import 'dart:io';
 
+import 'package:animations/animations.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -348,11 +350,9 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
   Widget _employeeCard({required EmployeeVo employee}){
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0,horizontal: 12),
-      child: InkWell(
-        onTap: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context) => EmployeeProfilePage(userId: employee.id!),));
-        },
-        child: Container(
+      child : OpenContainer(
+        closedColor: Theme.of(context).colorScheme.onPrimary,
+        closedBuilder:(context,action) => Container(
           height: 100,
           decoration: BoxDecoration(
               boxShadow: [
@@ -371,29 +371,23 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                   padding: const EdgeInsets.all(8.0),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(40),
-                    child: Image.network(
-                      employee.getImageWithBaseUrl(),
+                    child: CachedNetworkImage(
+                      imageUrl :employee.getImageWithBaseUrl(),
                       width: 80,
                       height: 80,
                       fit: BoxFit.cover,
-                      loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                        if (loadingProgress == null) {
-                          return child;
-                        }
-                        return Center(
-                          child: SizedBox(
-                            width: 80,height: 80,
-                            child: CircularProgressIndicator(
-                              value: loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
-                                  : null,
-                            ),
-                          ),
-                        );
-                      },
-                      errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
-                        return Image.asset('assets/person_placeholder.jpg',width: 80,height: 90); // Show error image
-                      },
+                      placeholder: (context, url) => Container(
+                        height: 200,
+                        width: double.infinity,
+                        color: Colors.grey[200],
+                        child: const Center(child: CircularProgressIndicator()),
+                      ),
+                      errorWidget: (context, url, error) => Container(
+                        height: 80,
+                        width: 80,
+                        color: Colors.grey[200],
+                        child: Image.asset("assets/person_placeholder.jpg"),
+                      ),
                     ),
                   )
               ),
@@ -410,8 +404,8 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                     )),
                     const SizedBox(height: 10),
                     Text(employee.departmentName!,style: const TextStyle(
-                      fontFamily: 'Roboto',
-                      fontWeight: FontWeight.w300
+                        fontFamily: 'Roboto',
+                        fontWeight: FontWeight.w300
                     ),)
                   ],
                 ),
@@ -419,7 +413,11 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
             ],
           ),
         ),
-      ),
+        transitionDuration: Duration(milliseconds: 800),
+        openColor: Colors.grey,
+        transitionType: ContainerTransitionType.fadeThrough,
+        openBuilder: (context,action) => EmployeeProfilePage(userId: employee.id!,),
+      )
     );
   }
 

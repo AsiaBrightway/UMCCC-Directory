@@ -227,6 +227,7 @@ class _AddCompanyPageState extends State<AddCompanyPage> {
 
                               // Update the state with the compressed file
                               if (compressFile != null) {
+
                                 setState(() {
                                   _image = compressFile;
                                   isImageSelected = true;
