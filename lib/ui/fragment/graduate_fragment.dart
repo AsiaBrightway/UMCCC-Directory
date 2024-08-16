@@ -1,12 +1,17 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pahg_group/data/models/pahg_model.dart';
 import 'package:pahg_group/data/vos/request_body/add_graduate_request.dart';
 import 'package:pahg_group/ui/components/graduate_card.dart';
+import 'package:pahg_group/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/vos/graduate_vo.dart';
 import '../../dialog/graduate_dialog.dart';
 import '../../exception/helper_functions.dart';
+import '../../utils/image_compress.dart';
 import '../providers/auth_provider.dart';
 
 class GraduateFragment extends StatefulWidget {
@@ -23,11 +28,46 @@ class _GraduateFragmentState extends State<GraduateFragment> {
   String _token = '';
   int _userRole = 0;
   bool isLoading = true;
+  File? _image;
+  int _graduateIdForImage = 0;
 
   @override
   void initState() {
     super.initState();
     Future.microtask(() => _initializeData());
+  }
+
+  void selectPicker(int graduateId){
+    _graduateIdForImage = graduateId;
+    Utils.showPickerDialog(context, (ImageSource source){
+      _selectImage(source);
+    });
+  }
+
+  Future<void> uploadImage() async{
+    _model.uploadImage(_token, _image!).then((response){
+      setState(() {
+
+      });
+    }).catchError((error){
+      Navigator.of(context).pop();                                            //dismiss loading
+      showErrorDialog(context, 'Image : ${error.toString()}');
+    });
+  }
+
+  Future<void> _selectImage(ImageSource source) async{
+    // Create an instance of ImagePicker
+    ImagePicker imagePicker = ImagePicker();
+    XFile? file = await imagePicker.pickImage(source: source);
+    if (file != null) {
+      File? compressFile = await compressAndGetFile(File(file.path), file.path,48);
+      if (compressFile != null) {
+        setState(() {
+          _image = compressFile;
+          uploadImage();
+        });
+      }
+    }
   }
 
   void _onDelete(String name,int id){
@@ -140,7 +180,7 @@ class _GraduateFragmentState extends State<GraduateFragment> {
             (graduateList.isNotEmpty)
                 ? Column(
               children: graduateList.map((graduate){
-                return GraduateCard(token: _token, userRole: _userRole, onDelete: _onDelete, onUpdate: _onUpdate, graduate: graduate);
+                return GraduateCard(token: _token, userRole: _userRole, onDelete: _onDelete, onUpdateImage: selectPicker,onUpdate: _onUpdate, graduate: graduate);
               }).toList(),
             )
                 : isLoading

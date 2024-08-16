@@ -40,9 +40,9 @@ class _EducationPageState extends State<EducationPage> with SingleTickerProvider
         bottom: TabBar(
           controller: _tabController,
           labelColor: Colors.white,
+          unselectedLabelColor: Colors.grey,
           tabs: const [
             Tab(text: 'School'),
-
             Tab(text: 'Graduate'),
             Tab(text: 'Training'),
             Tab(text: 'Language')

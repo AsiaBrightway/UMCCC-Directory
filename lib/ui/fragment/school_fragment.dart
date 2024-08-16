@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pahg_group/data/vos/education_school_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_school_request.dart';
 import 'package:pahg_group/exception/helper_functions.dart';
@@ -7,6 +10,8 @@ import 'package:pahg_group/dialog/update_school_dialog.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/models/pahg_model.dart';
+import '../../utils/image_compress.dart';
+import '../../utils/utils.dart';
 import '../providers/auth_provider.dart';
 
 class SchoolFragment extends StatefulWidget {
@@ -23,7 +28,9 @@ class _SchoolFragmentState extends State<SchoolFragment> {
   List<EducationSchoolVo> schoolList = [];
   String _token = '';
   int _userRole = 0;
+  int _schoolIdForImage = 0;
   bool isLoading = true;
+  File? _image;
 
   @override
   void initState() {
@@ -68,6 +75,32 @@ class _SchoolFragmentState extends State<SchoolFragment> {
     }).catchError((onError){
       showErrorDialog(context, onError.toString());
     });
+  }
+
+  Future<void> uploadImage() async{
+    _model.uploadImage(_token, _image!).then((response){
+      setState(() {
+
+      });
+    }).catchError((error){
+      Navigator.of(context).pop();                                            //dismiss loading
+      showErrorDialog(context, 'Image : ${error.toString()}');
+    });
+  }
+
+  Future<void> _selectImage(ImageSource source) async{
+    // Create an instance of ImagePicker
+    ImagePicker imagePicker = ImagePicker();
+    XFile? file = await imagePicker.pickImage(source: source);
+    if (file != null) {
+      File? compressFile = await compressAndGetFile(File(file.path), file.path,48);
+      if (compressFile != null) {
+        setState(() {
+          _image = compressFile;
+          uploadImage();
+        });
+      }
+    }
   }
 
   void _onDelete(String name,int schoolId) {
@@ -117,6 +150,13 @@ class _SchoolFragmentState extends State<SchoolFragment> {
     });
   }
 
+  void selectPicker(int schoolId){
+    _schoolIdForImage = schoolId;
+    Utils.showPickerDialog(context, (ImageSource source){
+      _selectImage(source);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -141,7 +181,7 @@ class _SchoolFragmentState extends State<SchoolFragment> {
           (schoolList.isNotEmpty)
               ? Column(
                 children: schoolList.map((school){
-                  return SchoolCard(school: school,token: _token,userRole: _userRole,onDelete: _onDelete,onUpdate: _onUpdate,);
+                  return SchoolCard(school: school,token: _token,userRole: _userRole,updateImage: selectPicker,onDelete: _onDelete,onUpdate: _onUpdate,);
                 }).toList(),
               )
               : isLoading
@@ -158,6 +198,4 @@ class _SchoolFragmentState extends State<SchoolFragment> {
       ),
     );
   }
-
-  
 }

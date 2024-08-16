@@ -43,7 +43,7 @@ class _HomePageState extends State<HomePage> {
           this.companies = companies;
         });
       }).catchError((error){
-        ///exception found without toString()
+        ///exception can found without toString()
         showErrorDialog(context, error.toString());
       });
     }else if(_role == 3) {

@@ -1,7 +1,6 @@
 
 import 'dart:io';
 
-import 'package:animations/animations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
@@ -350,74 +349,72 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
   Widget _employeeCard({required EmployeeVo employee}){
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0,horizontal: 12),
-      child : OpenContainer(
-        closedColor: Theme.of(context).colorScheme.onPrimary,
-        closedBuilder:(context,action) => Container(
-          height: 100,
-          decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(color: Colors.grey.withOpacity(0.1),
-                    spreadRadius: 5, // Extends the shadow beyond the box
-                    blurRadius: 7, // Blurs the edges of the shadow
-                    offset: const Offset(0, 3)
-                ),
-              ],
-              color: Theme.of(context).colorScheme.onPrimary,
-              borderRadius: BorderRadius.circular(12)
-          ),
-          child: Row(
-            children: [
-              Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(40),
-                    child: CachedNetworkImage(
-                      imageUrl :employee.getImageWithBaseUrl(),
-                      width: 80,
-                      height: 80,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => Container(
-                        height: 200,
-                        width: double.infinity,
-                        color: Colors.grey[200],
-                        child: const Center(child: CircularProgressIndicator()),
-                      ),
-                      errorWidget: (context, url, error) => Container(
-                        height: 80,
+        child : GestureDetector(
+          onTap: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => EmployeeProfilePage(userId: employee.id!)));
+          },
+          child: Container(
+            height: 100,
+            decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(color: Colors.grey.withOpacity(0.1),
+                      spreadRadius: 5, // Extends the shadow beyond the box
+                      blurRadius: 7, // Blurs the edges of the shadow
+                      offset: const Offset(0, 3)
+                  ),
+                ],
+                color: Theme.of(context).colorScheme.onPrimary,
+                borderRadius: BorderRadius.circular(12)
+            ),
+            child: Row(
+              children: [
+                Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(40),
+                      child: CachedNetworkImage(
+                        imageUrl :employee.getImageWithBaseUrl(),
                         width: 80,
-                        color: Colors.grey[200],
-                        child: Image.asset("assets/person_placeholder.jpg"),
+                        height: 80,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => Container(
+                          height: 200,
+                          width: double.infinity,
+                          color: Colors.grey[200],
+                          child: const Center(child: CircularProgressIndicator()),
+                        ),
+                        errorWidget: (context, url, error) => Container(
+                          height: 80,
+                          width: 80,
+                          color: Colors.grey[200],
+                          child: Image.asset("assets/person_placeholder.jpg"),
+                        ),
                       ),
-                    ),
-                  )
-              ),
-              const SizedBox(width: 16,),
-              Flexible(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(employee.employeeName!,style: const TextStyle(
-                        fontSize: 18,
-                        overflow: TextOverflow.ellipsis,
-                        fontWeight: FontWeight.w500
-                    )),
-                    const SizedBox(height: 10),
-                    Text(employee.departmentName!,style: const TextStyle(
-                        fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w300
-                    ),)
-                  ],
+                    )
                 ),
-              )
-            ],
+                const SizedBox(width: 16,),
+                Flexible(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(employee.employeeName!,style: const TextStyle(
+                          fontSize: 18,
+                          overflow: TextOverflow.ellipsis,
+                          fontWeight: FontWeight.w500
+                      )),
+                      const SizedBox(height: 10),
+                      Text(employee.departmentName!,style: const TextStyle(
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w300
+                      ),)
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
-        ),
-        transitionDuration: Duration(milliseconds: 800),
-        openColor: Colors.grey,
-        transitionType: ContainerTransitionType.fadeThrough,
-        openBuilder: (context,action) => EmployeeProfilePage(userId: employee.id!,),
-      )
+        )
     );
   }
 
@@ -434,6 +431,7 @@ class CompanyBannerCard extends StatefulWidget {
   @override
   State<CompanyBannerCard> createState() => _CompanyBannerCardState();
 }
+
 
 class _CompanyBannerCardState extends State<CompanyBannerCard> {
   final _pageController = PageController(viewportFraction: 0.9);

@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pahg_group/data/models/pahg_model.dart';
 import 'package:pahg_group/data/vos/language_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_language_request.dart';
@@ -7,6 +10,8 @@ import 'package:pahg_group/ui/components/language_card.dart';
 import 'package:provider/provider.dart';
 
 import '../../exception/helper_functions.dart';
+import '../../utils/image_compress.dart';
+import '../../utils/utils.dart';
 import '../providers/auth_provider.dart';
 
 class LanguageFragment extends StatefulWidget {
@@ -22,7 +27,9 @@ class _LanguageFragmentState extends State<LanguageFragment> {
   List<LanguageVo> languageList = [];
   String _token = "";
   bool isLoading = true;
+  int _languageIdForImage = 0;
   int _userRole = 0;
+  File? _image;
 
   @override
   void initState() {
@@ -40,6 +47,39 @@ class _LanguageFragmentState extends State<LanguageFragment> {
     }).catchError((onError){
       showErrorDialog(context, onError.toString());
     });
+  }
+
+  Future<void> uploadImage() async{
+    _model.uploadImage(_token, _image!).then((response){
+      setState(() {
+
+      });
+    }).catchError((error){
+      Navigator.of(context).pop();                                            //dismiss loading
+      showErrorDialog(context, 'Image : ${error.toString()}');
+    });
+  }
+
+  void _selectImagePicker(int languageId){
+    _languageIdForImage = languageId;
+    Utils.showPickerDialog(context, (ImageSource source){
+      _selectImage(source);
+    });
+  }
+
+  Future<void> _selectImage(ImageSource source) async{
+    // Create an instance of ImagePicker
+    ImagePicker imagePicker = ImagePicker();
+    XFile? file = await imagePicker.pickImage(source: source);
+    if (file != null) {
+      File? compressFile = await compressAndGetFile(File(file.path), file.path,48);
+      if (compressFile != null) {
+        setState(() {
+          _image = compressFile;
+          uploadImage();
+        });
+      }
+    }
   }
 
   void _onRefresh(){
@@ -140,7 +180,7 @@ class _LanguageFragmentState extends State<LanguageFragment> {
             (languageList.isNotEmpty)
                 ? Column(
               children: languageList.map((language){
-                return LanguageCard(token: _token, userRole: _userRole, onDelete: _onDelete, onUpdate: _onUpdate, language: language);
+                return LanguageCard(token: _token, userRole: _userRole,updateImage: _selectImagePicker,onDelete: _onDelete, onUpdate: _onUpdate, language: language);
               }).toList(),
             )
                 : isLoading

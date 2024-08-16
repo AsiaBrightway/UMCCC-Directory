@@ -1,12 +1,17 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pahg_group/data/models/pahg_model.dart';
 import 'package:pahg_group/data/vos/request_body/add_training_request.dart';
 import 'package:pahg_group/data/vos/training_vo.dart';
 import 'package:pahg_group/dialog/training_dialog.dart';
 import 'package:pahg_group/exception/helper_functions.dart';
 import 'package:pahg_group/ui/components/training_card.dart';
+import 'package:pahg_group/utils/utils.dart';
 import 'package:provider/provider.dart';
 
+import '../../utils/image_compress.dart';
 import '../providers/auth_provider.dart';
 
 class TrainingFragment extends StatefulWidget {
@@ -22,12 +27,47 @@ class _TrainingFragmentState extends State<TrainingFragment> {
   final PahgModel _model = PahgModel();
   String _token = '';
   int _userRole = 0;
+  File? _image;
+  int _trainingIdForImage = 0;
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
     Future.microtask(() => _initializeData());
+  }
+
+  Future<void> _selectImage(ImageSource source) async{
+    // Create an instance of ImagePicker
+    ImagePicker imagePicker = ImagePicker();
+    XFile? file = await imagePicker.pickImage(source: source);
+    if (file != null) {
+      File? compressFile = await compressAndGetFile(File(file.path), file.path,48);
+      if (compressFile != null) {
+        setState(() {
+          _image = compressFile;
+          uploadImage();
+        });
+      }
+    }
+  }
+
+  void selectPicker(int trainingId){
+    _trainingIdForImage = trainingId;
+    Utils.showPickerDialog(context, (ImageSource source){
+      _selectImage(source);
+    });
+  }
+
+  Future<void> uploadImage() async{
+    _model.uploadImage(_token, _image!).then((response){
+      setState(() {
+
+      });
+    }).catchError((error){
+      Navigator.of(context).pop();                                            //dismiss loading
+      showErrorDialog(context, 'Image : ${error.toString()}');
+    });
   }
 
   void _onDelete(String name,int trainingId){
@@ -140,7 +180,7 @@ class _TrainingFragmentState extends State<TrainingFragment> {
                 ? Column(
               children: trainingList.map((training){
                 ///training card
-                return TrainingCard(token: _token, userRole: _userRole, onDelete: _onDelete, onUpdate: _onUpdate, training: training);
+                return TrainingCard(token: _token, userRole: _userRole, onDelete: _onDelete,updateImage: selectPicker,onUpdate: _onUpdate, training: training);
               }).toList(),
             )
                 : isLoading

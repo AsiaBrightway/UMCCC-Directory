@@ -1,16 +1,22 @@
+import 'package:animations/animations.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:pahg_group/data/vos/language_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_language_request.dart';
 import 'package:pahg_group/dialog/language_dialog.dart';
 import 'package:pahg_group/ui/themes/colors.dart';
 
+import '../../utils/size_config.dart';
+import '../pages/image_details_page.dart';
+
 class LanguageCard extends StatefulWidget {
   final LanguageVo language;
   final String token;
   final int userRole;
+  final Function(int languageId) updateImage;
   final Function(AddLanguageRequest language) onUpdate;
   final Function(String name,int languageId) onDelete;
-  const LanguageCard({super.key,required this.token, required this.userRole, required this.onDelete, required this.onUpdate, required this.language});
+  const LanguageCard({super.key,required this.token, required this.userRole, required this.onDelete, required this.onUpdate, required this.language, required this.updateImage});
 
   @override
   State<LanguageCard> createState() => _LanguageCardState();
@@ -110,6 +116,43 @@ class _LanguageCardState extends State<LanguageCard> {
                             Expanded(child: Text(_canTeachAndShare(widget.language.teach ?? false),style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13))),
                           ],
                         ),
+                      ),
+                      Stack(
+                        alignment: Alignment.bottomRight,
+                        children: [
+                          ///crack logic
+                          OpenContainer(
+                            closedBuilder: (context, action) =>
+                                CachedNetworkImage(
+                                  //todo
+                                  imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWJfFCJV-vv9n31dyGa5SQbK7gYflNb-7ClHI55banTVjaxoxMWhrJmO0uqPFe6Da6wv4&usqp=CAU",
+                                  height: SizeConfig.blockSizeVertical * 12,
+                                  width: SizeConfig.blockSizeHorizontal * 30,
+                                  fit: BoxFit.cover,
+                                  errorWidget: (context, error, stackTrace) {
+                                    return Container(
+                                        color: Colors.black12,
+                                        child: const Center(child: Text(
+                                          "Add Image", style: TextStyle(
+                                            color: Colors.white),)));
+                                  },
+                                ),
+                            closedColor: Colors.black12,
+                            openBuilder: (context, action) =>
+                            const ImageDetailsPage(
+                                imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWJfFCJV-vv9n31dyGa5SQbK7gYflNb-7ClHI55banTVjaxoxMWhrJmO0uqPFe6Da6wv4&usqp=CAU"),
+                          ),
+                          GestureDetector(
+                              onTap: () {
+                                widget.updateImage(widget.language.id!);
+                              },
+                              child: Image.asset(
+                                "lib/icons/add_camera.png",
+                                width: 30,
+                                height: 30,
+                                color: Colors.grey,
+                              )),
+                        ],
                       ),
                       (widget.userRole == 1)
                           ? Row(

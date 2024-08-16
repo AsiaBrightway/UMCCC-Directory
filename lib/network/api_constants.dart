@@ -2,7 +2,7 @@
 // const String kBaseUrl = "https://www.jlarpyi.com";
 // const String kBaseImageUrl = "https://www.jlarpyi.com/uploadimage/";
 
-const String kBaseUrl = "http://192.168.1.6:86";
+const String kBaseUrl = "http://192.168.1.5:86";
 const String kBaseImageUrl = "http://192.168.1.6:86/uploadimage/";
 
 //end point

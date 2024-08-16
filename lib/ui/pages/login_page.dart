@@ -35,14 +35,14 @@ class _LoginPageState extends State<LoginPage> {
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
         } catch (e) {
           Navigator.of(context).pop();
-          showErrorDialog(e.toString());
+          showErrorDialog(context,e.toString());
         }
       }catch(e) {
         Navigator.of(context).pop();
         if(e.toString()=='Connection') {
           showConnectionErrorDialog(context, 'Check internet connection',userLogin);
         }else {
-          showErrorDialog(e.toString());
+          showErrorDialog(context,e.toString());
         }
       }
   }
@@ -51,26 +51,6 @@ class _LoginPageState extends State<LoginPage> {
     AuthProvider authProvider = Provider.of<AuthProvider>(context,listen: false);
     await authProvider.clearTokenAndRoleAndId();
     await authProvider.setTokenAndRoleAndUserId(token, userRole, userId);
-  }
-
-  void showErrorDialog(String errorMessage) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Error'),
-          content: Text(errorMessage),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
   }
 
   @override

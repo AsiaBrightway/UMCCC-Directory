@@ -11,7 +11,6 @@ import 'package:pahg_group/ui/themes/colors.dart';
 import 'package:provider/provider.dart';
 import '../../exception/helper_functions.dart';
 import '../providers/auth_provider.dart';
-import 'image_details_page.dart';
 
 class EmployeeProfilePage extends StatefulWidget {
   final String userId;
@@ -421,7 +420,28 @@ class _EmployeeProfilePageState extends State<EmployeeProfilePage> {
   }
 
   void navigateToPersonal(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => PersonalInfoPage(name: employee?.employeeName ?? "", userId: employee?.id ?? "", role: _userRole),));
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => PersonalInfoPage(
+          name: employee!.employeeName ?? 'null',
+          userId: employee?.id ?? '',
+          role: _userRole,
+        ),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(1.0, 0.0);
+          const end = Offset.zero;
+          const curve = Curves.ease;
+
+          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: child,
+          );
+        },
+      ),
+    );
   }
 
   void navigateToEducation(BuildContext context) {

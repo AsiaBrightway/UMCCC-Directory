@@ -4,7 +4,9 @@ import 'dart:io';
 import 'package:animations/animations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:pahg_group/data/vos/request_body/personal_info_request.dart';
@@ -44,6 +46,8 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   final Map<int ,String> licenseStatus = {1: 'Not Have',2: 'Have',3: 'Still Applying'};
   final Map<int ,String> licenseType = {1: 'က' ,2: 'ခ',3: 'ဃ'};
   final Map<int ,String> licenseColor = {1: 'Black', 2: 'Red'};
+  final Map<int, String> stateList = {1: '1', 2: '2', 3: '2', 4: '4',5:'5',6:'6',7:'7',8:'8',9:'9',10:'10',11:'11',12:'12',13:'13',14:'14'};
+  final Map<int, String> nationTypeList ={1: 'နိုင်',2: 'ဧည့်',3: 'သာ',4: 'ပြု',5: 'သီ',6: 'စ',};
   final _addressController = TextEditingController();
   final _cellularPhoneController = TextEditingController();
   final _homePhoneController = TextEditingController();
@@ -56,6 +60,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   final _skinColorController = TextEditingController();
   final _eyeColorController = TextEditingController();
   final _nationalCardController = TextEditingController();
+  final _startJoinDateController = TextEditingController();
   final _emergencyName = TextEditingController();
   final _emergencyRelation = TextEditingController();
   final _emergencyAddress = TextEditingController();
@@ -65,8 +70,11 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   final _socialActivitiesController = TextEditingController();
   final _emergencyCellularPhone = TextEditingController();
   final _emergencyHomePhone = TextEditingController();
+  final _nationalNumberController = TextEditingController();
   bool _selectedGender = true;
   int _selectedHandUsage = 2;
+  int? _selectedState;
+  int? _selectedNationalType;
   int? _selectedBloodType;
   int? _selectedMarry;
   int? _selectedLicenseStatus;
@@ -92,10 +100,12 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   String backDrivingImageUrl = "";
   File? _frontDrivingImage;
   File? _backDrivingImage;
+  File? _frontNRCImage;
+  File? _backNRCImage;
+
   @override
   void initState() {
     super.initState();
-
     Future.microtask(() => _initializeData());
   }
 
@@ -110,7 +120,6 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
           case 2 :
             backDrivingImageUrl = response!.file!;
             _backDrivingImage = _image;
-
         }
       });
     }).catchError((error){
@@ -123,6 +132,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     final authModel = Provider.of<AuthProvider>(context,listen: false);
     _token = authModel.token;
     _currentUserRole = authModel.role;
+    await Future.delayed(const Duration(milliseconds: 800));
     _model.getPersonalInfo(_token,'EmployeeId', widget.userId).then((response){
       setState(() {
         if(response.isEmpty){
@@ -301,250 +311,277 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
         ],
       ),
       backgroundColor: Theme.of(context).colorScheme.surface,
-      body: (firstLoading)
-          ? const Center(child: CircularProgressIndicator(color: Colors.blue))
-          : SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.only(left: 14,right: 10,top: 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ///address text field
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.onPrimary,
-                    border: Border.all(color: Colors.grey.shade600),
-                    borderRadius: BorderRadius.circular(8)
-                ),
-                child: TextField(
-                  controller: _addressController,
-                  readOnly: widget.role != 1,
-                  keyboardType: TextInputType.multiline,
-                  decoration: InputDecoration(
-                      labelText: 'Address',
-                      errorText: _addressErrorText,
-                      border: InputBorder.none,
-                      labelStyle: const TextStyle(fontWeight: FontWeight.w300),
-                      floatingLabelBehavior: FloatingLabelBehavior.always
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              Row(
+      body: Stack(
+      children: [
+        FadeTransition(
+          opacity: firstLoading ? AlwaysStoppedAnimation(1.0) : AlwaysStoppedAnimation(0.0),
+            child: Center(child: CircularProgressIndicator(color: Colors.blue))),
+        FadeTransition(
+          opacity: firstLoading ? AlwaysStoppedAnimation(0.0) : AlwaysStoppedAnimation(1.0),
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 14,right: 10,top: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    ///cellular is mobile phone
-                      child: CustomTextField(controller: _cellularPhoneController,labelText: 'Cellular Phone',readOnly: _currentUserRole,keyboardType: TextInputType.number,)
+                  ///address text field
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        border: Border.all(color: Colors.grey.shade600),
+                        borderRadius: BorderRadius.circular(8)
+                    ),
+                    child: TextField(
+                      controller: _addressController,
+                      readOnly: widget.role != 1,
+                      keyboardType: TextInputType.multiline,
+                      decoration: InputDecoration(
+                          labelText: 'Address',
+                          errorText: _addressErrorText,
+                          border: InputBorder.none,
+                          labelStyle: const TextStyle(fontWeight: FontWeight.w300),
+                          floatingLabelBehavior: FloatingLabelBehavior.always
+                      ),
+                    ),
                   ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: CustomTextField(controller: _homePhoneController,labelText: 'Home Phone',readOnly: _currentUserRole,keyboardType: TextInputType.number,),
-                  ),
-                ],
-              ),
-              ///date of birth
-              GestureDetector(
-                onTap: (){
-                  if(_currentUserRole == 1){
-                    _selectDate(context);
-                  }
-                },
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.7,
-                  margin: const EdgeInsets.symmetric(vertical: 10),
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surfaceBright,
-                      borderRadius: BorderRadius.circular(12)
-                  ),
-                  child: Row(
+                  const SizedBox(height: 10),
+                  Row(
                     children: [
-                      Container(
-                        margin: const EdgeInsets.all(8), width: 40, height: 40,
-                        decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.surfaceBright,
-                            borderRadius: BorderRadius.circular(24)
-                        ),
-                        child: const Icon(Icons.date_range),
+                      Expanded(
+                        ///cellular is mobile phone
+                          child: CustomTextField(controller: _cellularPhoneController,labelText: 'Cellular Phone',readOnly: _currentUserRole,keyboardType: TextInputType.number,)
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('Date Of Birth',style: TextStyle(fontFamily : 'Ubuntu',fontSize: 15,fontWeight: FontWeight.w300),),
-                          Text(_date)
-                        ],
-                      ),
-                      const SizedBox(width: 20,),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('Age',style: TextStyle(fontFamily: 'Ubuntu', fontSize: 15,fontWeight: FontWeight.w300),),
-                          Text('$age')
-                        ],
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: CustomTextField(controller: _homePhoneController,labelText: 'Home Phone',readOnly: _currentUserRole,keyboardType: TextInputType.number,),
                       ),
                     ],
                   ),
-                ),
-              ),
-              CustomTextField(controller: _placeOfBirthController, labelText: 'Place of Birth',readOnly: _currentUserRole),
-              const SizedBox(height: 10),
-              CustomTextField(controller: _nationalityController, labelText: 'Nationality',readOnly: _currentUserRole),
-              const SizedBox(height: 10),
-              CustomTextField(controller: _religionController, labelText: 'Religion',readOnly: _currentUserRole),
-              const SizedBox(height: 10),
-              CustomTextField(controller: _raceController, labelText: 'Race',readOnly: _currentUserRole),
-              const SizedBox(height: 10),
-              CustomTextField(controller: _healthController, labelText: 'Health',readOnly: _currentUserRole),
-              const SizedBox(height: 10),
-              CustomTextField(controller: _sportsHobbyController, labelText: 'Sports,Hobby',readOnly: _currentUserRole),
-              const SizedBox(height: 10),
-              CustomTextField(controller: _socialActivitiesController, labelText: 'Social Activities',readOnly: _currentUserRole),
-              const SizedBox(height: 10,),
-              ///gender radio button
-              Container(
-                height: 50,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    gradient: LinearGradient(stops: const [0.4,1.0], colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade400]) ///////////
-                ),
-                child: (editMode && _currentUserRole == 1)
-                    ? ButtonBar(
-                  alignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    const Text('Gender : ',style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
-                    const Text('Male'),
-                    Radio(
-                      value: true,
-                      groupValue: _selectedGender,
-                      activeColor: colorAccent,
-                      onChanged: _handleGenderChange,
+                  ///date of birth
+                  GestureDetector(
+                    onTap: (){
+                      if(_currentUserRole == 1){
+                        _selectDate(context);
+                      }
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.7,
+                      margin: const EdgeInsets.symmetric(vertical: 10),
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surfaceBright,
+                          borderRadius: BorderRadius.circular(12)
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.all(8), width: 40, height: 40,
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.surfaceBright,
+                                borderRadius: BorderRadius.circular(24)
+                            ),
+                            child: const Icon(Icons.date_range),
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text('Date Of Birth',style: TextStyle(fontFamily : 'Ubuntu',fontSize: 15,fontWeight: FontWeight.w300),),
+                              Text(_date)
+                            ],
+                          ),
+                          const SizedBox(width: 20,),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text('Age',style: TextStyle(fontFamily: 'Ubuntu', fontSize: 15,fontWeight: FontWeight.w300),),
+                              Text('$age')
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                    const Text('Female'),
-                    Radio(
-                      value: false,
-                      groupValue: _selectedGender,
-                      activeColor: colorAccent,
-                      onChanged: _handleGenderChange,
-                    ),
-                  ],
-                )
-                    : Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(left: 8.0),
-                      child: Text("Gender :",style: TextStyle(fontFamily: 'Ubuntu',fontSize: 16),),
-                    ),
-                    (_selectedGender)
-                        ? const Text(" Male",style: TextStyle(fontSize: 16))
-                        : const Text(" Female",style: TextStyle(fontSize: 16))
-                  ],
-                ),
-              ),
-              const SizedBox(height: 10),
-              ///hand usage radio button
-              Container(
-                height: 50,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  gradient: LinearGradient(stops: const [0.4,1.0], colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade400]
                   ),
-                ),
-                child: (editMode && _currentUserRole == 1)
-                    ? ButtonBar(
-                  alignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    const Text('Hand Usage : ',style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
-                    const Text('Left'),
-                    Radio(
-                      value: 1,
-                      groupValue: _selectedHandUsage,
-                      activeColor: colorAccent,
-                      onChanged: _handleHandUsage,
+                  CustomTextField(controller: _placeOfBirthController, labelText: 'Place of Birth',readOnly: _currentUserRole),
+                  const SizedBox(height: 10),
+                  CustomTextField(controller: _nationalityController, labelText: 'Nationality',readOnly: _currentUserRole),
+                  const SizedBox(height: 10),
+                  CustomTextField(controller: _religionController, labelText: 'Religion',readOnly: _currentUserRole),
+                  const SizedBox(height: 10),
+                  CustomTextField(controller: _raceController, labelText: 'Race',readOnly: _currentUserRole),
+                  const SizedBox(height: 10),
+                  CustomTextField(controller: _healthController, labelText: 'Health',readOnly: _currentUserRole),
+                  const SizedBox(height: 10),
+                  CustomTextField(controller: _sportsHobbyController, labelText: 'Sports,Hobby',readOnly: _currentUserRole),
+                  const SizedBox(height: 10),
+                  CustomTextField(controller: _socialActivitiesController, labelText: 'Social Activities',readOnly: _currentUserRole),
+                  const SizedBox(height: 10,),
+                  ///gender radio button
+                  Container(
+                    height: 50,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        gradient: LinearGradient(stops: const [0.4,1.0], colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade600])
                     ),
-                    const Text('Right'),
-                    Radio(
-                      value: 2,
-                      groupValue: _selectedHandUsage,
-                      activeColor: colorAccent,
-                      onChanged: _handleHandUsage,
+                    child: (editMode && _currentUserRole == 1)
+                        ? ButtonBar(
+                      alignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        const Text('Gender : ',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w400),),
+                        const Text('Male'),
+                        Radio(
+                          value: true,
+                          groupValue: _selectedGender,
+                          activeColor: colorAccent,
+                          onChanged: _handleGenderChange,
+                        ),
+                        const Text('Female'),
+                        Radio(
+                          value: false,
+                          groupValue: _selectedGender,
+                          activeColor: colorAccent,
+                          onChanged: _handleGenderChange,
+                        ),
+                      ],
+                    )
+                        : Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.only(left: 8.0),
+                          child: Text("Gender :",style: TextStyle(fontFamily: 'Ubuntu',fontSize: 16),),
+                        ),
+                        (_selectedGender)
+                            ? const Text(" Male",style: TextStyle(fontSize: 16))
+                            : const Text(" Female",style: TextStyle(fontSize: 16))
+                      ],
                     ),
-                  ],
-                )
-                    : Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(left: 8.0),
-                      child: Text("Hand Usage :",style: TextStyle(fontFamily: 'Ubuntu',fontSize: 16),),
-                    ),
-                    (_selectedHandUsage == 2)
-                        ? const Text(" Right",style: TextStyle(fontSize: 16),)
-                        : const Text(" Left",style: TextStyle(fontSize: 16))
-                  ],
-                ),
-              ),
-              const SizedBox(height: 10),
-              ///blood type and marriage
-              (editMode && _currentUserRole == 1)
-                  ? Row(
-                children: [
-                  Expanded(
-                      child: bloodTypeWidget()
                   ),
-                  const SizedBox(width: 10),
-                  Expanded(child: marriageStatus())
-                ],
-              )
-                  : Container(
-                height: 50,
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: Theme.of(context).colorScheme.surfaceBright
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Blood Type : $bloodTypeName",
-                      style: const TextStyle(fontSize: 16),
+                  const SizedBox(height: 10),
+                  ///hand usage radio button
+                  Container(
+                    height: 50,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      gradient: LinearGradient(stops: const [0.4,1.0], colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade600]
+                      ),
                     ),
-                    Text("Marriage Status : $marriageStatusName",style: const TextStyle(fontSize: 16),)
-                  ],
-                ),
-              ),
-              const SizedBox(height: 10),
-              _buildNationCard(),
-              const SizedBox(height: 10),
-              ///Appearance
-              _buildAppearance(),
-              const SizedBox(height: 10),
-              _buildEmergencyContact(),
-              const SizedBox(height: 20),
-              _buildDrivingLicense(),
-              const SizedBox(height: 20),
-              _buildPreviousApplied(),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      foregroundColor: Colors.white
+                    child: (editMode && _currentUserRole == 1)
+                        ? ButtonBar(
+                      alignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        const Text('Hand Usage : ',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w400),),
+                        const Text('Left'),
+                        Radio(
+                          value: 1,
+                          groupValue: _selectedHandUsage,
+                          activeColor: colorAccent,
+                          onChanged: _handleHandUsage,
+                        ),
+                        const Text('Right'),
+                        Radio(
+                          value: 2,
+                          groupValue: _selectedHandUsage,
+                          activeColor: colorAccent,
+                          onChanged: _handleHandUsage,
+                        ),
+                      ],
+                    )
+                        : Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.only(left: 8.0),
+                          child: Text("Hand Usage :",style: TextStyle(fontFamily: 'Ubuntu',fontSize: 16),),
+                        ),
+                        (_selectedHandUsage == 2)
+                            ? const Text(" Right",style: TextStyle(fontSize: 16),)
+                            : const Text(" Left",style: TextStyle(fontSize: 16))
+                      ],
                     ),
-                      onPressed: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => FamilyPage(empId: widget.userId, userRole: _currentUserRole),));
-                      },
-                      child: const Text("Go To Family"))
+                  ),
+                  const SizedBox(height: 10),
+                  ///blood type and marriage
+                  (editMode && _currentUserRole == 1)
+                      ? Row(
+                    children: [
+                      Expanded(
+                          child: bloodTypeWidget()
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(child: marriageStatus())
+                    ],
+                  )
+                      : Container(
+                    height: 50,
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: Theme.of(context).colorScheme.surfaceBright
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        RichText(
+                          text: TextSpan(
+                              text: 'Blood Type : ',
+                              style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                              children: [
+                                TextSpan(
+                                  text: bloodTypeName,
+                                  style: TextStyle(fontFamily: 'Ubuntu',color: Theme.of(context).colorScheme.onSurface),)
+                              ]
+                          ),
+                        ),
+                        RichText(
+                          text: TextSpan(
+                              text: 'Marriage Status : ',
+                              style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                              children: [
+                                TextSpan(
+                                  text: marriageStatusName,
+                                  style: TextStyle(fontFamily: 'Ubuntu',color: Theme.of(context).colorScheme.onSurface),)
+                              ]
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  _buildNationalRegiCard(),
+                  const SizedBox(height: 10),
+                  ///Appearance
+                  _buildAppearance(),
+                  const SizedBox(height: 10),
+                  _buildEmergencyContact(),
+                  const SizedBox(height: 20),
+                  _buildDrivingLicense(),
+                  const SizedBox(height: 20),
+                  _buildPreviousApplied(),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue,
+                              foregroundColor: Colors.white
+                          ),
+                          onPressed: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => FamilyPage(empId: widget.userId, userRole: _currentUserRole),));
+                          },
+                          child: const Text("Go To Family"))
+                    ],
+                  ),
+                  const SizedBox(height: 20)
                 ],
               ),
-              const SizedBox(height: 20)
-            ],
+            ),
           ),
         ),
+        ]
+
       )
+
     );
   }
 
@@ -553,7 +590,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
       decoration: BoxDecoration(
           gradient: LinearGradient(
               stops: const [0.4,1.0],
-              colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade400]
+              colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade600]
           ),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: Colors.deepPurple)
@@ -586,14 +623,14 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
             ),
           ),
           AnimatedContainer(
-            duration: const Duration(milliseconds: 400),
+            duration: const Duration(milliseconds: 100),
             height: _isEmergencyExpanded ?  270 : 0.0,
             child: Visibility(
               visible: _isEmergencyExpanded,
               child: AnimatedOpacity(
                 opacity: _isEmergencyExpanded ? 1.0 : 0.0,
                 curve: Curves.easeInOutBack,
-                duration: const Duration(milliseconds: 300),
+                duration: const Duration(milliseconds: 100),
                 child: Column(
                   children: [
                     Expanded(child: CustomTextField(controller: _emergencyName, labelText: 'Name',readOnly: _currentUserRole)),
@@ -626,56 +663,376 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   }
 
   ///build national id card
-  Widget _buildNationCard(){
+  Widget _buildNationalRegiCard(){
     return Container(
       decoration: BoxDecoration(
           gradient: LinearGradient(
               stops: const [0.4,1.0],
-              colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade400]
+              colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade600]
           ),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: Colors.deepPurple)
       ),
       padding: const EdgeInsets.symmetric(horizontal:20,vertical: 10),
-      child: Column(
-        children: [
-          GestureDetector(
-            onTap: (){
-              setState(() {
-                _isNRCExpanded = !_isNRCExpanded;
-              });
-            },
-            child: Container(
-              color: Colors.transparent,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: GestureDetector(
+        onTap: (){
+          setState(() {
+            _isNRCExpanded = !_isNRCExpanded;
+          });
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                color: Colors.transparent,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('National Card',style: TextStyle(fontFamily: 'Ubuntu'),),
+                    Icon(_isNRCExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
+                  ],
+                ),
+              ),
+              if(_isNRCExpanded)
+              Column(
                 children: [
-                  const Text('National Card',style: TextStyle(fontFamily: 'Ubuntu'),),
-                  IconButton(
-                    icon: Icon(_isNRCExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
-                    onPressed: () {
-                      setState(() {
-                        _isNRCExpanded = !_isNRCExpanded;
-                      });
-                    },
+                  CustomTextField(controller: _nationalCardController, labelText: 'NRC',readOnly: _currentUserRole),
+                  const SizedBox(height: 8),
+                  CustomTextField(controller: _startJoinDateController,labelText: 'Start Date',readOnly: _currentUserRole,),
+                  const SizedBox(height: 8),
+                  ///NRC Row
+                  Row(
+                      children: [
+                        Expanded(child: stateListWidget()),
+                        const SizedBox(width: 8),
+                        Expanded(child: townshipDropdown()),
+                        const SizedBox(width: 8),
+                        Expanded(child: nationalTypeListDropdown()),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Container(
+                            height: 40,
+                            padding: const EdgeInsets.symmetric(horizontal: 6,),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                              border: Border.all(color: Colors.grey.shade600),
+                              borderRadius: BorderRadius.circular(6)
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 10.0),
+                              child: TextField(
+                                maxLines: 1,
+                                controller: _nationalNumberController,
+                                readOnly: _currentUserRole != 1,
+                                keyboardType: TextInputType.number,
+                                decoration: const InputDecoration(
+                                  labelStyle: TextStyle(fontWeight: FontWeight.w300),
+                                  border: InputBorder.none,
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
                   ),
+                  const SizedBox(height: 10),
+                  Row(
+                    //todo warning red
+                    children: [
+                      Expanded(
+                        child: Stack(
+                          alignment: Alignment.bottomRight,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: _frontNRCImage == null
+                                  ? OpenContainer(
+                                    closedBuilder:(context,action) => CachedNetworkImage(
+                                        //todo
+                                        imageUrl: "https://buffer.com/library/content/images/size/w1200/2023/10/free-images.jpg",
+                                        height: SizeConfig.blockSizeVertical * 17,
+                                        width: SizeConfig.blockSizeHorizontal * 41,
+                                        fit: BoxFit.cover,
+                                        errorWidget: (context, error, stackTrace) {
+                                          return Container(
+                                              height: SizeConfig.blockSizeVertical * 17,
+                                              width: SizeConfig.blockSizeHorizontal * 40,
+                                              color: Colors.black12,
+                                              child: const Center(child: Text("Front Image")));
+                                        },
+                                      ),
+                                    closedColor: Colors.black,
+                                    openBuilder: (context,action) => ImageDetailsPage(imageUrl: "https://buffer.com/library/content/images/size/w1200/2023/10/free-images.jpg"),
+                                  )
+                                  : Image.file(
+                                      _frontNRCImage!,
+                                      width: SizeConfig.blockSizeHorizontal * 41,
+                                      height: SizeConfig.blockSizeVertical * 16,
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (BuildContext context, Object error, StackTrace? stackTrace) {
+                                            return const Center(
+                                              child: SizedBox(
+                                                height: 90,
+                                                width: 90,
+                                                child: Padding(
+                                                  padding: EdgeInsets.symmetric(vertical: 16.0),
+                                                  child: CircularProgressIndicator(color: Colors.red),
+                                                )
+                                              )
+                                            );},
+                                    ),
+                            ),
+                            GestureDetector(
+                                onTap: (){
+                                  _showPickerDialog(context,1);
+                                },
+                                child: Image.asset("lib/icons/add_camera.png", width: 30, height: 30, color: Colors.grey,))
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 10,),
+                      Expanded(
+                        child: Stack(
+                          alignment: Alignment.bottomRight,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: _backNRCImage == null
+                                  ? OpenContainer(
+                                    closedBuilder: (context, action) =>  CachedNetworkImage(
+                                      //todo
+                                      imageUrl: "https://buffr.com/library/content/images/size/w1200/2023/10/free-images.jpg",
+                                      height: SizeConfig.blockSizeVertical * 17,
+                                      width: SizeConfig.blockSizeHorizontal * 41,
+                                      fit: BoxFit.cover,
+                                      errorWidget: (context, error, stackTrace) {
+                                        return Container(
+                                            height: MediaQuery.of(context).size.height * 0.17,
+                                            width: MediaQuery.of(context).size.width * 0.4,
+                                            color: Colors.black12,
+                                            child: const Center(child: Text("Back Image"))
+                                        );
+                                      },
+                                    ),
+                                    openBuilder: (context, action) => const ImageDetailsPage(imageUrl: ""),
+                                    closedColor: Colors.black12,
+                                  )
+                                  : Image.file(
+                                      _backNRCImage!,
+                                      width: MediaQuery.of(context).size.width * 0.4,
+                                      height: MediaQuery.of(context).size.height * 0.16,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+                                        return const Center(child: SizedBox(height: 90, width: 90,
+                                            child: Padding(
+                                              padding: EdgeInsets.symmetric(vertical: 16.0),
+                                              child: CircularProgressIndicator(color: Colors.red),
+                                            )
+                                        ));
+                                      },
+                                    ),
+                            ),
+                            GestureDetector(
+                                onTap: (){
+                                  _showPickerDialog(context,2);
+                                },
+                                child: Image.asset("lib/icons/add_camera.png", width: 30, height: 30, color: Colors.grey,))
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
                 ],
               ),
-            ),
+            ],
           ),
-          AnimatedContainer(
-              height: _isNRCExpanded ? 230 : 0.0,
-              duration: const Duration(milliseconds: 300),
-              child: Visibility(
-                visible: _isNRCExpanded,
-                child: AnimatedOpacity(
-                  opacity: _isNRCExpanded ? 1.0 : 0.0,
-                  curve: Curves.easeInOutBack,
-                  duration: const Duration(milliseconds: 400),
-                  child: Column(
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAppearance(){
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          stops: const [0.4,1.0],
+          colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade600]
+        ),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Colors.deepPurple)
+      ),
+      padding: const EdgeInsets.symmetric(horizontal:20,vertical: 10),
+      child: GestureDetector(
+        onTap: (){
+          setState(() {
+            _isAppearanceExpanded = !_isAppearanceExpanded;
+          });
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                color: Colors.transparent,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('Appearance',style: TextStyle(fontFamily: 'Ubuntu'),),
+                    Icon(_isAppearanceExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
+                  ],
+                ),
+              ),
+              if(_isAppearanceExpanded)
+              Column(
+                children: [
+                  const SizedBox(height: 10),
+                  CustomTextField(controller: _hairColorController, labelText: 'Hair Color',readOnly: _currentUserRole),
+                  const SizedBox(height: 6,),
+                  CustomTextField(controller: _skinColorController, labelText: 'Skin Color',readOnly: _currentUserRole),
+                  const SizedBox(height: 6,),
+                  CustomTextField(controller: _eyeColorController, labelText: 'Eye Color',readOnly: _currentUserRole)
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDrivingLicense(){
+    return Container(
+        padding: const EdgeInsets.symmetric(horizontal:20,vertical: 10),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+              stops: const [0.4,1.0],
+              colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade600]
+          ),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Colors.deepPurple),
+      ),
+        child: GestureDetector(
+          onTap: (){
+            setState(() {
+              _isDrivingLicenseExpanded = !_isDrivingLicenseExpanded;
+            });
+          },
+          child: AnimatedContainer(
+              duration: const Duration(milliseconds: 100),
+              child: Column(
+                children: [
+                  Container(
+                    color: Colors.transparent,
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Driving License',style: TextStyle(fontFamily: 'Ubuntu')),
+                        Icon(_isDrivingLicenseExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
+                      ],
+                    ),
+                  ),
+                  if(_isDrivingLicenseExpanded)
+                  Column(
                     children: [
-                      Expanded(child: CustomTextField(controller: _nationalCardController, labelText: 'NRC',readOnly: _currentUserRole)),
-                      const SizedBox(height: 6,),
+                      (editMode && _currentUserRole == 1)
+                          ? CustomDropdownButton(
+                              value: _selectedLicenseStatus,
+                              hint: 'License Status',
+                              items: licenseStatus,
+                              onChanged: (int? newValue) {
+                                setState(() {
+                                  _selectedLicenseStatus = newValue!;
+                                });
+                              })
+                          : Padding(
+                            padding: const EdgeInsets.only(left: 8.0,bottom: 8,top: 14),
+                            child: Row(
+                              children: [
+                                const Text("License Status : "),
+                                Text(licenseStatusName,style: const TextStyle(fontFamily: 'Ubuntu'),)
+                              ],
+                            ),
+                          ),
+                      const SizedBox(height: 10),
+                      (editMode && _currentUserRole == 1)
+                          ? CustomDropdownButton(
+                              value: _selectedLicenseType,
+                              hint: 'License Type',
+                              items: licenseType,
+                              onChanged: (int? newValue) {
+                                setState(() {
+                                  _selectedLicenseType = newValue!;
+                                });
+                              })
+                          : Padding(
+                            padding: const EdgeInsets.only(left: 8,bottom: 8),
+                            child: Row(
+                              children: [
+                                const Text("License Type : "),
+                                Text(licenseTypeName,style: const TextStyle(fontFamily: 'Ubuntu'))
+                              ],
+                            ),
+                          ),
+                      const SizedBox(height: 10),
+                      ///license color drop down
+                      (editMode && _currentUserRole == 1)
+                          ? CustomDropdownButton(
+                          value: _selectedLicenseColor,
+                          hint: 'License Color',
+                          items: licenseColor,
+                          onChanged: (int? value) {
+                            setState(() {
+                              _selectedLicenseColor = value!;
+                            });
+                          })
+                          : Padding(
+                            padding: const EdgeInsets.only(left: 8,bottom: 8),
+                            child: Row(
+                              children: [
+                                const Text("License Color : "),
+                                Text(licenseColorName,style: const TextStyle(fontFamily: 'Ubuntu'))
+                              ],
+                            ),
+                          ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      ///toggle vehicle punishment
+                      Row(
+                        children: [
+                          const Expanded(
+                            child: Text(
+                              'Vehicle Punishment:',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500, fontSize: 14),
+                            ),
+                          ),
+                          const SizedBox(width: 5),
+                          Expanded(
+                            child: Switch(
+                                value: _isVehiclePunished,
+                                activeColor: Colors.red.shade500,
+                                onChanged: (bool value) {
+                                  setState(() {
+                                    _isVehiclePunished = value;
+                                  });
+                                }),
+                          )
+                        ],
+                      ),
+                      (_isVehiclePunished)
+                          ? CustomTextField(
+                              controller: _vehiclePunishmentDescription,
+                              labelText: 'Vehicle Punishment Description',
+                              readOnly: _currentUserRole)
+                          : const SizedBox(height: 1),
+                      const SizedBox(height: 8),
+                      ///driving license image
                       Row(
                         children: [
                           Expanded(
@@ -687,40 +1044,39 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                   child: Flexible(
                                       child: _frontDrivingImage == null
                                           ? OpenContainer(
-                                            closedBuilder:(context,action) => CachedNetworkImage(
-                                                //todo
-                                                imageUrl: "https://buffer.com/library/content/images/size/w1200/2023/10/free-images.jpg",
-                                                height: SizeConfig.blockSizeVertical * 17,
-                                                width: SizeConfig.blockSizeHorizontal * 41,
-                                                fit: BoxFit.cover,
-                                                errorWidget: (context, error, stackTrace) {
-                                                  return Container(
-                                                      height: SizeConfig.blockSizeVertical * 17,
-                                                      width: SizeConfig.blockSizeHorizontal * 40,
-                                                      color: Colors.black12,
-                                                      child: const Center(child: Text("Front Image")));
-                                                },
-                                              ),
-                                            closedColor: Colors.black,
-                                            openBuilder: (context,action) => ImageDetailsPage(imageUrl: "https://buffer.com/library/content/images/size/w1200/2023/10/free-images.jpg"),
-                                          )
+                                          closedColor: Colors.black12,
+                                          closedBuilder: (context,action) => CachedNetworkImage(
+                                            //todo
+                                            imageUrl: "https://buffr.com/library/content/images/size/w1200/2023/10/free-images.jpg",
+                                            height: SizeConfig.blockSizeVertical * 17,
+                                            width: SizeConfig.blockSizeHorizontal * 41,
+                                            fit: BoxFit.cover,
+                                            errorWidget: (context, error, stackTrace) {
+                                              return Container(
+                                                  height: MediaQuery.of(context).size.height * 0.17,
+                                                  width: MediaQuery.of(context).size.width * 0.4,
+                                                  color: Colors.black12,
+                                                  child: const Center(child: Text("Front Image"))
+                                              );
+                                            },
+                                          ),
+                                          openBuilder: (context,action) => ImageDetailsPage(imageUrl: "https://buffr.com/library/content/images/size/w1200/2023/10/free-images.jpg"))
                                           : Image.file(
-                                              _frontDrivingImage!,
-                                              width: SizeConfig.blockSizeHorizontal * 41,
-                                              height: SizeConfig.blockSizeVertical * 16,
-                                              fit: BoxFit.cover,
-                                              errorBuilder:
-                                                  (BuildContext context, Object error, StackTrace? stackTrace) {
-                                                    return const Center(
-                                                      child: SizedBox(
-                                                        height: 90,
-                                                        width: 90,
-                                                        child: Padding(
-                                                          padding: EdgeInsets.symmetric(vertical: 16.0),
-                                                          child: CircularProgressIndicator(color: Colors.red),
-                                                        )));
-                                              },
-                                            )),
+                                        _frontDrivingImage!,
+                                        width: SizeConfig.blockSizeHorizontal * 41,
+                                        height: SizeConfig.blockSizeVertical * 16,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (BuildContext context,
+                                            Object error,
+                                            StackTrace? stackTrace) {
+                                          return const Center(
+                                              child: SizedBox(height: 90, width: 90, child: Padding(
+                                                padding: EdgeInsets.symmetric(vertical: 16.0),
+                                                child: CircularProgressIndicator(color: Colors.red),
+                                              )));
+                                        },
+                                      )
+                                  ),
                                 ),
                                 GestureDetector(
                                     onTap: (){
@@ -745,38 +1101,40 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                   child: Flexible(
                                       child: _backDrivingImage == null
                                           ? OpenContainer(
-                                            closedBuilder: (context, action) =>  CachedNetworkImage(
-                                                //todo
-                                                imageUrl: "https://www.researchgate.net/publication/287556385/figure/fig1/AS:372855406645258@1465907064654/Sample-of-Myanmar-National-Registration-Card.png",
-                                                height: SizeConfig.blockSizeVertical * 17,
-                                                width: SizeConfig.blockSizeHorizontal * 40,
-                                                fit: BoxFit.cover,
-                                                errorWidget: (context, error, stackTrace) {
-                                                  return Container(
-                                                      height: SizeConfig.blockSizeVertical * 17,
-                                                      width: SizeConfig.blockSizeHorizontal * 40,
-                                                      color: Colors.black12,
-                                                      child: const Center(child: Text("Back Image")));
-                                                },
-                                              ),
-                                            openBuilder: (context, action) => ImageDetailsPage(imageUrl: "https://www.researchgate.net/publication/287556385/figure/fig1/AS:372855406645258@1465907064654/Sample-of-Myanmar-National-Registration-Card.png"),
-                                            closedColor: Colors.black,
-                                          )
+                                          closedBuilder: (context,action) => CachedNetworkImage(
+                                            //todo
+                                            imageUrl: "https://buffer.com/library/content/images/size/w1200/2023/10/free-images.jpg",
+                                            height: SizeConfig.blockSizeVertical * 16,
+                                            width: SizeConfig.blockSizeHorizontal * 40,
+                                            fit: BoxFit.cover,
+
+                                            errorWidget: (context, error, stackTrace) {
+                                              return Container(
+                                                  height: MediaQuery.of(context).size.height * 0.17,
+                                                  width: MediaQuery.of(context).size.width * 0.4,
+                                                  color: Colors.black12,
+                                                  child: const Center(child: Text("Back Image")));
+                                            },
+                                          ),
+                                          closedColor: Colors.black,
+                                          openBuilder: (context,action) =>
+                                          const ImageDetailsPage(imageUrl: "https://buffer.com/library/content/images/size/w1200/2023/10/free-images.jpg")
+                                      )
                                           : Image.file(
-                                              _backDrivingImage!,
-                                              width: MediaQuery.of(context).size.width * 0.4,
-                                              height: MediaQuery.of(context).size.height * 0.16,
-                                              fit: BoxFit.cover,
-                                              errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
-                                                return const Center(child: SizedBox(height: 90, width: 90,
-                                                    child: Padding(
-                                                      padding: EdgeInsets.symmetric(vertical: 16.0),
-                                                      child: CircularProgressIndicator(color: Colors.red),
-                                                    )
-                                                    )
-                                                );
-                                              },
-                                            )),
+                                        _backDrivingImage!,
+                                        width: MediaQuery.of(context).size.width * 0.4,
+                                        height: MediaQuery.of(context).size.height * 0.16,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (BuildContext context,
+                                            Object error,
+                                            StackTrace? stackTrace) {
+                                          return const Center(
+                                              child: SizedBox(height: 90, width: 90, child: Padding(
+                                                padding: EdgeInsets.symmetric(vertical: 16.0),
+                                                child: CircularProgressIndicator(color: Colors.red),
+                                              )));
+                                        },
+                                      )),
                                 ),
                                 GestureDetector(
                                     onTap: (){
@@ -793,352 +1151,15 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                           ),
                         ],
                       )
-
                     ],
                   ),
-                ),
-              )
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAppearance(){
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          stops: const [0.4,1.0],
-          colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade400]
-        ),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Colors.deepPurple)
-      ),
-      padding: const EdgeInsets.symmetric(horizontal:20,vertical: 10),
-      child: Column(
-        children: [
-          GestureDetector(
-            onTap: (){
-              setState(() {
-                _isAppearanceExpanded = !_isAppearanceExpanded;
-              });
-            },
-            child: Container(
-              color: Colors.transparent,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('Appearance',style: TextStyle(fontFamily: 'Ubuntu'),),
-                  IconButton(
-                    icon: Icon(_isAppearanceExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
-                    onPressed: () {
-                      setState(() {
-                        _isAppearanceExpanded = !_isAppearanceExpanded;
-                      });
-                    },
-                  ),
                 ],
-              ),
-            ),
-          ),
-          AnimatedContainer(
-            height: _isAppearanceExpanded ? 230 : 0.0,
-            duration: const Duration(milliseconds: 300),
-            child: Visibility(
-              visible: _isAppearanceExpanded,
-              child: AnimatedOpacity(
-                opacity: _isAppearanceExpanded ? 1.0 : 0.0,
-                curve: Curves.easeInOutBack,
-                duration: const Duration(milliseconds: 400),
-                child: Column(
-                  children: [
-                    Expanded(child: CustomTextField(controller: _hairColorController, labelText: 'Hair Color',readOnly: _currentUserRole)),
-                    const SizedBox(height: 6,),
-                    Expanded(child: CustomTextField(controller: _skinColorController, labelText: 'Skin Color',readOnly: _currentUserRole)),
-                    const SizedBox(height: 6,),
-                    Expanded(child: CustomTextField(controller: _eyeColorController, labelText: 'Eye Color',readOnly: _currentUserRole))
-                  ],
-                ),
-              ),
-            )
-          ),
-        ],
-      ),
-    );
-  }
+              )),
+        )
 
-  Widget _buildDrivingLicense(){
-    return Container(
-        padding: const EdgeInsets.symmetric(horizontal:20,vertical: 10),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-              stops: const [0.4,1.0],
-              colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade400]
-          ),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Colors.deepPurple),
-      ),
-      child: Column(
-        children: [
-          GestureDetector(
-            onTap: (){
-              setState(() {
-                _isDrivingLicenseExpanded = !_isDrivingLicenseExpanded;
-              });
-            },
-            child: Container(
-              color: Colors.transparent,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('Driving License',style: TextStyle(fontFamily: 'Ubuntu')),
-                  IconButton(
-                    icon: Icon(_isDrivingLicenseExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
-                    onPressed: () {
-                      setState(() {
-                        _isDrivingLicenseExpanded = !_isDrivingLicenseExpanded;
-                      });
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-          AnimatedContainer(
-                height: _isDrivingLicenseExpanded ? 230 + MediaQuery.of(context).size.height * 0.17 : 0.0,
-                curve: Curves.fastOutSlowIn,
-                duration: const Duration(milliseconds: 100),
-                child: Column(
-                  children: [
-                    (editMode && _currentUserRole == 1)
-                        ? Flexible(
-                      child: CustomDropdownButton(
-                          value: _selectedLicenseStatus,
-                          hint: 'License Status',
-                          items: licenseStatus,
-                          onChanged: (int? newValue) {
-                            setState(() {
-                              _selectedLicenseStatus = newValue!;
-                            });
-                          }),
-                    )
-                        : Flexible(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 8.0,bottom: 8,top: 14),
-                        child: Row(
-                          children: [
-                            const Text("License Status : "),
-                            Text(licenseStatusName,style: const TextStyle(fontFamily: 'Ubuntu'),)
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    (editMode && _currentUserRole == 1)
-                        ? Flexible(
-                      child: CustomDropdownButton(
-                          value: _selectedLicenseType,
-                          hint: 'License Type',
-                          items: licenseType,
-                          onChanged: (int? newValue) {
-                            setState(() {
-                              _selectedLicenseType = newValue!;
-                            });
-                          }),
-                    )
-                        : Flexible(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 8,bottom: 8),
-                        child: Row(
-                          children: [
-                            const Text("License Type : "),
-                            Text(licenseTypeName,style: const TextStyle(fontFamily: 'Ubuntu'))
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
 
-                    ///license color drop down
-                    (editMode && _currentUserRole == 1)
-                        ? CustomDropdownButton(
-                        value: _selectedLicenseColor,
-                        hint: 'License Color',
-                        items: licenseColor,
-                        onChanged: (int? value) {
-                          setState(() {
-                            _selectedLicenseColor = value!;
-                          });
-                        })
-                        : Flexible(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 8,bottom: 8),
-                        child: Row(
-                          children: [
-                            const Text("License Color : "),
-                            Text(licenseColorName,style: TextStyle(fontFamily: 'Ubuntu'))
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
 
-                    ///toggle vehicle punishment
-                    Row(
-                      children: [
-                        const Flexible(
-                          child: Text(
-                            'Vehicle Punishment:',
-                            style: TextStyle(
-                                fontWeight: FontWeight.w500, fontSize: 14),
-                          ),
-                        ),
-                        const SizedBox(width: 5),
-                        Flexible(
-                          child: Switch(
-                              value: _isVehiclePunished,
-                              activeColor: Colors.red.shade500,
-                              onChanged: (bool value) {
-                                setState(() {
-                                  _isVehiclePunished = value;
-                                });
-                              }),
-                        )
-                      ],
-                    ),
-                    (_isVehiclePunished)
-                        ? Flexible(
-                      child: CustomTextField(
-                          controller: _vehiclePunishmentDescription,
-                          labelText: 'Vehicle Punishment Description',
-                          readOnly: _currentUserRole),
-                    )
-                        : const SizedBox(height: 1),
-                    const SizedBox(height: 8),
-                    ///driving license image
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Stack(
-                            alignment: Alignment.bottomRight,
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: Flexible(
-                                  child: _frontDrivingImage == null
-                                      ? OpenContainer(
-                                          closedBuilder: (context,action) => CachedNetworkImage(
-                                            //todo
-                                            imageUrl: "https://buffr.com/library/content/images/size/w1200/2023/10/free-images.jpg",
-                                            height: SizeConfig.blockSizeVertical * 17,
-                                            width: SizeConfig.blockSizeHorizontal * 41,
-                                            fit: BoxFit.cover,
-                                            errorWidget: (context, error, stackTrace) {
-                                              return Container(
-                                                  height: MediaQuery.of(context).size.height * 0.17,
-                                                  width: MediaQuery.of(context).size.width * 0.4,
-                                                  color: Colors.black12,
-                                                  child: const Center(child: Text("Front Image"))
-                                              );
-                                            },
-                                          ),
-                                          openBuilder: (context,action) => ImageDetailsPage(imageUrl: "https://buffr.com/library/content/images/size/w1200/2023/10/free-images.jpg"))
-                                      : Image.file(
-                                        _frontDrivingImage!,
-                                        width: SizeConfig.blockSizeHorizontal * 41,
-                                        height: SizeConfig.blockSizeVertical * 16,
-                                        fit: BoxFit.cover,
-                                        errorBuilder: (BuildContext context,
-                                            Object error,
-                                            StackTrace? stackTrace) {
-                                          return const Center(
-                                              child: SizedBox(height: 90, width: 90, child: Padding(
-                                                padding: EdgeInsets.symmetric(vertical: 16.0),
-                                                child: CircularProgressIndicator(color: Colors.red),
-                                              )));
-                                        },
-                                      )
-                                ),
-                              ),
-                              GestureDetector(
-                                  onTap: (){
-                                    _showPickerDialog(context,1);
-                                  },
-                                  child: Image.asset(
-                                    "lib/icons/add_camera.png",
-                                    width: 30,
-                                    height: 30,
-                                    color: Colors.grey,
-                                  ))
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 10,),
-                        Expanded(
-                          child: Stack(
-                            alignment: Alignment.bottomRight,
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: Flexible(
-                                    child: _backDrivingImage == null
-                                        ? OpenContainer(
-                                        closedBuilder: (context,action) => CachedNetworkImage(
-                                          //todo
-                                          imageUrl: "https://buffer.com/library/content/images/size/w1200/2023/10/free-images.jpg",
-                                          height: SizeConfig.blockSizeVertical * 16,
-                                          width: SizeConfig.blockSizeHorizontal * 40,
-                                          fit: BoxFit.cover,
 
-                                          errorWidget: (context, error, stackTrace) {
-                                            return Container(
-                                                height: MediaQuery.of(context).size.height * 0.17,
-                                                width: MediaQuery.of(context).size.width * 0.4,
-                                                color: Colors.black12,
-                                                child: const Center(child: Text("Back Image")));
-                                          },
-                                        ),
-                                        closedColor: Colors.black,
-                                        openBuilder: (context,action) =>
-                                            const ImageDetailsPage(imageUrl: "https://buffer.com/library/content/images/size/w1200/2023/10/free-images.jpg")
-                                    )
-                                        : Image.file(
-                                          _backDrivingImage!,
-                                          width: MediaQuery.of(context).size.width * 0.4,
-                                          height: MediaQuery.of(context).size.height * 0.16,
-                                          fit: BoxFit.cover,
-                                          errorBuilder: (BuildContext context,
-                                              Object error,
-                                              StackTrace? stackTrace) {
-                                            return const Center(
-                                                child: SizedBox(height: 90, width: 90, child: Padding(
-                                                  padding: EdgeInsets.symmetric(vertical: 16.0),
-                                                  child: CircularProgressIndicator(color: Colors.red),
-                                                )));
-                                          },
-                                        )),
-                              ),
-                              GestureDetector(
-                                  onTap: (){
-                                    _showPickerDialog(context,2);
-                                  },
-                                  child: Image.asset(
-                                    "lib/icons/add_camera.png",
-                                    width: 30,
-                                    height: 30,
-                                    color: Colors.grey,
-                                  ))
-                            ],
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
-                ))
-          ],
-      )
     );
   }
 
@@ -1222,7 +1243,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
             });
           },
           buttonStyleData: ButtonStyleData(
-            elevation: 4,
+            elevation: 1,
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.onPrimary,
               borderRadius: BorderRadius.circular(8),
@@ -1232,6 +1253,96 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
             ),
             padding: const EdgeInsets.symmetric(horizontal: 10),
             height: 44,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget stateListWidget(){
+    return SizedBox(
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton2(
+          isExpanded: true,
+          value: _selectedState,
+          hint: const Text('state', style: TextStyle(fontSize: 8)),
+          items: stateList.entries.map((entry) {
+            return DropdownMenuItem<int>(
+              value: entry.key,
+              child: Text(entry.value),
+            );
+          }).toList(),
+          onChanged: (int? newValue) {
+            setState(() {
+              _selectedState = newValue!;
+            });
+
+          },
+          buttonStyleData: ButtonStyleData(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.onPrimary,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            height: 40,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget townshipDropdown(){
+    return SizedBox(
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton2(
+          isExpanded: true,
+          value: _selectedState,
+          items: stateList.entries.map((entry) {
+            return DropdownMenuItem<int>(
+              value: entry.key,
+              child: Text(entry.value),
+            );
+          }).toList(),
+          onChanged: (int? newValue) {
+            setState(() {
+              _selectedState = newValue!;
+            });
+          },
+          buttonStyleData: ButtonStyleData(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.onPrimary,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            height: 40,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget nationalTypeListDropdown(){
+    return SizedBox(
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton2(
+          isExpanded: true,
+          value: _selectedNationalType,
+          hint: const Text('citizen', style: TextStyle(fontSize: 8)),
+          items: nationTypeList.entries.map((entry) {
+            return DropdownMenuItem<int>(
+              value: entry.key,
+              child: Text(entry.value,style: TextStyle(fontSize: 8)),
+            );
+          }).toList(),
+          onChanged: (int? newValue) {
+            setState(() {
+              _selectedNationalType = newValue!;
+            });
+          },
+          buttonStyleData: ButtonStyleData(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.onPrimary,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            height: 40,
           ),
         ),
       ),
@@ -1260,7 +1371,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
             });
           },
           buttonStyleData: ButtonStyleData(
-            elevation: 4,
+            elevation: 2,
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.onPrimary,
               borderRadius: BorderRadius.circular(8),
