@@ -2,16 +2,17 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:pahg_group/data/models/pahg_model.dart';
-import 'package:pahg_group/data/vos/request_body/add_graduate_request.dart';
-import 'package:pahg_group/ui/components/graduate_card.dart';
-import 'package:pahg_group/utils/utils.dart';
+
 import 'package:provider/provider.dart';
 
+import '../../data/models/pahg_model.dart';
 import '../../data/vos/graduate_vo.dart';
+import '../../data/vos/request_body/add_graduate_request.dart';
 import '../../dialog/graduate_dialog.dart';
 import '../../exception/helper_functions.dart';
 import '../../utils/image_compress.dart';
+import '../../utils/utils.dart';
+import '../components/graduate_card.dart';
 import '../providers/auth_provider.dart';
 
 class GraduateFragment extends StatefulWidget {

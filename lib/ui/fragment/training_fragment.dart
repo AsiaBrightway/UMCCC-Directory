@@ -2,16 +2,17 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:pahg_group/data/models/pahg_model.dart';
-import 'package:pahg_group/data/vos/request_body/add_training_request.dart';
-import 'package:pahg_group/data/vos/training_vo.dart';
-import 'package:pahg_group/dialog/training_dialog.dart';
-import 'package:pahg_group/exception/helper_functions.dart';
-import 'package:pahg_group/ui/components/training_card.dart';
-import 'package:pahg_group/utils/utils.dart';
+
 import 'package:provider/provider.dart';
 
+import '../../data/models/pahg_model.dart';
+import '../../data/vos/request_body/add_training_request.dart';
+import '../../data/vos/training_vo.dart';
+import '../../dialog/training_dialog.dart';
+import '../../exception/helper_functions.dart';
 import '../../utils/image_compress.dart';
+import '../../utils/utils.dart';
+import '../components/training_card.dart';
 import '../providers/auth_provider.dart';
 
 class TrainingFragment extends StatefulWidget {

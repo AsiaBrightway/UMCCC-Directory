@@ -5,11 +5,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:pahg_group/data/vos/request_body/get_request.dart';
-import 'package:pahg_group/exception/helper_functions.dart';
-import 'package:pahg_group/ui/pages/employee_profile_page.dart';
-import 'package:pahg_group/ui/pages/search_page.dart';
-import 'package:pahg_group/ui/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -17,6 +12,11 @@ import '../../data/models/pahg_model.dart';
 import '../../data/vos/company_images_vo.dart';
 import '../../data/vos/department_vo.dart';
 import '../../data/vos/employee_vo.dart';
+import '../../data/vos/request_body/get_request.dart';
+import '../../exception/helper_functions.dart';
+import '../providers/auth_provider.dart';
+import 'employee_profile_page.dart';
+import 'search_page.dart';
 
 class CompanyDetailsPage extends StatefulWidget {
   final int companyId ;

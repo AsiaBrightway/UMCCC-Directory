@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:pahg_group/data/vos/family_vo.dart';
-import 'package:pahg_group/data/vos/request_body/add_family_request.dart';
-import 'package:pahg_group/dialog/family_dialog.dart';
 
+
+import '../../data/vos/family_vo.dart';
+import '../../data/vos/request_body/add_family_request.dart';
+import '../../dialog/family_dialog.dart';
 import '../themes/colors.dart';
 
 class FamilyCard extends StatefulWidget {

@@ -2,7 +2,7 @@
 // const String kBaseUrl = "https://www.jlarpyi.com";
 // const String kBaseImageUrl = "https://www.jlarpyi.com/uploadimage/";
 
-const String kBaseUrl = "http://192.168.1.5:86";
+const String kBaseUrl = "http://192.168.1.6:86";
 const String kBaseImageUrl = "http://192.168.1.6:86/uploadimage/";
 
 //end point
@@ -11,6 +11,7 @@ const String kEndPointGetCompanies = "/v1/api/Companies";
 const String kEndPointGetDepartmentsById = "/v1/api/Departments";
 const String kEndPointGetPositionsById = "/v1/api/Positions";
 const String kEndPointGetCompanyById = "/v1/api/Companies";
+
 
 const String kEndPointGetCompanyImages = "/v1/api/Companyimages/filter";
 const String kEndPointAddCompanyImages = "/v1/api/Companyimages";
@@ -36,6 +37,7 @@ const String kEndPointAddTraining = "/v1/api/Educationtrainings";
 
 const String kEndPointGetLanguage = "/v1/api/Educationlanguages/filter";
 const String kEndPointAddLanguage = "/v1/api/Educationlanguages";
+
 
 const String kEndPointGetWorkExp = "/v1/api/Workingexperiences/filter";
 const String kEndPointAddWorkExp = "/v1/api/Workingexperiences";

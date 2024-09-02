@@ -1,15 +1,15 @@
 
 import 'package:flutter/material.dart';
-import 'package:pahg_group/data/models/pahg_model.dart';
-import 'package:pahg_group/data/vos/companies_vo.dart';
-import 'package:pahg_group/exception/helper_functions.dart';
-import 'package:pahg_group/ui/pages/company_details_page.dart';
-import 'package:pahg_group/ui/pages/search_page.dart';
-import 'package:pahg_group/ui/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../../data/models/pahg_model.dart';
+import '../../data/vos/companies_vo.dart';
+import '../../exception/helper_functions.dart';
 import '../components/my_drawer.dart';
 import '../components/user_drawer.dart';
+import '../providers/auth_provider.dart';
+import 'company_details_page.dart';
+import 'search_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

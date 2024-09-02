@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:pahg_group/ui/pages/splash_page.dart';
-import 'package:pahg_group/ui/providers/auth_provider.dart';
-import 'package:pahg_group/ui/themes/dark_mode.dart';
-import 'package:pahg_group/ui/themes/light_mode.dart';
+
 import 'package:provider/provider.dart';
+import 'ui/pages/splash_page.dart';
+import 'ui/providers/auth_provider.dart';
+import 'ui/themes/dark_mode.dart';
+import 'ui/themes/light_mode.dart';
 
 void main() async{
   runApp(
@@ -30,3 +31,4 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+

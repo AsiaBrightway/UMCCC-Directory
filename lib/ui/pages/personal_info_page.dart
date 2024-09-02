@@ -9,19 +9,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:pahg_group/data/vos/request_body/personal_info_request.dart';
-import 'package:pahg_group/exception/helper_functions.dart';
-import 'package:pahg_group/ui/components/custom_drop_down_button.dart';
-import 'package:pahg_group/ui/pages/family_page.dart';
-import 'package:pahg_group/ui/themes/colors.dart';
-import 'package:pahg_group/utils/size_config.dart';
+
 import 'package:provider/provider.dart';
 import '../../data/models/pahg_model.dart';
 import '../../data/vos/personal_info_vo.dart';
+import '../../data/vos/request_body/personal_info_request.dart';
+import '../../exception/helper_functions.dart';
 import '../../utils/image_compress.dart';
+import '../../utils/size_config.dart';
 import '../../widgets/loading_widget.dart';
+import '../components/custom_drop_down_button.dart';
 import '../components/custom_text_field.dart';
 import '../providers/auth_provider.dart';
+import '../themes/colors.dart';
+import 'family_page.dart';
 import 'image_details_page.dart';
 
 class PersonalInfoPage extends StatefulWidget {
@@ -314,10 +315,10 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
       body: Stack(
       children: [
         FadeTransition(
-          opacity: firstLoading ? AlwaysStoppedAnimation(1.0) : AlwaysStoppedAnimation(0.0),
-            child: Center(child: CircularProgressIndicator(color: Colors.blue))),
+          opacity: firstLoading ? const AlwaysStoppedAnimation(1.0) : const AlwaysStoppedAnimation(0.0),
+            child: const Center(child: CircularProgressIndicator(color: Colors.blue))),
         FadeTransition(
-          opacity: firstLoading ? AlwaysStoppedAnimation(0.0) : AlwaysStoppedAnimation(1.0),
+          opacity: firstLoading ? const AlwaysStoppedAnimation(0.0) : const AlwaysStoppedAnimation(1.0),
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.only(left: 14,right: 10,top: 10),
@@ -549,13 +550,12 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                   const SizedBox(height: 10),
                   _buildNationalRegiCard(),
                   const SizedBox(height: 10),
-                  ///Appearance
                   _buildAppearance(),
                   const SizedBox(height: 10),
                   _buildEmergencyContact(),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
                   _buildDrivingLicense(),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
                   _buildPreviousApplied(),
                   const SizedBox(height: 10),
                   Row(
@@ -585,6 +585,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     );
   }
 
+  ///build emergency
   Widget _buildEmergencyContact(){
     return Container(
       decoration: BoxDecoration(
@@ -595,7 +596,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: Colors.deepPurple)
       ),
-      padding: const EdgeInsets.symmetric(horizontal:18,vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal:10,vertical: 10),
       child: Column(
         children: [
           GestureDetector(
@@ -854,6 +855,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     );
   }
 
+  /// Appearance
   Widget _buildAppearance(){
     return Container(
       decoration: BoxDecoration(
@@ -904,6 +906,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     );
   }
 
+  ///Driving License
   Widget _buildDrivingLicense(){
     return Container(
         padding: const EdgeInsets.symmetric(horizontal:20,vertical: 10),
@@ -999,9 +1002,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                               ],
                             ),
                           ),
-                      const SizedBox(
-                        height: 10,
-                      ),
+                      const SizedBox(height: 10,),
                       ///toggle vehicle punishment
                       Row(
                         children: [
@@ -1156,10 +1157,6 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                 ],
               )),
         )
-
-
-
-
     );
   }
 
@@ -1491,5 +1488,4 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     _isPreviousApplied = personal.previousApplied!;
     _previousAppliedDescription.text = personal.previousAppliedDescription ?? "";
   }
-
 }

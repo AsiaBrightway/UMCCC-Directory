@@ -1,13 +1,14 @@
 import 'package:animations/animations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:pahg_group/data/vos/graduate_vo.dart';
-import 'package:pahg_group/data/vos/request_body/add_graduate_request.dart';
-import 'package:pahg_group/dialog/graduate_dialog.dart';
-import 'package:pahg_group/ui/themes/colors.dart';
 
+
+import '../../data/vos/graduate_vo.dart';
+import '../../data/vos/request_body/add_graduate_request.dart';
+import '../../dialog/graduate_dialog.dart';
 import '../../utils/size_config.dart';
 import '../pages/image_details_page.dart';
+import '../themes/colors.dart';
 
 class GraduateCard extends StatefulWidget {
   final GraduateVo graduate;

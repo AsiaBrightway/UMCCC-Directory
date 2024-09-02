@@ -1,14 +1,13 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:pahg_group/data/models/pahg_model.dart';
-import 'package:pahg_group/data/vos/request_body/add_work_request.dart';
-import 'package:pahg_group/data/vos/work_vo.dart';
-import 'package:pahg_group/dialog/work_dialog.dart';
-import 'package:pahg_group/exception/helper_functions.dart';
-import 'package:pahg_group/ui/components/work_exp_card.dart';
 import 'package:provider/provider.dart';
 
+import '../../data/models/pahg_model.dart';
+import '../../data/vos/request_body/add_work_request.dart';
+import '../../data/vos/work_vo.dart';
+import '../../dialog/work_dialog.dart';
+import '../../exception/helper_functions.dart';
+import '../components/work_exp_card.dart';
 import '../providers/auth_provider.dart';
 
 class WorkExperiencePage extends StatefulWidget {
@@ -138,28 +137,26 @@ class _WorkExperiencePageState extends State<WorkExperiencePage> {
         centerTitle: true,
         title: const Text("Work Experience",style: TextStyle(color: Colors.white,fontFamily: 'Ubuntu'),),
       ),
+      floatingActionButton: (widget.userRole == 1)
+          ? FloatingActionButton.extended(
+              onPressed: () {
+                showWorkDialog(context,work: null, onUpdate: _onSave);
+              },
+              backgroundColor: Colors.orangeAccent,
+              icon: const Icon(Icons.add),
+              label: const Text('Add Work Exp'),
+            )
+          : null,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  (widget.userRole == 1)
-                      ? Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: ElevatedButton(
-                        onPressed: (){
-                          showWorkDialog(context,work: null, onUpdate: _onSave);
-                        },
-                        child: const Text("Add Work Exp")
-                    ),
-                  )
-                      : const SizedBox(height: 1),
-                ],
-              ),
+               const Row(
+                 mainAxisAlignment: MainAxisAlignment.center,
+               ),
               (workList.isNotEmpty)
                   ? Column(
                       children: workList.map((work) {

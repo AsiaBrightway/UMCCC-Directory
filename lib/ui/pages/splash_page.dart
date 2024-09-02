@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:pahg_group/data/models/pahg_model.dart';
-import 'package:pahg_group/data/vos/user_vo.dart';
-import 'package:pahg_group/ui/pages/home_page.dart';
-import 'package:pahg_group/ui/pages/login_page.dart';
-import 'package:pahg_group/ui/providers/auth_provider.dart';
+
 import 'package:provider/provider.dart';
 
+import '../../data/models/pahg_model.dart';
+import '../../data/vos/user_vo.dart';
 import '../../exception/helper_functions.dart';
+import '../providers/auth_provider.dart';
+import 'home_page.dart';
+import 'login_page.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});

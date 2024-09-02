@@ -1,9 +1,10 @@
 
 import 'package:flutter/material.dart';
-import 'package:pahg_group/ui/fragment/graduate_fragment.dart';
-import 'package:pahg_group/ui/fragment/language_fragment.dart';
-import 'package:pahg_group/ui/fragment/school_fragment.dart';
-import 'package:pahg_group/ui/fragment/training_fragment.dart';
+
+import '../fragment/graduate_fragment.dart';
+import '../fragment/language_fragment.dart';
+import '../fragment/school_fragment.dart';
+import '../fragment/training_fragment.dart';
 
 class EducationPage extends StatefulWidget {
   const EducationPage({super.key, required this.empId, required this.userRole});

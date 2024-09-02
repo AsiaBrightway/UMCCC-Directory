@@ -1,15 +1,13 @@
-import 'dart:io';
 
 import 'package:animations/animations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:pahg_group/data/vos/education_school_vo.dart';
-import 'package:pahg_group/data/vos/request_body/add_school_request.dart';
-import 'package:pahg_group/dialog/update_school_dialog.dart';
-import 'package:pahg_group/ui/themes/colors.dart';
-
+import '../../data/vos/education_school_vo.dart';
+import '../../data/vos/request_body/add_school_request.dart';
+import '../../dialog/update_school_dialog.dart';
 import '../../utils/size_config.dart';
 import '../pages/image_details_page.dart';
+import '../themes/colors.dart';
 
 class SchoolCard extends StatefulWidget {
   final EducationSchoolVo school;

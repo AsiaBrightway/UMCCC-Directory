@@ -2,16 +2,17 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:pahg_group/data/models/pahg_model.dart';
-import 'package:pahg_group/data/vos/language_vo.dart';
-import 'package:pahg_group/data/vos/request_body/add_language_request.dart';
-import 'package:pahg_group/dialog/language_dialog.dart';
-import 'package:pahg_group/ui/components/language_card.dart';
+
 import 'package:provider/provider.dart';
 
+import '../../data/models/pahg_model.dart';
+import '../../data/vos/language_vo.dart';
+import '../../data/vos/request_body/add_language_request.dart';
+import '../../dialog/language_dialog.dart';
 import '../../exception/helper_functions.dart';
 import '../../utils/image_compress.dart';
 import '../../utils/utils.dart';
+import '../components/language_card.dart';
 import '../providers/auth_provider.dart';
 
 class LanguageFragment extends StatefulWidget {
@@ -168,30 +169,39 @@ class _LanguageFragmentState extends State<LanguageFragment> {
           children : [
             (widget.role == 1)
                 ? Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: ElevatedButton(
-                  onPressed: (){
-                    showLanguageDialog(context,language: null, onSave: _onAdd);
-                  },
-                  child: const Text("Add Language")
-              ),
-            )
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: ElevatedButton(
+                        onPressed: () {
+                          showLanguageDialog(context,
+                              language: null, onSave: _onAdd);
+                        },
+                        child: const Text("Add Language")),
+                  )
                 : const SizedBox(height: 1),
             (languageList.isNotEmpty)
                 ? Column(
-              children: languageList.map((language){
-                return LanguageCard(token: _token, userRole: _userRole,updateImage: _selectImagePicker,onDelete: _onDelete, onUpdate: _onUpdate, language: language);
-              }).toList(),
-            )
+                    children: languageList.map((language) {
+                      return LanguageCard(
+                          token: _token,
+                          userRole: _userRole,
+                          updateImage: _selectImagePicker,
+                          onDelete: _onDelete,
+                          onUpdate: _onUpdate,
+                          language: language);
+                    }).toList(),
+                  )
                 : isLoading
-                ? const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: CircularProgressIndicator(),
-            )
-                : const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text("Empty",style: TextStyle(fontFamily: 'Ubuntu'),),
-            ),
+                    ? const Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: CircularProgressIndicator(),
+                      )
+                    : const Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Text(
+                          "Empty",
+                          style: TextStyle(fontFamily: 'Ubuntu'),
+                        ),
+                      ),
           ],
         ),
       ),

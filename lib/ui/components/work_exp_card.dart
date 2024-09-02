@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:pahg_group/data/vos/request_body/add_work_request.dart';
-import 'package:pahg_group/data/vos/work_vo.dart';
-import 'package:pahg_group/dialog/work_dialog.dart';
 
+
+import '../../data/vos/request_body/add_work_request.dart';
+import '../../data/vos/work_vo.dart';
+import '../../dialog/work_dialog.dart';
 import '../themes/colors.dart';
 
 class WorkExpCard extends StatefulWidget {

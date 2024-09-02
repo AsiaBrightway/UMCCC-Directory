@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:pahg_group/data/models/pahg_model.dart';
-import 'package:pahg_group/data/vos/token_vo.dart';
-import 'package:pahg_group/data/vos/user_vo.dart';
-import 'package:pahg_group/exception/helper_functions.dart';
-import 'package:pahg_group/ui/pages/home_page.dart';
-import 'package:pahg_group/ui/providers/auth_provider.dart';
-import 'package:pahg_group/widgets/loading_widget.dart';
 import 'package:provider/provider.dart';
+
+import '../../data/models/pahg_model.dart';
+import '../../data/vos/token_vo.dart';
+import '../../data/vos/user_vo.dart';
+import '../../exception/helper_functions.dart';
+import '../../widgets/loading_widget.dart';
+import '../providers/auth_provider.dart';
+import 'home_page.dart';
 
 class LoginPage extends StatefulWidget {
 

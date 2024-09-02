@@ -4,11 +4,11 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:pahg_group/data/vos/companies_vo.dart';
-import 'package:pahg_group/exception/helper_functions.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/models/pahg_model.dart';
+import '../../data/vos/companies_vo.dart';
+import '../../exception/helper_functions.dart';
 import '../../utils/image_compress.dart';
 import '../../widgets/loading_widget.dart';
 import '../providers/auth_provider.dart';

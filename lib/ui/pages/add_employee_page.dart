@@ -3,21 +3,22 @@ import 'dart:io';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:pahg_group/data/vos/request_body/add_employee_request.dart';
-import 'package:pahg_group/data/vos/request_body/update_employee_request.dart';
-import 'package:pahg_group/network/api_constants.dart';
-import 'package:pahg_group/ui/themes/colors.dart';
+
 import 'package:provider/provider.dart';
 
 import '../../data/models/pahg_model.dart';
 import '../../data/vos/companies_vo.dart';
 import '../../data/vos/department_vo.dart';
 import '../../data/vos/position_vo.dart';
+import '../../data/vos/request_body/add_employee_request.dart';
 import '../../data/vos/request_body/get_request.dart';
+import '../../data/vos/request_body/update_employee_request.dart';
 import '../../exception/helper_functions.dart';
+import '../../network/api_constants.dart';
 import '../../utils/image_compress.dart';
 import '../../widgets/loading_widget.dart';
 import '../providers/auth_provider.dart';
+import '../themes/colors.dart';
 
 class AddEmployeePage extends StatefulWidget {
   final bool isAdd;

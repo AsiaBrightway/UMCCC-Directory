@@ -1,5 +1,6 @@
 
-import 'package:pahg_group/data/vos/error_vo.dart';
+
+import '../data/vos/error_vo.dart';
 
 class CustomException implements Exception{
 

@@ -1,15 +1,16 @@
 
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
-import 'package:pahg_group/data/models/pahg_model.dart';
-import 'package:pahg_group/data/vos/companies_vo.dart';
-import 'package:pahg_group/data/vos/request_body/get_request.dart';
-import 'package:pahg_group/ui/providers/auth_provider.dart';
+
 import 'package:provider/provider.dart';
 
+import '../../data/models/pahg_model.dart';
+import '../../data/vos/companies_vo.dart';
 import '../../data/vos/department_vo.dart';
+import '../../data/vos/request_body/get_request.dart';
 import '../../exception/helper_functions.dart';
 import '../../widgets/loading_widget.dart';
+import '../providers/auth_provider.dart';
 
 class AddDepartmentPage extends StatefulWidget {
   final bool isAdd;

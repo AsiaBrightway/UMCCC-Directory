@@ -2,10 +2,12 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
-import 'package:pahg_group/data/models/pahg_model.dart';
-import 'package:pahg_group/data/vos/data_class_for_search_bloc.dart';
-import 'package:pahg_group/data/vos/employee_vo.dart';
+
 import 'package:rxdart/rxdart.dart';
+
+import '../data/models/pahg_model.dart';
+import '../data/vos/data_class_for_search_bloc.dart';
+import '../data/vos/employee_vo.dart';
 
 
 class SearchEmployeeBloc{
