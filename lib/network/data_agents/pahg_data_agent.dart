@@ -125,7 +125,7 @@ abstract class PahgDataAgent{
 
   Future<PostMethodResponse?> deleteWorkExperience(String apiKey,int id);
 
-  Future<EmployeeListResponse?> searchEmployee(String apiKey,String searchKey);
+  Future<EmployeeListResponse?> searchEmployee(String apiKey,int itemsPerPage,String searchKey);
 
   Future<EmployeeListResponse?> searchEmployeeByCompany(String apiKey,String searchKey,String id);
 

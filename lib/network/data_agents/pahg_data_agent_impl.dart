@@ -395,9 +395,10 @@ class PahgDataAgentImpl extends PahgDataAgent{
     });
   }
 
+  ///item per page to 50
   @override
-  Future<EmployeeListResponse?> searchEmployee(String apiKey, String searchKey) {
-    return mApi.searchEmployee(apiKey, searchKey).catchError((onError){
+  Future<EmployeeListResponse?> searchEmployee(String apiKey,int itemPerPage,String searchKey) {
+    return mApi.searchEmployee(apiKey,50, searchKey,).catchError((onError){
       throw _createException(onError);
     });
   }

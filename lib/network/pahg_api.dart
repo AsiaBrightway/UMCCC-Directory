@@ -319,6 +319,7 @@ abstract class PahgApi{
   @GET(kEndPointSearchEmployee)
   Future<EmployeeListResponse?> searchEmployee(
       @Header(kParamAuthorization) String apiKey,
+      @Query("itemsPerPage") int pageSize,
       @Query("searchKey") String name
       );
 

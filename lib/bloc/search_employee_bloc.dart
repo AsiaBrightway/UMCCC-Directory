@@ -41,7 +41,7 @@ class SearchEmployeeBloc{
   }
 
   void _makeEmployeeSearchNetworkCall(DataClassForSearchBloc query){
-    _model.searchEmployeeResult(query.token, query.searchName).then((onValue){
+    _model.searchEmployeeResult(query.token, 50, query.searchName).then((onValue){
       employeeStreamController.sink.add(onValue);
     }).catchError((onError){
       employeeStreamController.addError(onError);

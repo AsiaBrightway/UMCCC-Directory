@@ -276,8 +276,8 @@ class PahgModel {
     return mDataAgent.deleteWorkExperience(apiKey, id);
   }
 
-  Future<List<EmployeeVo>> searchEmployeeResult(String apiKey,String searchName){
-    return mDataAgent.searchEmployee(apiKey, searchName).asStream().map((response) => response?.document?.records ?? []).first;
+  Future<List<EmployeeVo>> searchEmployeeResult(String apiKey,int itemsPerPage,String searchName){
+    return mDataAgent.searchEmployee(apiKey,itemsPerPage, searchName).asStream().map((response) => response?.document?.records ?? []).first;
   }
 
   Future<List<EmployeeVo>> searchEmployeeByCompany(String apiKey,String searchName,String id){
