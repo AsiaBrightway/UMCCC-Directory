@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pahg_group/data/vos/graduate_vo.dart';
@@ -7,8 +6,10 @@ import 'package:pahg_group/ui/themes/colors.dart';
 
 class GraduateDialog extends StatefulWidget {
   const GraduateDialog({super.key, this.graduate, required this.onSave});
+
   final GraduateVo? graduate;
   final Function(AddGraduateRequest) onSave;
+
   @override
   State<GraduateDialog> createState() => _GraduateDialogState();
 }
@@ -22,14 +23,15 @@ class _GraduateDialogState extends State<GraduateDialog> {
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: widget.graduate?.university ?? '');
-    if(widget.graduate != null){
+    _nameController =
+        TextEditingController(text: widget.graduate?.university ?? '');
+    if (widget.graduate != null) {
       receivedYear = widget.graduate?.receivedYear ?? '';
-    }else{
+    } else {
       receivedYear = DateFormat("yyyy-MM-dd").format(DateTime.now());
-
     }
-    _degreeTypeController = TextEditingController(text: widget.graduate?.degreeType ?? '');
+    _degreeTypeController =
+        TextEditingController(text: widget.graduate?.degreeType ?? '');
   }
 
   Future<void> _selectStartDate(BuildContext context) async {
@@ -62,12 +64,12 @@ class _GraduateDialogState extends State<GraduateDialog> {
                   controller: _nameController,
                   decoration: InputDecoration(
                       floatingLabelStyle: const TextStyle(color: colorAccent),
-                      labelStyle: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13),
+                      labelStyle: const TextStyle(
+                          fontWeight: FontWeight.w300, fontSize: 13),
                       labelText: 'university',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
-                      )
-                  ),
+                      )),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a university';
@@ -80,22 +82,28 @@ class _GraduateDialogState extends State<GraduateDialog> {
                   controller: _degreeTypeController,
                   decoration: InputDecoration(
                       floatingLabelStyle: const TextStyle(color: colorAccent),
-                      labelStyle: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13),
+                      labelStyle: const TextStyle(
+                          fontWeight: FontWeight.w300, fontSize: 13),
                       labelText: 'degree type',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
-                      )
-                  ),
+                      )),
                 ),
                 const SizedBox(height: 14),
                 Row(
                   children: [
-                    Text("From :$receivedYear",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
+                    Text("From :$receivedYear",
+                        style: const TextStyle(
+                            fontWeight: FontWeight.w300, fontSize: 13)),
                     const SizedBox(width: 4),
                     GestureDetector(
-                        onTap: (){ _selectStartDate(context); },
-                        child: const Icon(Icons.edit_calendar,color: colorAccent,)
-                    )
+                        onTap: () {
+                          _selectStartDate(context);
+                        },
+                        child: const Icon(
+                          Icons.edit_calendar,
+                          color: colorAccent,
+                        ))
                   ],
                 ),
                 const SizedBox(height: 12),
@@ -122,8 +130,7 @@ class _GraduateDialogState extends State<GraduateDialog> {
                   widget.graduate?.employeeId,
                   _nameController.text,
                   _degreeTypeController.text,
-                  receivedYear
-              );
+                  receivedYear);
               // Pass the updated school to the onUpdate callback
               widget.onSave(updatedGraduate);
               Navigator.of(context).pop();
@@ -137,10 +144,10 @@ class _GraduateDialogState extends State<GraduateDialog> {
 
 ///first trigger dialog and then implement ui
 Future<void> showGraduateDialog(
-    BuildContext context, {
-      GraduateVo? graduate,
-      required Function(AddGraduateRequest) onSave,
-    }) async {
+  BuildContext context, {
+  GraduateVo? graduate,
+  required Function(AddGraduateRequest) onSave,
+}) async {
   return showDialog<void>(
     context: context,
     barrierDismissible: false,

@@ -161,9 +161,8 @@ class PahgModel {
     return mDataAgent.addUser(apiKey, request);
   }
 
-  Future<EmployeeVo> getEmployeeById(String apiKey,String userId){
-    var empvo = EmployeeVo('0123', '', '', 0, 0, 0, '', '', 'null', 'null', 'null');
-    return mDataAgent.getEmployeeById(apiKey, userId).asStream().map((response) => response?.document ?? empvo).first;
+  Future<EmployeeVo?> getEmployeeById(String apiKey,String userId){
+    return mDataAgent.getEmployeeById(apiKey, userId).asStream().map((response) => response?.document).first;
   }
 
   Future<PostMethodResponse?> updateEmployee(String apiKey,String empId,UpdateEmployeeRequest request){

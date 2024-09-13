@@ -193,7 +193,7 @@ class _TrainingCardState extends State<TrainingCard> {
                                     return Container(
                                         color: Colors.black12,
                                         child: const Center(child: Text(
-                                          "Front Image", style: TextStyle(
+                                          "Add Image", style: TextStyle(
                                             color: Colors.white),)));
                                   },
                                 ),

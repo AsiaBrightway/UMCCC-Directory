@@ -28,6 +28,7 @@ void showUnauthorizedDialog(BuildContext context,String errorMessage){
 void showConnectionErrorDialog(BuildContext context,String errorMessage,Function() onRefresh){
   showDialog(
     context: context,
+    barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
         icon: Image.asset('lib/icons/no_wifi.png', width: 30, height: 30,),
@@ -62,9 +63,10 @@ void showConnectionErrorDialog(BuildContext context,String errorMessage,Function
 void showErrorRefreshDialog(BuildContext context,String errorMessage,Function() onRefresh){
   showDialog(
     context: context,
+    barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
-        icon: const Icon(Icons.error_outline_sharp,color: Colors.redAccent,),
+        icon: const Icon(Icons.cloud_off,color: Colors.grey,),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -118,7 +120,7 @@ void showErrorDialog(BuildContext context,String errorMessage) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        icon: const Icon(Icons.error_outline_sharp,color: Colors.redAccent,),
+        icon: const Icon(Icons.cloud_off),
         content: Text(errorMessage),
         actions: <Widget>[
           TextButton(

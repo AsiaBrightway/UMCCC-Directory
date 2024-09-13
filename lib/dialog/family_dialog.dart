@@ -7,8 +7,10 @@ import '../data/vos/family_vo.dart';
 
 class FamilyDialog extends StatefulWidget {
   const FamilyDialog({super.key, required this.onSave, this.family});
+
   final FamilyVo? family;
   final Function(AddFamilyRequest) onSave;
+
   @override
   State<FamilyDialog> createState() => _FamilyDialogState();
 }
@@ -30,13 +32,17 @@ class _FamilyDialogState extends State<FamilyDialog> {
     _nameController = TextEditingController(text: widget.family?.name ?? '');
     _rankController = TextEditingController(text: widget.family?.rank ?? '');
     _raceController = TextEditingController(text: widget.family?.race ?? '');
-    _identityNumberController = TextEditingController(text: widget.family?.identityNumber ?? '');
-    _employmentController = TextEditingController(text: widget.family?.employment ?? '');
-    _ministryController = TextEditingController(text: widget.family?.ministryAndCompany ?? '');
-    _relationShipController = TextEditingController(text: widget.family?.relationship ?? '');
-    if(widget.family != null){
+    _identityNumberController =
+        TextEditingController(text: widget.family?.identityNumber ?? '');
+    _employmentController =
+        TextEditingController(text: widget.family?.employment ?? '');
+    _ministryController =
+        TextEditingController(text: widget.family?.ministryAndCompany ?? '');
+    _relationShipController =
+        TextEditingController(text: widget.family?.relationship ?? '');
+    if (widget.family != null) {
       birthDate = widget.family!.dateOfBirth;
-    }else{
+    } else {
       birthDate = DateFormat("yyyy-MM-dd").format(DateTime.now());
     }
   }
@@ -67,17 +73,18 @@ class _FamilyDialogState extends State<FamilyDialog> {
             child: ListBody(
               children: <Widget>[
                 const SizedBox(height: 4),
+
                 ///course name text field
                 TextFormField(
                   controller: _nameController,
                   decoration: InputDecoration(
                       floatingLabelStyle: const TextStyle(color: colorAccent),
-                      labelStyle: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13),
+                      labelStyle: const TextStyle(
+                          fontWeight: FontWeight.w300, fontSize: 13),
                       labelText: 'Name',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
-                      )
-                  ),
+                      )),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a name';
@@ -86,89 +93,97 @@ class _FamilyDialogState extends State<FamilyDialog> {
                   },
                 ),
                 const SizedBox(height: 10),
+
                 ///training provided by
                 TextFormField(
                   controller: _relationShipController,
                   decoration: InputDecoration(
                       floatingLabelStyle: const TextStyle(color: colorAccent),
-                      labelStyle: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13),
+                      labelStyle: const TextStyle(
+                          fontWeight: FontWeight.w300, fontSize: 13),
                       labelText: 'Relationship',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
-                      )
-                  ),
+                      )),
                 ),
                 const SizedBox(height: 14),
                 TextFormField(
                   controller: _identityNumberController,
                   decoration: InputDecoration(
                       floatingLabelStyle: const TextStyle(color: colorAccent),
-                      labelStyle: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13),
+                      labelStyle: const TextStyle(
+                          fontWeight: FontWeight.w300, fontSize: 13),
                       labelText: 'Identity number',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
-                      )
-                  ),
+                      )),
                 ),
                 const SizedBox(height: 14),
                 Row(
                   children: [
-                    Text("Birth Date :$birthDate",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
+                    Text("Birth Date :$birthDate",
+                        style: const TextStyle(
+                            fontWeight: FontWeight.w300, fontSize: 13)),
                     const SizedBox(width: 6),
                     GestureDetector(
-                        onTap: (){ _selectBirthDate(context); },
-                        child: const Icon(Icons.edit_calendar,color: colorAccent,)
-                    )
+                        onTap: () {
+                          _selectBirthDate(context);
+                        },
+                        child: const Icon(
+                          Icons.edit_calendar,
+                          color: colorAccent,
+                        ))
                   ],
                 ),
                 const SizedBox(height: 12),
+
                 ///race time text field
                 TextFormField(
                   controller: _raceController,
                   decoration: InputDecoration(
                       floatingLabelStyle: const TextStyle(color: colorAccent),
-                      labelStyle: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13),
+                      labelStyle: const TextStyle(
+                          fontWeight: FontWeight.w300, fontSize: 13),
                       labelText: 'Race',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
-                      )
-                  ),
+                      )),
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _rankController,
                   decoration: InputDecoration(
                       floatingLabelStyle: const TextStyle(color: colorAccent),
-                      labelStyle: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13),
+                      labelStyle: const TextStyle(
+                          fontWeight: FontWeight.w300, fontSize: 13),
                       labelText: 'Rank',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
-                      )
-                  ),
+                      )),
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _employmentController,
                   decoration: InputDecoration(
                       floatingLabelStyle: const TextStyle(color: colorAccent),
-                      labelStyle: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13),
+                      labelStyle: const TextStyle(
+                          fontWeight: FontWeight.w300, fontSize: 13),
                       labelText: 'Employment',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
-                      )
-                  ),
+                      )),
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _ministryController,
                   decoration: InputDecoration(
                       floatingLabelStyle: const TextStyle(color: colorAccent),
-                      labelStyle: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13),
+                      labelStyle: const TextStyle(
+                          fontWeight: FontWeight.w300, fontSize: 13),
                       labelText: 'Ministry',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
-                      )
-                  ),
+                      )),
                 ),
               ],
             ),
@@ -212,10 +227,10 @@ class _FamilyDialogState extends State<FamilyDialog> {
 
 ///first trigger dialog and then implement ui
 Future<void> showFamilyDialog(
-    BuildContext context, {
-      FamilyVo? family,
-      required Function(AddFamilyRequest) onUpdate,
-    }) async {
+  BuildContext context, {
+  FamilyVo? family,
+  required Function(AddFamilyRequest) onUpdate,
+}) async {
   return showDialog<void>(
     context: context,
     barrierDismissible: false,
@@ -227,4 +242,3 @@ Future<void> showFamilyDialog(
     },
   );
 }
-

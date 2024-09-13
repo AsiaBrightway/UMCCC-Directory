@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 
-import 'package:provider/provider.dart';
+import 'package:provider/provider.dart' as provider;
 import 'ui/pages/splash_page.dart';
 import 'ui/providers/auth_provider.dart';
 import 'ui/themes/dark_mode.dart';
@@ -8,11 +9,13 @@ import 'ui/themes/light_mode.dart';
 
 void main() async{
   runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (context) => AuthProvider()),
-      ],
-      child: const MyApp(),
+    riverpod.ProviderScope(
+      child: provider.MultiProvider(
+        providers: [
+          provider.ChangeNotifierProvider(create: (context) => AuthProvider()),
+        ],
+        child: const MyApp(),
+      ),
     )
   );
 }

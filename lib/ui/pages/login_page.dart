@@ -24,6 +24,7 @@ class _LoginPageState extends State<LoginPage> {
   bool isSuccess = false;
   final PahgModel _pahgModel = PahgModel();
 
+  ///used delay await because shared preferences read and write need time.
   Future<void> userLogin() async{
       try {
         showDialog(context: context, barrierDismissible: false,builder: (context) => const LoadingWidget());
@@ -32,6 +33,7 @@ class _LoginPageState extends State<LoginPage> {
           String bearerToken = 'Bearer ${tokenVo.accessToken!}';
           UserVo? userVo = await _pahgModel.getUserById(bearerToken, tokenVo.userId!);
           saveToken(bearerToken, userVo!.userRolesId!, tokenVo.userId!);
+          await Future.delayed(const Duration(milliseconds: 1000));
           Navigator.of(context).pop();
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
         } catch (e) {

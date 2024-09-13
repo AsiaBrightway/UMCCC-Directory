@@ -100,10 +100,17 @@ class _SearchPageState extends State<SearchPage> {
                         },
                     );
                   }
-                  if(snapshot.hasError){
-                    return Center(child: Text(snapshot.error.toString()));
-                  }
-                  return const SizedBox();
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.cloud_off),
+                      Text(snapshot.error.toString()),
+                    ],
+                  ));
+                }
+                return const SizedBox();
                 },
             ),
           ),

@@ -133,7 +133,7 @@ class _SchoolCardState extends State<SchoolCard> {
                                     return Container(
                                         color: Colors.black12,
                                         child: const Center(child: Text(
-                                          "Front Image", style: TextStyle(
+                                          "Add Image", style: TextStyle(
                                             color: Colors.white),)));
                                   },
                                 ),

@@ -1,91 +1,55 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pahg_group/state/company_list/company_list_notifier.dart';
+import 'package:pahg_group/state/company_list/company_list_state.dart';
+import 'package:pahg_group/widgets/error_employee_widget.dart';
 import 'package:provider/provider.dart';
 
-import '../../data/models/pahg_model.dart';
 import '../../data/vos/companies_vo.dart';
-import '../../exception/helper_functions.dart';
 import '../components/my_drawer.dart';
 import '../components/user_drawer.dart';
 import '../providers/auth_provider.dart';
 import 'company_details_page.dart';
 import 'search_page.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  ConsumerState<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends ConsumerState<HomePage> {
   String _token = '';
   String _userId = '';
   int _role = 0;
-  final PahgModel _model = PahgModel();
-  bool isLoading = true;
-  List<CompaniesVo> companies = [];
+  CompanyListNotifier? companyListNotifier;
+  final companyNotifierProvider = NotifierProvider<CompanyListNotifier,CompanyListState>((){
+    return CompanyListNotifier();
+  });
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _initializeData();
+  void initState() {
+    super.initState();
+    Future.microtask(() => _initializeData());
   }
 
   Future<void> _initializeData() async {
-    final authModel = Provider.of<AuthProvider>(context,listen: true);
-    _token = authModel.token;
-    _userId = authModel.userId;
-    _role = authModel.role;
-    if(_role == 1 || _role == 2){
-      _model.getCompanies(_token).then((companies) {
-        setState(() {
-          this.companies = companies;
-        });
-      }).catchError((error){
-        ///exception can found without toString()
-        showErrorDialog(context, error.toString());
-      });
-    }else if(_role == 3) {
-      _model.getEmployeeById(_token, _userId).then((onValue){
-        _model.getCompanyId(_token, onValue.companyId ?? 0).then((onValue) {
-          setState(() {
-            companies = [onValue];
-          });
-        }).catchError((onError) {
-          showErrorDialog(context, onError.toString());
-        });
-      }).catchError((error){
-        showErrorRefreshDialog(context, error.toString(),_initializeData);
-      });
-    }
-    else{
-      setState(() {
-        isLoading = false;
-      });
-    }
-  }
-
-  Future<void> _refresh() async{
-    if(_role == 1 || _role == 2){
-      _model.getCompanies(_token).then((companies) {
-        showSuccessScaffold(context, "Refresh Complete");
-        setState(() {
-          this.companies = companies;
-        });
-      }).catchError((error){
-        ///exception found without toString()
-        showErrorDialog(context, error.toString());
-      });
-    }else{
-      setState(() {
-        isLoading = false;
-      });
-    }
+    final authModel = context.read<AuthProvider>();
+    setState(() {
+      _token = authModel.token;
+      _userId = authModel.userId;
+      _role = authModel.role;
+    });
+    companyListNotifier?.getCompanyList(_role, _token, _userId);
   }
 
   @override
   Widget build(BuildContext context) {
+    companyListNotifier = ref.read(companyNotifierProvider.notifier);
+    final companyListState = ref.watch(companyNotifierProvider);
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
@@ -109,27 +73,31 @@ class _HomePageState extends State<HomePage> {
       drawer:  _role == 1
           ? MyDrawer(userId: _userId,)
           : UserDrawer(userId: _userId),
-      body: (companies.isNotEmpty)
-          ? RefreshIndicator(
-            onRefresh: _refresh,
-            child: ListView.builder(
-                itemCount: companies.length,
-                itemBuilder: (context, index) {
-                  return companyCardWidget(companies: companies[index], index: index)                   ;// return GestureDetector(
-                },
-              ),
-          )
-          : isLoading
-              ? const Center(
-                  child: CircularProgressIndicator(),
-                )
-              : Center(
-                child: Column(
-                  children: [
-                    Image.asset('lib/icons/team_vector.png',)
-                  ],
-                ),
-              )
+      body: switch(companyListState){
+
+        CompanyListLoading() => const Center(child: CircularProgressIndicator(),),
+
+        CompanyListFailed(error : String error) => Center(
+          child: ErrorEmployeeWidget(
+            errorEmployee: error,
+            tryAgain: () => companyListNotifier?.getCompanyList(_role, _token, _userId),
+          ),
+        ),
+
+        CompanyListSuccess(companies : List<CompaniesVo> companies) => RefreshIndicator(
+          onRefresh: () async {
+            companyListNotifier?.getCompanyList(_role, _token, _userId);
+          },
+          child: ListView.builder(
+            itemCount: companies.length,
+            itemBuilder: (context, index) {
+              return companyCardWidget(companies: companies[index], index: index)                   ;// return GestureDetector(
+            },
+          ),
+        ),
+
+        WidgetForEmployee() => Center(child: Image.asset('lib/icons/team_vector.png')),
+      }
     );
   }
 
@@ -151,8 +119,7 @@ class _HomePageState extends State<HomePage> {
         ),
         child: InkWell(
           onTap: (){
-            String mCompanyName = companies.companyName ?? '';
-            navigateToCompany(context,index,mCompanyName);
+            navigateToCompany(context,index,companies);
           },
           child: Row(
             children: [
@@ -190,13 +157,13 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void navigateToCompany(BuildContext context, int index, String mCompanyName) {
+  void navigateToCompany(BuildContext context, int index, CompaniesVo company) {
     Navigator.push(
       context,
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => CompanyDetailsPage(
-            companyId: companies[index].id ?? 0,
-            companyName: mCompanyName
+            companyId: company.id ?? 0,
+            companyName: company.companyName ?? ''
         ),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           const begin = Offset(1.0, 0.0);

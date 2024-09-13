@@ -7,6 +7,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:pahg_group/ui/shimmer/personal_information_shimmer.dart';
 
 import 'package:provider/provider.dart';
 import '../../data/models/pahg_model.dart';
@@ -45,8 +46,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   final Map<int ,String> licenseStatus = {1: 'Not Have',2: 'Have',3: 'Still Applying'};
   final Map<int ,String> licenseType = {1: 'က' ,2: 'ခ',3: 'ဃ'};
   final Map<int ,String> licenseColor = {1: 'Black', 2: 'Red'};
-  final Map<int, String> stateList = {1: '1', 2: '2', 3: '2', 4: '4',5:'5',6:'6',7:'7',8:'8',9:'9',10:'10',11:'11',12:'12',13:'13',14:'14'};
-  final Map<int, String> nationTypeList ={1: 'နိုင်',2: 'ဧည့်',3: 'သာ',4: 'ပြု',5: 'သီ',6: 'စ',};
+
   final _addressController = TextEditingController();
   final _cellularPhoneController = TextEditingController();
   final _homePhoneController = TextEditingController();
@@ -58,8 +58,6 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   final _hairColorController = TextEditingController();
   final _skinColorController = TextEditingController();
   final _eyeColorController = TextEditingController();
-  final _nationalCardController = TextEditingController();
-  final _startJoinDateController = TextEditingController();
   final _emergencyName = TextEditingController();
   final _emergencyRelation = TextEditingController();
   final _emergencyAddress = TextEditingController();
@@ -69,11 +67,8 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   final _socialActivitiesController = TextEditingController();
   final _emergencyCellularPhone = TextEditingController();
   final _emergencyHomePhone = TextEditingController();
-  final _nationalNumberController = TextEditingController();
   bool _selectedGender = true;
   int _selectedHandUsage = 2;
-  int? _selectedState;
-  int? _selectedNationalType;
   int? _selectedBloodType;
   int? _selectedMarry;
   int? _selectedLicenseStatus;
@@ -314,7 +309,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
       children: [
         FadeTransition(
           opacity: firstLoading ? const AlwaysStoppedAnimation(1.0) : const AlwaysStoppedAnimation(0.0),
-            child: const Center(child: CircularProgressIndicator(color: Colors.blue))),
+            child: const Center(child: PersonalInformationShimmer())),
         FadeTransition(
           opacity: firstLoading ? const AlwaysStoppedAnimation(0.0) : const AlwaysStoppedAnimation(1.0),
           child: SingleChildScrollView(
@@ -697,45 +692,8 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
               if(_isNRCExpanded)
               Column(
                 children: [
-                  CustomTextField(controller: _nationalCardController, labelText: 'NRC',readOnly: _currentUserRole),
-                  const SizedBox(height: 8),
-                  CustomTextField(controller: _startJoinDateController,labelText: 'Start Date',readOnly: _currentUserRole,),
                   const SizedBox(height: 8),
                   ///NRC Row
-                  Row(
-                      children: [
-                        Expanded(child: stateListWidget()),
-                        const SizedBox(width: 8),
-                        Expanded(child: townshipDropdown()),
-                        const SizedBox(width: 8),
-                        Expanded(child: nationalTypeListDropdown()),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Container(
-                            height: 40,
-                            padding: const EdgeInsets.symmetric(horizontal: 6,),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.onPrimary,
-                              border: Border.all(color: Colors.grey.shade600),
-                              borderRadius: BorderRadius.circular(6)
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 10.0),
-                              child: TextField(
-                                maxLines: 1,
-                                controller: _nationalNumberController,
-                                readOnly: _currentUserRole != 1,
-                                keyboardType: TextInputType.number,
-                                decoration: const InputDecoration(
-                                  labelStyle: TextStyle(fontWeight: FontWeight.w300),
-                                  border: InputBorder.none,
-                                ),
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                  ),
                   const SizedBox(height: 10),
                   Row(
                     //todo warning red
@@ -803,7 +761,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                   ? OpenContainer(
                                     closedBuilder: (context, action) =>  CachedNetworkImage(
                                       //todo
-                                      imageUrl: "https://buffr.com/library/content/images/size/w1200/2023/10/free-images.jpg",
+                                      imageUrl: "https://buffer.com/library/content/images/size/w1200/2023/10/free-images.jpg",
                                       height: SizeConfig.blockSizeVertical * 17,
                                       width: SizeConfig.blockSizeHorizontal * 41,
                                       fit: BoxFit.cover,
@@ -1254,95 +1212,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     );
   }
 
-  Widget stateListWidget(){
-    return SizedBox(
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton2(
-          isExpanded: true,
-          value: _selectedState,
-          hint: const Text('state', style: TextStyle(fontSize: 8)),
-          items: stateList.entries.map((entry) {
-            return DropdownMenuItem<int>(
-              value: entry.key,
-              child: Text(entry.value),
-            );
-          }).toList(),
-          onChanged: (int? newValue) {
-            setState(() {
-              _selectedState = newValue!;
-            });
 
-          },
-          buttonStyleData: ButtonStyleData(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.onPrimary,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            height: 40,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget townshipDropdown(){
-    return SizedBox(
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton2(
-          isExpanded: true,
-          value: _selectedState,
-          items: stateList.entries.map((entry) {
-            return DropdownMenuItem<int>(
-              value: entry.key,
-              child: Text(entry.value),
-            );
-          }).toList(),
-          onChanged: (int? newValue) {
-            setState(() {
-              _selectedState = newValue!;
-            });
-          },
-          buttonStyleData: ButtonStyleData(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.onPrimary,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            height: 40,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget nationalTypeListDropdown(){
-    return SizedBox(
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton2(
-          isExpanded: true,
-          value: _selectedNationalType,
-          hint: const Text('citizen', style: TextStyle(fontSize: 8)),
-          items: nationTypeList.entries.map((entry) {
-            return DropdownMenuItem<int>(
-              value: entry.key,
-              child: Text(entry.value,style: TextStyle(fontSize: 8)),
-            );
-          }).toList(),
-          onChanged: (int? newValue) {
-            setState(() {
-              _selectedNationalType = newValue!;
-            });
-          },
-          buttonStyleData: ButtonStyleData(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.onPrimary,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            height: 40,
-          ),
-        ),
-      ),
-    );
-  }
 
   Widget marriageStatus(){
     return SizedBox(
@@ -1425,7 +1295,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   bool validatePersonalInfo(){
     if(_addressController.text.toString().isEmpty){
       setState(() {
-        _addressErrorText = "Company Name is required";
+        _addressErrorText = "Address is required";
       });
       return false;
     }else{
