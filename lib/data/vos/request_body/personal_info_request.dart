@@ -100,6 +100,18 @@ class PersonalInfoRequest{
   @JsonKey(name: 'vehiclePunishmentDescription')
   String? vehiclePunishmentDescription;
 
+  @JsonKey(name: 'drivingLicenseFrontUrl')
+  String? drivingLicenseFrontUrl;
+
+  @JsonKey(name: 'drivingLicenseBackUrl')
+  String? drivingLicenseBackUrl;
+
+  @JsonKey(name: 'nrcFrontUrl')
+  String? nrcFrontUrl;
+
+  @JsonKey(name: 'nrcBackUrl')
+  String? nrcBackUrl;
+
   @JsonKey(name: 'previousApplied')
   bool? previousApplied;
 
@@ -108,6 +120,12 @@ class PersonalInfoRequest{
 
   @JsonKey(name: 'hrDepartmentRecord')
   String? hRDepartmentRecord;
+
+  @JsonKey(name: 'nrcNumber')
+  String? nrcNumber;
+
+  @JsonKey(name: 'email')
+  String? email;
 
   PersonalInfoRequest({
       this.id,
@@ -142,9 +160,15 @@ class PersonalInfoRequest{
       this.drivingLicenceColor,
       this.vehiclePunishment,
       this.vehiclePunishmentDescription,
+      this.drivingLicenseFrontUrl,
+      this.drivingLicenseBackUrl,
+      this.nrcFrontUrl,
+      this.nrcBackUrl,
       this.previousApplied,
       this.previousAppliedDescription,
-      this.hRDepartmentRecord});
+      this.hRDepartmentRecord,
+      this.nrcNumber,
+      this.email});
 
   factory PersonalInfoRequest.fromJson(Map<String,dynamic> json) => _$PersonalInfoRequestFromJson(json);
 

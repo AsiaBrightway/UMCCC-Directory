@@ -20,7 +20,7 @@ class PersonalInformationShimmer extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                height: 55,
+                height: 60,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   border: Border.all(color : Colors.white70,width: 1),
@@ -55,7 +55,7 @@ class PersonalInformationShimmer extends StatelessWidget {
               ),
               const SizedBox(height: 20,),
               Container(
-                height: 50,
+                height: 60,
                 width: MediaQuery.of(context).size.width * 0.65,
                 decoration: BoxDecoration(
                     color: Colors.white,
@@ -65,7 +65,7 @@ class PersonalInformationShimmer extends StatelessWidget {
               ),
               const SizedBox(height: 26),
               Container(
-                height: 55,
+                height: 60,
                 decoration: BoxDecoration(
                     color: Colors.white,
                     border: Border.all(color : Colors.white70,width: 1),
@@ -74,7 +74,7 @@ class PersonalInformationShimmer extends StatelessWidget {
               ),
               const SizedBox(height: 26),
               Container(
-                height: 55,
+                height: 60,
                 decoration: BoxDecoration(
                     color: Colors.white,
                     border: Border.all(color : Colors.white70,width: 1),
@@ -83,7 +83,7 @@ class PersonalInformationShimmer extends StatelessWidget {
               ),
               const SizedBox(height: 26),
               Container(
-                height: 55,
+                height: 60,
                 decoration: BoxDecoration(
                     color: Colors.white,
                     border: Border.all(color : Colors.white70,width: 1),
@@ -92,7 +92,7 @@ class PersonalInformationShimmer extends StatelessWidget {
               ),
               const SizedBox(height: 26),
               Container(
-                height: 55,
+                height: 60,
                 decoration: BoxDecoration(
                     color: Colors.white,
                     border: Border.all(color : Colors.white70,width: 1),

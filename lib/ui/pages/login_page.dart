@@ -96,7 +96,6 @@ class _LoginPageState extends State<LoginPage> {
                           color: Theme.of(context).colorScheme.surface,
                           borderRadius: const BorderRadius.only(topLeft: Radius.circular(50))
                       ),
-
                     ),
                   ],
                 ),

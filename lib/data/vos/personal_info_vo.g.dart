@@ -43,9 +43,15 @@ PersonalInfoVo _$PersonalInfoVoFromJson(Map<String, dynamic> json) =>
       vehiclePunishment: json['VehiclePunishment'] as bool?,
       vehiclePunishmentDescription:
           json['VehiclePunishmentDescription'] as String?,
+      nrcFrontUrl: json['nrcFrontUrl'] as String?,
+      nrcBackUrl: json['nrcBackUrl'] as String?,
+      drivingLicenseFrontUrl: json['drivingLicenseFrontUrl'] as String?,
+      drivingLicenseBackUrl: json['drivingLicenseBackUrl'] as String?,
       previousApplied: json['PreviousApplied'] as bool?,
       previousAppliedDescription: json['PreviousAppliedDescription'] as String?,
       hRDepartmentRecord: json['HRDepartmentRecord'] as String?,
+      nrcNumber: json['nrcNumber'] as String?,
+      email: json['email'] as String?,
     );
 
 Map<String, dynamic> _$PersonalInfoVoToJson(PersonalInfoVo instance) =>
@@ -82,7 +88,13 @@ Map<String, dynamic> _$PersonalInfoVoToJson(PersonalInfoVo instance) =>
       'DrivingLicenceColor': instance.drivingLicenceColor,
       'VehiclePunishment': instance.vehiclePunishment,
       'VehiclePunishmentDescription': instance.vehiclePunishmentDescription,
+      'nrcFrontUrl': instance.nrcFrontUrl,
+      'nrcBackUrl': instance.nrcBackUrl,
+      'drivingLicenseFrontUrl': instance.drivingLicenseFrontUrl,
+      'drivingLicenseBackUrl': instance.drivingLicenseBackUrl,
       'PreviousApplied': instance.previousApplied,
       'PreviousAppliedDescription': instance.previousAppliedDescription,
       'HRDepartmentRecord': instance.hRDepartmentRecord,
+      'nrcNumber': instance.nrcNumber,
+      'email': instance.email,
     };

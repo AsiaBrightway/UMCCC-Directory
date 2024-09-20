@@ -44,6 +44,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
   int companyId = 0;
   int departmentId = 0;
   int? _selectedState;
+  int? _selectedTownship;
   int? _selectedNationalType;
   String? _selectedDepartment;
   String? _selectedCompany;
@@ -740,6 +741,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
       ),
     );
   }
+
   Widget editDropDown(){
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -837,7 +839,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
       child: DropdownButtonHideUnderline(
         child: DropdownButton2(
           isExpanded: true,
-          value: _selectedState,
+          value: _selectedTownship,
           items: stateList.entries.map((entry) {
             return DropdownMenuItem<int>(
               value: entry.key,
@@ -846,7 +848,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
           }).toList(),
           onChanged: (int? newValue) {
             setState(() {
-              _selectedState = newValue!;
+              _selectedTownship = newValue!;
             });
           },
           buttonStyleData: ButtonStyleData(
@@ -871,7 +873,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
           items: nationTypeList.entries.map((entry) {
             return DropdownMenuItem<int>(
               value: entry.key,
-              child: Text(entry.value,style: TextStyle(fontSize: 8)),
+              child: Text(entry.value,style: const TextStyle(fontSize: 8)),
             );
           }).toList(),
           onChanged: (int? newValue) {

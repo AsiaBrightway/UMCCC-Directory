@@ -73,7 +73,7 @@ void showErrorRefreshDialog(BuildContext context,String errorMessage,Function() 
             Text(errorMessage, style: const TextStyle(fontSize: 16),),
             const SizedBox(height: 20),
             Center(
-              child: TextButton.icon(
+              child: ElevatedButton.icon(
                 onPressed: () {
                   onRefresh();
                   Navigator.of(context).pop(); // Close the dialog after refresh

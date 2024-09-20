@@ -75,7 +75,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           : UserDrawer(userId: _userId),
       body: switch(companyListState){
 
-        CompanyListLoading() => const Center(child: CircularProgressIndicator(),),
+        CompanyListLoading() => const Center(child: CircularProgressIndicator()),
 
         CompanyListFailed(error : String error) => Center(
           child: ErrorEmployeeWidget(

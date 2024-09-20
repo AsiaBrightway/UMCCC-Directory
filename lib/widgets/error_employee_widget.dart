@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ErrorEmployeeWidget extends StatelessWidget {
@@ -26,7 +25,7 @@ class ErrorEmployeeWidget extends StatelessWidget {
           style: const TextStyle(fontFamily: 'Ubuntu', fontSize: 18),
         ),
         const SizedBox(height: 8),
-        TextButton(
+        ElevatedButton(
           onPressed: tryAgain,
           child: const Text('Try Again'),
         )

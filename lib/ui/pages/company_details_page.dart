@@ -404,7 +404,7 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                           fontWeight: FontWeight.w500
                       )),
                       const SizedBox(height: 10),
-                      Text(employee.departmentName!,style: const TextStyle(
+                      Text(employee.departmentName ?? '',style: const TextStyle(
                           fontFamily: 'Roboto',
                           fontWeight: FontWeight.w300
                       ),)
