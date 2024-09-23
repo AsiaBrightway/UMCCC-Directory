@@ -14,7 +14,9 @@ class PersonalInfoBloc extends ChangeNotifier{
   String? _errorMessage;
   bool _isDataEmpty = false;
   String? _updateSuccess;
+  bool _editMode = true;
 
+  bool get editMode => _editMode;
   String? get updateSuccess => _updateSuccess;
   PersonalInfoState get updateState => _updateState;
   PersonalInfoVo get personalInfo => _personalInfo;
@@ -46,10 +48,12 @@ class PersonalInfoBloc extends ChangeNotifier{
     });
   }
 
-  Future<void> addPersonalInformation(String token) async{
+  Future<void> addPersonalInformation(String token,String userId) async{
     _updateState = PersonalInfoState.loading;
     notifyListeners();
     PersonalInfoRequest request = getPersonalRequest();
+    request.employeeId = userId;
+    request.id = 0;
     _pahgModel.addPersonalInfo(token, request).then((onValue){
       _updateSuccess = onValue?.message;
       _updateState = PersonalInfoState.success;
@@ -75,6 +79,12 @@ class PersonalInfoBloc extends ChangeNotifier{
       _updateState = PersonalInfoState.error;
       notifyListeners();
     });
+  }
+
+  void toggleEditMode(){
+    _editMode = !_editMode;
+    _updateState = PersonalInfoState.initial;
+    notifyListeners();
   }
 
   void updatePersonalInfo({

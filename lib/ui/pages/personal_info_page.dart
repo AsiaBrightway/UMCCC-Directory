@@ -3,14 +3,11 @@ import 'dart:io';
 
 import 'package:animations/animations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:pahg_group/bloc/personal_info_bloc.dart';
-import 'package:pahg_group/ui/shimmer/personal_information_shimmer.dart';
-
 import 'package:provider/provider.dart';
+import '../../bloc/personal_info_bloc.dart';
 import '../../data/models/pahg_model.dart';
 import '../../data/vos/personal_info_vo.dart';
 import '../../exception/helper_functions.dart';
@@ -19,6 +16,7 @@ import '../../utils/size_config.dart';
 import '../components/custom_drop_down_button.dart';
 import '../components/custom_text_field.dart';
 import '../providers/auth_provider.dart';
+import '../shimmer/personal_information_shimmer.dart';
 import '../themes/colors.dart';
 import 'family_page.dart';
 import 'image_details_page.dart';
@@ -39,25 +37,15 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   File? _image;
   String _token = '';
   int _currentUserRole = 0;
-  int? personalInfoId;
   final Map<int, String> bloodTypeList = {1: 'A', 2: 'B', 3: 'O', 4: 'AB'};
   final Map<int ,String> marriageList = {1: 'Single',2: 'Married',3: 'Divorce',4: 'Widower',5: 'Widow'};
-  final Map<int ,String> licenseStatus = {1: 'Not Have',2: 'Have',3: 'Still Applying'};
-  final Map<int ,String> licenseType = {1: 'က' ,2: 'ခ',3: 'ဃ'};
-  final Map<int ,String> licenseColor = {1: 'Black', 2: 'Red'};
-  int? _selectedMarry;
-  int? _selectedLicenseStatus;
-  int? _selectedLicenseType;
-  int? _selectedLicenseColor;
+  final Map<int ,String> licenseStatusList = {1: 'Not Have',2: 'Have',3: 'Still Applying'};
+  final Map<int ,String> licenseTypeList = {1: 'က' ,2: 'ခ',3: 'ဃ'};
+  final Map<int ,String> licenseColorList = {1: 'Black', 2: 'Red'};
   bool _isEmergencyExpanded = false;
   bool _isAppearanceExpanded = false;
   bool _isDrivingLicenseExpanded = false;
   bool _isNRCExpanded = false;
-  int age = 0;
-  String _date = '';
-  bool editMode = true;
-  String licenseStatusName = "";
-  String licenseTypeName = "";
   String licenseColorName = "";
   String frontDrivingImageUrl = "";
   String backDrivingImageUrl = "";
@@ -70,10 +58,6 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   void initState() {
     super.initState();
     _initializeData();
-  }
-
-  String getBloodType(int? bloodTypeInt) {
-    return bloodTypeList[bloodTypeInt] ?? ''; // Return 'Unknown' if the key doesn't exist
   }
 
   Future<void> uploadImage(int imageType) async{
@@ -101,8 +85,24 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     _currentUserRole = authModel.role;
   }
 
+  String getBloodType(int? bloodTypeInt) {
+    return bloodTypeList[bloodTypeInt] ?? ''; // Return 'Unknown' if the key doesn't exist
+  }
+
   String getMarriageStatus(int? marriageStatus){
     return marriageList[marriageStatus] ?? '';
+  }
+
+  String getLicenseStatusName(int? licenseStatus){
+    return licenseStatusList[licenseStatus] ?? '';
+  }
+
+  String getLicenseColorName(int? licenseColor){
+    return licenseColorList[licenseColor] ?? '';
+  }
+
+  String getLicenseTypeName(int? licenseType){
+    return licenseStatusList[licenseType] ?? '';
   }
 
   void _showPickerDialog(BuildContext context,int imageType) {
@@ -177,38 +177,38 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                   var bloc = context.read<PersonalInfoBloc>();
                     if(isDataEmpty == true){
                       return IconButton(onPressed: (){
-                        bloc.addPersonalInformation(_token);
+                        bloc.addPersonalInformation(_token,widget.userId);
                       }, icon: const Icon(Icons.save,color: Colors.green,));
                     }
                     else{
-                      return IconButton(onPressed: (){
-                        bloc.updatePersonalInformation(_token);
-                      }, icon: const Icon(Icons.cloud_upload,color: colorAccent,));
+                      return Row(
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              bloc.updatePersonalInformation(_token);
+                            },
+                            icon: const Icon(Icons.cloud_upload, color: colorAccent),
+                          ),
+                          Selector<PersonalInfoBloc, bool>(
+                            selector: (context, bloc) => bloc.editMode,
+                            builder: (context, editMode, _) {
+                              return TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    bloc.toggleEditMode();
+                                  });
+                                },
+                                child: (!editMode)
+                                    ? const Text('Edit', style: TextStyle(color: colorAccent))
+                                    : const Text('Undo', style: TextStyle(color: colorAccent)),
+                              );
+                            },
+                          ),
+                        ],
+                      );
                     }
-                  },)
-
-             // (widget.role == 1 )
-             //     ? (personalInfo.isEmpty)
-             //       ? IconButton(onPressed: (){
-             //         _addPersonalInfo();
-             //         }, icon: const Icon(Icons.save,color: Colors.green,))
-             //         : (editMode)
-             //           ? IconButton(onPressed: (){
-             //             _updatePersonalInfo();
-             //         }, icon: const Icon(Icons.cloud_upload,color: colorAccent,))
-             //           : const SizedBox(width: 1)
-             //           : const SizedBox(width: 1),
-             //   (widget.role == 1 && personalInfo.isNotEmpty)
-             //     ? TextButton(onPressed: (){
-             //       setState(() {
-             //       editMode = !editMode;
-             //         });
-             //       },
-             //       child: (!editMode)
-             //           ? const Text('Edit',style: TextStyle(color: colorAccent),)
-             //           : const Text('Undo',style: TextStyle(color: colorAccent))
-             //       )
-             //     : const SizedBox(width: 1)
+                  },
+              ),
           ],
         ),
         backgroundColor: Theme.of(context).colorScheme.surface,
@@ -228,7 +228,9 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                           const SizedBox(height: 10),
                           Text(bloc.errorMessage ?? ''),
                           const SizedBox(height: 10),
-                          ElevatedButton(onPressed: () => bloc.getPersonalInformation(_token,widget.userId), child: const Text('Try Again'))
+                          ElevatedButton(
+                              onPressed: () => bloc.getPersonalInformation(_token,widget.userId), child: const Text('Try Again')
+                          )
                         ],
                       ),
                     );
@@ -291,43 +293,48 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                              GestureDetector(
                                onTap: (){
                                  if(_currentUserRole == 1){
-                                   _selectDate(context);
+                                   _selectDate(context,bloc);
                                  }
                                },
-                               child: Container(
-                                 width: MediaQuery.of(context).size.width * 0.7,
-                                 margin: const EdgeInsets.symmetric(vertical: 10),
-                                 decoration: BoxDecoration(
-                                     color: Theme.of(context).colorScheme.surfaceBright,
-                                     borderRadius: BorderRadius.circular(12)
-                                 ),
-                                 child: Row(
-                                   children: [
-                                     Container(
-                                       margin: const EdgeInsets.all(8), width: 40, height: 40,
-                                       decoration: BoxDecoration(
-                                           color: Theme.of(context).colorScheme.surfaceBright,
-                                           borderRadius: BorderRadius.circular(24)
-                                       ),
-                                       child: const Icon(Icons.date_range),
+                               child: Selector<PersonalInfoBloc,String?>(
+                                 selector: (context,bloc) => bloc.personalInfo.dateOfBirth,
+                                 builder: (context,dateOfBirth,_){
+                                   return Container(
+                                     width: MediaQuery.of(context).size.width * 0.7,
+                                     margin: const EdgeInsets.symmetric(vertical: 10),
+                                     decoration: BoxDecoration(
+                                         color: Theme.of(context).colorScheme.surfaceBright,
+                                         borderRadius: BorderRadius.circular(12)
                                      ),
-                                     Column(
-                                       crossAxisAlignment: CrossAxisAlignment.start,
+                                     child: Row(
                                        children: [
-                                         const Text('Date Of Birth',style: TextStyle(fontFamily : 'Ubuntu',fontSize: 15,fontWeight: FontWeight.w300),),
-                                         Text(_date)
+                                         Container(
+                                           margin: const EdgeInsets.all(8), width: 40, height: 40,
+                                           decoration: BoxDecoration(
+                                               color: Theme.of(context).colorScheme.surfaceBright,
+                                               borderRadius: BorderRadius.circular(24)
+                                           ),
+                                           child: const Icon(Icons.date_range),
+                                         ),
+                                         Column(
+                                           crossAxisAlignment: CrossAxisAlignment.start,
+                                           children: [
+                                             const Text('Date Of Birth',style: TextStyle(fontFamily : 'Ubuntu',fontSize: 15,fontWeight: FontWeight.w300),),
+                                             Text(dateOfBirth ?? '')
+                                           ],
+                                         ),
+                                         const SizedBox(width: 20,),
+                                         Column(
+                                           crossAxisAlignment: CrossAxisAlignment.start,
+                                           children: [
+                                             const Text('Age',style: TextStyle(fontFamily: 'Ubuntu', fontSize: 15,fontWeight: FontWeight.w300),),
+                                             Text(bloc.personalInfo.age.toString())
+                                           ],
+                                         ),
                                        ],
                                      ),
-                                     const SizedBox(width: 20,),
-                                     Column(
-                                       crossAxisAlignment: CrossAxisAlignment.start,
-                                       children: [
-                                         const Text('Age',style: TextStyle(fontFamily: 'Ubuntu', fontSize: 15,fontWeight: FontWeight.w300),),
-                                         Text('$age')
-                                       ],
-                                     ),
-                                   ],
-                                 ),
+                                   );
+                                 },
                                ),
                              ),
                             CustomTextField(
@@ -379,9 +386,9 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                    gradient: LinearGradient(stops: const [0.4,1.0], colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade600])
                                ),
                                ///gender radio button
-                               child: (editMode && _currentUserRole == 1)
+                               child: (bloc.editMode && _currentUserRole == 1)
                                    ? Selector<PersonalInfoBloc,bool>(
-                                   selector: (context,gender) => bloc.personalInfo.gender ?? true,
+                                   selector: (context,bloc) => bloc.personalInfo.gender ?? true,
                                    builder: (context,gender,_){
                                      return ButtonBar(
                                        alignment: MainAxisAlignment.start,
@@ -431,7 +438,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                  gradient: LinearGradient(stops: const [0.4,1.0], colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade600]
                                  ),
                                ),
-                               child: (editMode && _currentUserRole == 1)
+                               child: (bloc.editMode && _currentUserRole == 1)
                                    ? Selector<PersonalInfoBloc,int>(
                                       selector: (context,handUsage) => bloc.personalInfo.handUsage ?? 1,
                                       builder: (context,handUsage,_){
@@ -460,7 +467,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                           ],
                                         );
                                       },
-                                      )
+                                  )
                                    : Row(
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         children: [
@@ -476,7 +483,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                              ),
                              const SizedBox(height: 10),
                              ///blood type and marriage
-                             (editMode && _currentUserRole == 1)
+                             (bloc.editMode && _currentUserRole == 1)
                                  ? Row(
                                   children: [
                                     Expanded(child: bloodTypeWidget(context)),
@@ -489,9 +496,8 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                   padding: const EdgeInsets.all(10),
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(12),
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .surfaceBright),
+                                      color: Theme.of(context).colorScheme.surfaceBright
+                                  ),
 
                                   ///Blood type and marriage status
                                   child: Row(
@@ -941,67 +947,82 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                    if(_isDrivingLicenseExpanded)
                    Column(
                      children: [
-                       (editMode && _currentUserRole == 1)
-                           ? CustomDropdownButton(
-                               value: _selectedLicenseStatus,
-                               hint: 'License Status',
-                               items: licenseStatus,
-                               onChanged: (int? newValue) {
-                                 setState(() {
-                                   _selectedLicenseStatus = newValue!;
+                       Selector<PersonalInfoBloc,int?>(
+                         selector: (context,bloc) => bloc.personalInfo.drivingLicenceStatus,
+                         builder: (context,licenseStatus,_){
+                           if(bloc.editMode && _currentUserRole == 1){
+                             return CustomDropdownButton(
+                                 value: licenseStatus,
+                                 hint: 'License Status',
+                                 items: licenseStatusList,
+                                 onChanged: (int? newValue) {
+                                   bloc.updatePersonalInfo(drivingLicenceStatus: newValue);
                                  });
-                               })
-                           : Padding(
-                             padding: const EdgeInsets.only(left: 8.0,bottom: 8,top: 14),
-                             child: Row(
-                               children: [
-                                 const Text("License Status : "),
-                                 Text(licenseStatusName,style: const TextStyle(fontFamily: 'Ubuntu'),)
-                               ],
-                             ),
-                           ),
+                           }else{
+                             return Padding(
+                               padding: const EdgeInsets.only(left: 8.0,bottom: 8,top: 14),
+                               child: Row(
+                                 children: [
+                                   const Text("License Status : "),
+                                   Text(getLicenseStatusName(licenseStatus),style: const TextStyle(fontFamily: 'Ubuntu'),)
+                                 ],
+                               ),
+                             );
+                           }
+                         },
+                       ),
                        const SizedBox(height: 10),
-                       (editMode && _currentUserRole == 1)
-                           ? CustomDropdownButton(
-                               value: _selectedLicenseType,
-                               hint: 'License Type',
-                               items: licenseType,
-                               onChanged: (int? newValue) {
-                                 setState(() {
-                                   _selectedLicenseType = newValue!;
+                       Selector<PersonalInfoBloc,int?>(
+                         selector: (context,bloc) => bloc.personalInfo.drivingLicenceType,
+                         builder: (context,licenseType,_){
+                           if(bloc.editMode && _currentUserRole == 1){
+                             return CustomDropdownButton(
+                                 value: licenseType,
+                                 hint: 'License Type',
+                                 items: licenseTypeList,
+                                 onChanged: (int? newValue) {
+                                   bloc.updatePersonalInfo(drivingLicenceType: newValue);
                                  });
-                               })
-                           : Padding(
-                             padding: const EdgeInsets.only(left: 8,bottom: 8),
-                             child: Row(
-                               children: [
-                                 const Text("License Type : "),
-                                 Text(licenseTypeName,style: const TextStyle(fontFamily: 'Ubuntu'))
-                               ],
-                             ),
-                           ),
+                           }else{
+                             return Padding(
+                               padding: const EdgeInsets.only(left: 8,bottom: 8),
+                               child: Row(
+                                 children: [
+                                   const Text("License Type : "),
+                                   Text(getLicenseTypeName(licenseType),style: const TextStyle(fontFamily: 'Ubuntu'))
+                                 ],
+                               ),
+                             );
+                           }
+                         },
+                       ),
                        const SizedBox(height: 10),
                        ///license color drop down
-                       (editMode && _currentUserRole == 1)
-                           ? CustomDropdownButton(
-                           value: _selectedLicenseColor,
-                           hint: 'License Color',
-                           items: licenseColor,
-                           onChanged: (int? value) {
-                             setState(() {
-                               _selectedLicenseColor = value!;
-                             });
-                           })
-                           : Padding(
-                             padding: const EdgeInsets.only(left: 8,bottom: 8),
-                             child: Row(
-                               children: [
-                                 const Text("License Color : "),
-                                 Text(licenseColorName,style: const TextStyle(fontFamily: 'Ubuntu'))
-                               ],
-                             ),
-                           ),
-                       const SizedBox(height: 10,),
+                       Selector<PersonalInfoBloc,int?>(
+                         selector: (context,bloc) => bloc.personalInfo.drivingLicenceColor,
+                         builder: (context,licenseColor,_){
+                           if(bloc.editMode && _currentUserRole == 1){
+                             return CustomDropdownButton(
+                                 value: licenseColor,
+                                 hint: 'License Color',
+                                 items: licenseColorList,
+                                 onChanged: (int? value) {
+                                    bloc.updatePersonalInfo(drivingLicenceColor: value);
+                                 });
+                           }else{
+                             return Padding(
+                               padding: const EdgeInsets.only(left: 8,bottom: 8),
+                               child: Row(
+                                 children: [
+                                   const Text("License Color : "),
+                                   Text(getLicenseColorName(licenseColor),style: const TextStyle(fontFamily: 'Ubuntu'))
+                                 ],
+                               ),
+                             );
+                           }
+                         },
+                       ),
+                       const SizedBox(height: 10),
                        ///toggle vehicle punishment
                        Selector<PersonalInfoBloc,bool>(
                          selector: (context,bloc) => bloc.personalInfo.vehiclePunishment ?? false,
@@ -1209,7 +1230,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
      );
    }
 
-  Future<void> _selectDate(BuildContext context) async {
+   Future<void> _selectDate(BuildContext context,PersonalInfoBloc bloc) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -1217,10 +1238,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
       lastDate: DateTime(2030),
     );
     if (picked != null) {
-      setState(() {
-        _date = DateFormat('yyyy-MM-dd').format(picked);
-        age = _calculateAge(picked);
-      });
+      bloc.updatePersonalInfo(dateOfBirth: picked.toString(),age: _calculateAge(picked));
     }
   }
 
@@ -1239,37 +1257,15 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
       selector: (context,bloc) => bloc.personalInfo.bloodType,
       builder: (context,bloodType,_){
         return SizedBox(
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton2(
-              isExpanded: true,
-              value: bloodType,
-              hint: const Text('Blood Type', style: TextStyle(fontSize: 14),
-              ),
-              items: bloodTypeList.entries.map((entry) {
-                return DropdownMenuItem<int>(
-                  value: entry.key,
-                  child: Text(entry.value,style: TextStyle(
-                      overflow: TextOverflow.ellipsis,color: Theme.of(context).colorScheme.onSurface
-                  ),),
-                );
-              }).toList(),
-              onChanged: (int? newValue) {
-                bloc.updatePersonalInfo(bloodType: newValue);
-              },
-              buttonStyleData: ButtonStyleData(
-                elevation: 1,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.onPrimary,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: Colors.black26,
-                  ),
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                height: 44,
-              ),
-            ),
-          ),
+            child: Expanded(
+                child: CustomDropdownButton(
+                    value: bloodType,
+                    hint: 'Blood Type',
+                    items: bloodTypeList,
+                    onChanged: (int? newValue) {
+                      bloc.updatePersonalInfo(bloodType: newValue);
+                    })
+                )
         );
       },
     );
@@ -1281,55 +1277,19 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
       selector: (context,bloc) => bloc.personalInfo.marriageStatus,
       builder: (context,marriageStatus,_){
         return SizedBox(
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton2(
-              isExpanded: true,
-              value: marriageStatus,
-              hint: const Text('Marriage Status', style: TextStyle(fontSize: 14),
-              ),
-              items: marriageList.entries.map((entry) {
-                return DropdownMenuItem<int>(
-                  value: entry.key,
-                  child: Text(entry.value,style: TextStyle(
-                      overflow: TextOverflow.ellipsis,color: Theme.of(context).colorScheme.onSurface
-                  ),),
-                );
-              }).toList(),
-              onChanged: (int? newValue) {
-                bloc.updatePersonalInfo(marriageStatus: newValue);
-              },
-              buttonStyleData: ButtonStyleData(
-                elevation: 2,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.onPrimary,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: Colors.black26,
-                  ),
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                height: 44,
-              ),
-            ),
-          ),
+            child: Expanded(
+                child: CustomDropdownButton(
+                    value: marriageStatus,
+                    hint: 'Marriage Status',
+                    items: marriageList,
+                    onChanged: (int? newValue) {
+                      bloc.updatePersonalInfo(marriageStatus: newValue);
+                    })
+            )
         );
       },
     );
   }
-
-  // bool validatePersonalInfo(){
-  //   if(_addressController.text.toString().isEmpty){
-  //     setState(() {
-  //       _addressErrorText = "Address is required";
-  //     });
-  //     return false;
-  //   }else{
-  //     setState(() {
-  //       _addressErrorText = null;
-  //     });
-  //   }
-  //   return true;
-  // }
 }
 
 
