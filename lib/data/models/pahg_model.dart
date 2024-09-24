@@ -305,4 +305,9 @@ class PahgModel {
     List<PathUserRequest> requestList = [request];
     return mDataAgent.changeUserInfo(apiKey, id, requestList);
   }
+
+  Future<PostMethodResponse?> patchPersonalInfo(String apiKey,int id,PathUserRequest request){
+    List<PathUserRequest> requestList = [request];
+    return mDataAgent.patchPersonalInfo(apiKey, id, requestList);
+  }
 }

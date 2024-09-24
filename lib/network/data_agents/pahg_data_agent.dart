@@ -138,4 +138,6 @@ abstract class PahgDataAgent{
   Future<PostMethodResponse?> addFamily(String apiKey,AddFamilyRequest request);
 
   Future<PostMethodResponse?> changeUserInfo(String apiKey,String id,List<PathUserRequest> request);
+
+  Future<PostMethodResponse?> patchPersonalInfo(String apiKey,int id,List<PathUserRequest> request);
 }

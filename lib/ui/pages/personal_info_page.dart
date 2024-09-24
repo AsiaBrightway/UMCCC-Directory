@@ -5,10 +5,8 @@ import 'package:animations/animations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../bloc/personal_info_bloc.dart';
-import '../../data/models/pahg_model.dart';
 import '../../data/vos/personal_info_vo.dart';
 import '../../exception/helper_functions.dart';
 import '../../utils/image_compress.dart';
@@ -32,9 +30,7 @@ class PersonalInfoPage extends StatefulWidget {
 }
 
 class _PersonalInfoPageState extends State<PersonalInfoPage> {
-  final PahgModel _model = PahgModel();
   List<PersonalInfoVo> personalInfo = [];
-  File? _image;
   String _token = '';
   int _currentUserRole = 0;
   final Map<int, String> bloodTypeList = {1: 'A', 2: 'B', 3: 'O', 4: 'AB'};
@@ -42,41 +38,13 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   final Map<int ,String> licenseStatusList = {1: 'Not Have',2: 'Have',3: 'Still Applying'};
   final Map<int ,String> licenseTypeList = {1: 'က' ,2: 'ခ',3: 'ဃ'};
   final Map<int ,String> licenseColorList = {1: 'Black', 2: 'Red'};
-  bool _isEmergencyExpanded = false;
-  bool _isAppearanceExpanded = false;
-  bool _isDrivingLicenseExpanded = false;
-  bool _isNRCExpanded = false;
-  String licenseColorName = "";
   String frontDrivingImageUrl = "";
   String backDrivingImageUrl = "";
-  File? _frontDrivingImage;
-  File? _backDrivingImage;
-  File? _frontNRCImage;
-  File? _backNRCImage;
 
   @override
   void initState() {
     super.initState();
     _initializeData();
-  }
-
-  Future<void> uploadImage(int imageType) async{
-    _model.uploadImage(_token, _image!).then((response){
-      setState(() {
-        switch(imageType){
-          case 1 :
-            frontDrivingImageUrl = response!.file!;
-            _frontDrivingImage = _image;
-            break;
-          case 2 :
-            backDrivingImageUrl = response!.file!;
-            _backDrivingImage = _image;
-        }
-      });
-    }).catchError((error){
-      Navigator.of(context).pop();
-      showErrorDialog(context, 'Image : ${error.toString()}');
-    });
   }
 
   Future<void> _initializeData() async{
@@ -105,7 +73,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     return licenseStatusList[licenseType] ?? '';
   }
 
-  void _showPickerDialog(BuildContext context,int imageType) {
+  void _showPickerDialog(BuildContext context,int imageType,PersonalInfoBloc bloc) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext bc) {
@@ -116,7 +84,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                 leading: const Icon(Icons.photo_library),
                 title: const Text('Gallery'),
                 onTap: () {
-                  selectImage(imageType,ImageSource.gallery);
+                  selectImage(imageType,ImageSource.gallery,bloc);
                   Navigator.of(context).pop();
                 },
               ),
@@ -124,7 +92,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                 leading: const Icon(Icons.camera_alt),
                 title: const Text('Camera'),
                 onTap: () {
-                  selectImage(imageType,ImageSource.camera);
+                  selectImage(imageType,ImageSource.camera,bloc);
                   Navigator.of(context).pop();
                 },
               ),
@@ -135,17 +103,14 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     );
   }
 
-  Future<void> selectImage(int imageType,ImageSource source) async{
+  Future<void> selectImage(int imageType,ImageSource source,PersonalInfoBloc bloc) async{
     //Create an instance of ImagePicker
     ImagePicker imagePicker = ImagePicker();
     XFile? file = await imagePicker.pickImage(source: source);
     if (file != null) {
       File? compressFile = await compressAndGetFile(File(file.path), file.path,48);
       if (compressFile != null) {
-        setState(() {
-          _image = compressFile;
-          uploadImage(imageType);
-        });
+        bloc.uploadImage(imageType, compressFile);
       }
     }
   }
@@ -595,595 +560,563 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   ///build emergency
    Widget _buildEmergencyContact(BuildContext context){
     var bloc = context.read<PersonalInfoBloc>();
-     return Container(
-       decoration: BoxDecoration(
-           gradient: LinearGradient(
-               stops: const [0.4,1.0],
-               colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade600]
-           ),
-           borderRadius: BorderRadius.circular(8),
-           border: Border.all(color: Colors.deepPurple)
-       ),
-       padding: const EdgeInsets.symmetric(horizontal:10,vertical: 10),
-       child: Column(
-         children: [
-           GestureDetector(
-             onTap: (){
-               setState(() {
-                 _isEmergencyExpanded = !_isEmergencyExpanded;
-               });
-             },
-             child: Container(
-               color: Colors.transparent,
-               child: Row(
-                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                 children: [
-                   const Text('Emergency Contact'),
-                   IconButton(
-                     icon: Icon(_isEmergencyExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
-                     onPressed: () {
-                       setState(() {
-                         _isEmergencyExpanded = !_isEmergencyExpanded;
-                       });
-                     },
-                   ),
-                 ],
-               ),
-             ),
-           ),
-           AnimatedContainer(
-             duration: const Duration(milliseconds: 100),
-             height: _isEmergencyExpanded ?  270 : 0.0,
-             child: Visibility(
-               visible: _isEmergencyExpanded,
-               child: AnimatedOpacity(
-                 opacity: _isEmergencyExpanded ? 1.0 : 0.0,
-                 curve: Curves.easeInOutBack,
-                 duration: const Duration(milliseconds: 100),
-                 child: Column(
-                   children: [
-                     Expanded(child: CustomTextField(
-                         controller: TextEditingController(text: bloc.personalInfo.emergencyContactName),
-                         onChange: (value) => bloc.updatePersonalInfo(emergencyContactName: value),
-                         labelText: 'Name',readOnly: _currentUserRole
-                     )),
-                     const SizedBox(height: 6,),
-                     Expanded(child: CustomTextField(
-                         controller: TextEditingController(text: bloc.personalInfo.emergencyContactRelation),
-                         onChange: (value) => bloc.updatePersonalInfo(emergencyContactRelation: value),
-                         labelText: 'Relation',
-                         readOnly: _currentUserRole)),
-                     const SizedBox(height: 6,),
-                     Expanded(child: CustomTextField(
-                         controller: TextEditingController(text: bloc.personalInfo.emergencyContactAddress),
-                         onChange: (value) => bloc.updatePersonalInfo(emergencyContactAddress: value),
-                         labelText: 'Address',
-                         readOnly: _currentUserRole)),
-                     const SizedBox(height: 6,),
-                     Expanded(
-                       child: Row(
-                         children: [
-                           Expanded(child: CustomTextField(
-                             controller: TextEditingController(text: bloc.personalInfo.emergencyContactOfficePhone),
-                             onChange: (value) => bloc.updatePersonalInfo(emergencyContactOfficePhone: value),
-                             labelText: 'Cellular Phone',
-                             readOnly: _currentUserRole,
-                             keyboardType: TextInputType.number,)
-                           ),
-                           const SizedBox(width: 8,),
-                           Expanded(child: CustomTextField(
-                             controller: TextEditingController(text: bloc.personalInfo.emergencyContactHomePhone),
-                             onChange: (value) => bloc.updatePersonalInfo(emergencyContactMobilePhone: value),
-                             labelText: 'Home Phone',
-                             readOnly: _currentUserRole,
-                             keyboardType: TextInputType.number,),
-                           ),
-                         ],
-                       ),
-                     ),
-                   ],
-                 ),
-               ),
-             ),
-           ),
-         ],
-       ),
-     );
+    return Selector<PersonalInfoBloc,bool>(
+          selector: (context,bloc) => bloc.isEmergencyExpanded,
+          builder: (context,isEmergencyExpanded,_){
+            return Container(
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      stops: const [0.4,1.0],
+                      colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade600]
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.deepPurple)
+              ),
+              padding: const EdgeInsets.symmetric(horizontal:10,vertical: 10),
+              child: Column(
+                children: [
+                  GestureDetector(
+                    onTap: (){
+                      bloc.toggleEmergencyExpanded();
+                    },
+                    child: Container(
+                      color: Colors.transparent,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('Emergency Contact'),
+                          IconButton(
+                            icon: Icon(isEmergencyExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
+                            onPressed: () {
+                              bloc.toggleEmergencyExpanded();
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 100),
+                    height: isEmergencyExpanded ?  270 : 0.0,
+                    child: Visibility(
+                      visible: isEmergencyExpanded,
+                      child: AnimatedOpacity(
+                        opacity: isEmergencyExpanded ? 1.0 : 0.0,
+                        curve: Curves.easeInOutBack,
+                        duration: const Duration(milliseconds: 100),
+                        child: Column(
+                          children: [
+                            Expanded(child: CustomTextField(
+                                controller: TextEditingController(text: bloc.personalInfo.emergencyContactName),
+                                onChange: (value) => bloc.updatePersonalInfo(emergencyContactName: value),
+                                labelText: 'Name',readOnly: _currentUserRole
+                            )),
+                            const SizedBox(height: 6,),
+                            Expanded(child: CustomTextField(
+                                controller: TextEditingController(text: bloc.personalInfo.emergencyContactRelation),
+                                onChange: (value) => bloc.updatePersonalInfo(emergencyContactRelation: value),
+                                labelText: 'Relation',
+                                readOnly: _currentUserRole)),
+                            const SizedBox(height: 6,),
+                            Expanded(child: CustomTextField(
+                                controller: TextEditingController(text: bloc.personalInfo.emergencyContactAddress),
+                                onChange: (value) => bloc.updatePersonalInfo(emergencyContactAddress: value),
+                                labelText: 'Address',
+                                readOnly: _currentUserRole)),
+                            const SizedBox(height: 6,),
+                            Expanded(
+                              child: Row(
+                                children: [
+                                  Expanded(child: CustomTextField(
+                                    controller: TextEditingController(text: bloc.personalInfo.emergencyContactOfficePhone),
+                                    onChange: (value) => bloc.updatePersonalInfo(emergencyContactOfficePhone: value),
+                                    labelText: 'Cellular Phone',
+                                    readOnly: _currentUserRole,
+                                    keyboardType: TextInputType.number,)
+                                  ),
+                                  const SizedBox(width: 8,),
+                                  Expanded(child: CustomTextField(
+                                    controller: TextEditingController(text: bloc.personalInfo.emergencyContactHomePhone),
+                                    onChange: (value) => bloc.updatePersonalInfo(emergencyContactMobilePhone: value),
+                                    labelText: 'Home Phone',
+                                    readOnly: _currentUserRole,
+                                    keyboardType: TextInputType.number,),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+    );
    }
 
   ///build national id card
   Widget _buildNationalRegiCard(BuildContext context){
-    return Container(
-      decoration: BoxDecoration(
-          gradient: LinearGradient(
-              stops: const [0.4,1.0],
-              colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade600]
-          ),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Colors.deepPurple)
-      ),
-      padding: const EdgeInsets.symmetric(horizontal:20,vertical: 10),
-      child: GestureDetector(
-        onTap: (){
-          setState(() {
-            _isNRCExpanded = !_isNRCExpanded;
-          });
-        },
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          child: Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                color: Colors.transparent,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text('National Card',style: TextStyle(fontFamily: 'Ubuntu'),),
-                    Icon(_isNRCExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
-                  ],
-                ),
+    var bloc = context.read<PersonalInfoBloc>();
+    return Selector<PersonalInfoBloc,bool>(
+      selector: (context,bloc) => bloc.isNrcExpanded,
+      builder: (context,isNrcExpanded,_){
+        return Container(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  stops: const [0.4,1.0],
+                  colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade600]
               ),
-              if(_isNRCExpanded)
-              Column(
-                children: [
-                  const SizedBox(height: 8),
-                  ///NRC Row
-                  const SizedBox(height: 10),
-                  Row(
-                    //todo warning red
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.deepPurple)
+          ),
+          padding: const EdgeInsets.symmetric(horizontal:20,vertical: 10),
+          child: GestureDetector(
+            onTap: (){
+                bloc.toggleNrcExpanded();
+            },
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  color: Colors.transparent,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(
-                        child: Stack(
-                          alignment: Alignment.bottomRight,
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: _frontNRCImage == null
-                                  ? OpenContainer(
-                                    closedBuilder:(context,action) => CachedNetworkImage(
-                                        //todo
-                                        imageUrl: "https:buffer.com/library/content/images/size/w1200/2023/10/free-images.jpg",
-                                        height: SizeConfig.blockSizeVertical * 17,
-                                        width: SizeConfig.blockSizeHorizontal * 41,
-                                        fit: BoxFit.cover,
-                                        errorWidget: (context, error, stackTrace) {
-                                          return Container(
-                                              height: SizeConfig.blockSizeVertical * 17,
-                                              width: SizeConfig.blockSizeHorizontal * 40,
-                                              color: Colors.black12,
-                                              child: const Center(child: Text("Front Image")));
-                                        },
-                                      ),
-                                    closedColor: Colors.black,
-                                    openBuilder: (context,action) => ImageDetailsPage(imageUrl: "https:buffer.com/library/content/images/size/w1200/2023/10/free-images.jpg"),
-                                  )
-                                  : Image.file(
-                                      _frontNRCImage!,
-                                      width: SizeConfig.blockSizeHorizontal * 41,
-                                      height: SizeConfig.blockSizeVertical * 16,
-                                      fit: BoxFit.cover,
-                                      errorBuilder:
-                                          (BuildContext context, Object error, StackTrace? stackTrace) {
-                                            return const Center(
-                                              child: SizedBox(
-                                                height: 90,
-                                                width: 90,
-                                                child: Padding(
-                                                  padding: EdgeInsets.symmetric(vertical: 16.0),
-                                                  child: CircularProgressIndicator(color: Colors.red),
-                                                )
-                                              )
-                                            );},
-                                    ),
-                            ),
-                            GestureDetector(
-                                onTap: (){
-                                  _showPickerDialog(context,1);
-                                },
-                                child: Image.asset("lib/icons/add_camera.png", width: 30, height: 30, color: Colors.grey,))
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 10,),
-                      Expanded(
-                        child: Stack(
-                          alignment: Alignment.bottomRight,
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: _backNRCImage == null
-                                  ? OpenContainer(
-                                    closedBuilder: (context, action) =>  CachedNetworkImage(
-                                      //todo
-                                      imageUrl: "https:buffer.com/library/content/images/size/w1200/2023/10/free-images.jpg",
-                                      height: SizeConfig.blockSizeVertical * 17,
-                                      width: SizeConfig.blockSizeHorizontal * 41,
-                                      fit: BoxFit.cover,
-                                      errorWidget: (context, error, stackTrace) {
-                                        return Container(
-                                            height: MediaQuery.of(context).size.height * 0.17,
-                                            width: MediaQuery.of(context).size.width * 0.4,
-                                            color: Colors.black12,
-                                            child: const Center(child: Text("Back Image"))
-                                        );
-                                      },
-                                    ),
-                                    openBuilder: (context, action) => const ImageDetailsPage(imageUrl: ""),
-                                    closedColor: Colors.black12,
-                                  )
-                                  : Image.file(
-                                      _backNRCImage!,
-                                      width: MediaQuery.of(context).size.width * 0.4,
-                                      height: MediaQuery.of(context).size.height * 0.16,
-                                      fit: BoxFit.cover,
-                                      errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
-                                        return const Center(child: SizedBox(height: 90, width: 90,
-                                            child: Padding(
-                                              padding: EdgeInsets.symmetric(vertical: 16.0),
-                                              child: CircularProgressIndicator(color: Colors.red),
-                                            )
-                                        ));
-                                      },
-                                    ),
-                            ),
-                            GestureDetector(
-                                onTap: (){
-                                  _showPickerDialog(context,2);
-                                },
-                                child: Image.asset("lib/icons/add_camera.png", width: 30, height: 30, color: Colors.grey,))
-                          ],
-                        ),
-                      ),
+                      const Text('National Card',style: TextStyle(fontFamily: 'Ubuntu'),),
+                      Icon(isNrcExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
                     ],
-                  )
-                ],
-              ),
-            ],
+                  ),
+                ),
+                if(isNrcExpanded)
+                  Column(
+                    children: [
+                      ///NRC Row
+                      const SizedBox(height: 18),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Selector<PersonalInfoBloc,String>(
+                              selector: (context,bloc) => bloc.personalInfo.nrcFrontUrl ?? '',
+                              builder: (context,nrcFrontUrl,_){
+                                return Stack(
+                                  alignment: Alignment.bottomRight,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: OpenContainer(
+                                        closedBuilder:(context,action) => CachedNetworkImage(
+                                          //todo image
+                                          imageUrl: bloc.personalInfo.getImageWithBaseUrl(nrcFrontUrl),
+                                          height: SizeConfig.blockSizeVertical * 17,
+                                          width: SizeConfig.blockSizeHorizontal * 41,
+                                          fit: BoxFit.cover,
+                                          errorWidget: (context, error, stackTrace) {
+                                            return Container(
+                                                height: SizeConfig.blockSizeVertical * 17,
+                                                width: SizeConfig.blockSizeHorizontal * 40,
+                                                color: Colors.black12,
+                                                child: const Center(child: Text("Front Image")));
+                                          },
+                                        ),
+                                        closedColor: Colors.black12,
+                                        openBuilder: (context,action) =>
+                                            ImageDetailsPage(imageUrl: bloc.personalInfo.getImageWithBaseUrl(nrcFrontUrl)),
+                                      )
+                                    ),
+                                    GestureDetector(
+                                        onTap: (){
+                                          _showPickerDialog(context,3,bloc);
+                                        },
+                                        child: Image.asset("lib/icons/add_camera.png", width: 30, height: 30, color: Colors.grey,))
+                                  ],
+                                );
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 10,),
+                          Expanded(
+                            child: Selector<PersonalInfoBloc,String>(
+                                selector: (context,bloc) => bloc.personalInfo.nrcBackUrl ?? '',
+                                builder: (context,nrcBackUrl,_){
+                                  return Stack(
+                                      alignment: Alignment.bottomRight,
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(12),
+                                          child: Flexible(
+                                            child: OpenContainer(
+                                                closedColor: Colors.black12,
+                                                closedBuilder: (context,action) => CachedNetworkImage(
+                                                  imageUrl: bloc.personalInfo.getImageWithBaseUrl(nrcBackUrl) ?? '',
+                                                  height: SizeConfig.blockSizeVertical * 17,
+                                                  width: SizeConfig.blockSizeHorizontal * 41,
+                                                  fit: BoxFit.cover,
+                                                  errorWidget: (context, error, stackTrace) {
+                                                    return Container(
+                                                        height: MediaQuery.of(context).size.height * 0.17,
+                                                        width: MediaQuery.of(context).size.width * 0.4,
+                                                        color: Colors.black12,
+                                                        child: const Center(child: Text("Back Image"))
+                                                    );
+                                                  },
+                                                ),
+                                                openBuilder: (context,action) =>
+                                                    ImageDetailsPage(imageUrl: bloc.personalInfo.getImageWithBaseUrl(nrcBackUrl))
+                                            ),
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                            onTap: (){
+                                              _showPickerDialog(context, 2, bloc);
+                                            },
+                                            child: Image.asset(
+                                              "lib/icons/add_camera.png",
+                                              width: 30,
+                                              height: 30,
+                                              color: Colors.grey,)
+                                        )
+                                      ]
+                                  );
+                                }
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+              ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
   /// Appearance
    Widget _buildAppearance(BuildContext context){
     var bloc = context.read<PersonalInfoBloc>();
-     return Container(
-       decoration: BoxDecoration(
-         gradient: LinearGradient(
-           stops: const [0.4,1.0],
-           colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade600]
-         ),
-           borderRadius: BorderRadius.circular(8),
-           border: Border.all(color: Colors.deepPurple)
-       ),
-       padding: const EdgeInsets.symmetric(horizontal:20,vertical: 10),
-       child: GestureDetector(
-         onTap: (){
-           setState(() {
-             _isAppearanceExpanded = !_isAppearanceExpanded;
-           });
-         },
-         child: AnimatedContainer(
-           duration: const Duration(milliseconds: 200),
-           child: Column(
-             children: [
-               Container(
-                 padding: const EdgeInsets.symmetric(vertical: 8),
-                 color: Colors.transparent,
-                 child: Row(
-                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                   children: [
-                     const Text('Appearance',style: TextStyle(fontFamily: 'Ubuntu'),),
-                     Icon(_isAppearanceExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
-                   ],
-                 ),
-               ),
-               if(_isAppearanceExpanded)
-               Column(
-                 children: [
-                   const SizedBox(height: 10),
-                   CustomTextField(
-                       controller: TextEditingController(text: bloc.personalInfo.skinColor),
-                       onChange: (value) => bloc.updatePersonalInfo(hairColor: value),
-                       labelText: 'Hair Color',
-                       readOnly: _currentUserRole
-                   ),
-                   const SizedBox(height: 6,),
-                   CustomTextField(
-                       controller: TextEditingController(text: bloc.personalInfo.skinColor),
-                       onChange: (value) => bloc.updatePersonalInfo(skinColor: value),
-                       labelText: 'Skin Color',
-                       readOnly: _currentUserRole),
-                   const SizedBox(height: 6,),
-                   CustomTextField(
-                       controller: TextEditingController(text: bloc.personalInfo.eyeColor),
-                       onChange: (value) => bloc.updatePersonalInfo(eyeColor: value),
-                       labelText: 'Eye Color',readOnly: _currentUserRole)
-                 ],
-               ),
-             ],
-           ),
-         ),
-       ),
-     );
+    return Selector<PersonalInfoBloc,bool>(
+        selector: (context,bloc) => bloc.isAppearanceExpanded,
+        builder: (context,isAppearanceExpanded,_){
+          return Container(
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    stops: const [0.4,1.0],
+                    colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade600]
+                ),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.deepPurple)
+            ),
+            padding: const EdgeInsets.symmetric(horizontal:20,vertical: 10),
+            child: GestureDetector(
+              onTap: (){
+                bloc.toggleAppearanceExpanded();
+              },
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      color: Colors.transparent,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('Appearance',style: TextStyle(fontFamily: 'Ubuntu'),),
+                          Icon(isAppearanceExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
+                        ],
+                      ),
+                    ),
+                    if(isAppearanceExpanded)
+                      Column(
+                        children: [
+                          const SizedBox(height: 10),
+                          CustomTextField(
+                              controller: TextEditingController(text: bloc.personalInfo.skinColor),
+                              onChange: (value) => bloc.updatePersonalInfo(hairColor: value),
+                              labelText: 'Hair Color',
+                              readOnly: _currentUserRole
+                          ),
+                          const SizedBox(height: 6,),
+                          CustomTextField(
+                              controller: TextEditingController(text: bloc.personalInfo.skinColor),
+                              onChange: (value) => bloc.updatePersonalInfo(skinColor: value),
+                              labelText: 'Skin Color',
+                              readOnly: _currentUserRole),
+                          const SizedBox(height: 6,),
+                          CustomTextField(
+                              controller: TextEditingController(text: bloc.personalInfo.eyeColor),
+                              onChange: (value) => bloc.updatePersonalInfo(eyeColor: value),
+                              labelText: 'Eye Color',readOnly: _currentUserRole)
+                        ],
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      );
    }
 
   ///Driving License
    Widget _buildDrivingLicense(BuildContext context){
     var bloc = context.read<PersonalInfoBloc>();
-     return Container(
-         padding: const EdgeInsets.symmetric(horizontal:20,vertical: 10),
-         decoration: BoxDecoration(
-           gradient: LinearGradient(
-               stops: const [0.4,1.0],
-               colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade600]
-           ),
-           borderRadius: BorderRadius.circular(8),
-           border: Border.all(color: Colors.deepPurple),
-       ),
-         child: GestureDetector(
-           onTap: (){
-             setState(() {
-               _isDrivingLicenseExpanded = !_isDrivingLicenseExpanded;
-             });
-           },
-           child: AnimatedContainer(
-               duration: const Duration(milliseconds: 100),
-               child: Column(
-                 children: [
-                   Container(
-                     color: Colors.transparent,
-                     padding: const EdgeInsets.symmetric(vertical: 8),
-                     child: Row(
-                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                       children: [
-                         const Text('Driving License',style: TextStyle(fontFamily: 'Ubuntu')),
-                         Icon(_isDrivingLicenseExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
-                       ],
-                     ),
-                   ),
-                   if(_isDrivingLicenseExpanded)
-                   Column(
-                     children: [
-                       Selector<PersonalInfoBloc,int?>(
-                         selector: (context,bloc) => bloc.personalInfo.drivingLicenceStatus,
-                         builder: (context,licenseStatus,_){
-                           if(bloc.editMode && _currentUserRole == 1){
-                             return CustomDropdownButton(
-                                 value: licenseStatus,
-                                 hint: 'License Status',
-                                 items: licenseStatusList,
-                                 onChanged: (int? newValue) {
-                                   bloc.updatePersonalInfo(drivingLicenceStatus: newValue);
-                                 });
-                           }else{
-                             return Padding(
-                               padding: const EdgeInsets.only(left: 8.0,bottom: 8,top: 14),
-                               child: Row(
-                                 children: [
-                                   const Text("License Status : "),
-                                   Text(getLicenseStatusName(licenseStatus),style: const TextStyle(fontFamily: 'Ubuntu'),)
-                                 ],
-                               ),
-                             );
-                           }
-                         },
-                       ),
-                       const SizedBox(height: 10),
-                       Selector<PersonalInfoBloc,int?>(
-                         selector: (context,bloc) => bloc.personalInfo.drivingLicenceType,
-                         builder: (context,licenseType,_){
-                           if(bloc.editMode && _currentUserRole == 1){
-                             return CustomDropdownButton(
-                                 value: licenseType,
-                                 hint: 'License Type',
-                                 items: licenseTypeList,
-                                 onChanged: (int? newValue) {
-                                   bloc.updatePersonalInfo(drivingLicenceType: newValue);
-                                 });
-                           }else{
-                             return Padding(
-                               padding: const EdgeInsets.only(left: 8,bottom: 8),
-                               child: Row(
-                                 children: [
-                                   const Text("License Type : "),
-                                   Text(getLicenseTypeName(licenseType),style: const TextStyle(fontFamily: 'Ubuntu'))
-                                 ],
-                               ),
-                             );
-                           }
-                         },
-                       ),
-                       const SizedBox(height: 10),
-                       ///license color drop down
-                       Selector<PersonalInfoBloc,int?>(
-                         selector: (context,bloc) => bloc.personalInfo.drivingLicenceColor,
-                         builder: (context,licenseColor,_){
-                           if(bloc.editMode && _currentUserRole == 1){
-                             return CustomDropdownButton(
-                                 value: licenseColor,
-                                 hint: 'License Color',
-                                 items: licenseColorList,
-                                 onChanged: (int? value) {
-                                    bloc.updatePersonalInfo(drivingLicenceColor: value);
-                                 });
-                           }else{
-                             return Padding(
-                               padding: const EdgeInsets.only(left: 8,bottom: 8),
-                               child: Row(
-                                 children: [
-                                   const Text("License Color : "),
-                                   Text(getLicenseColorName(licenseColor),style: const TextStyle(fontFamily: 'Ubuntu'))
-                                 ],
-                               ),
-                             );
-                           }
-                         },
-                       ),
-                       const SizedBox(height: 10),
-                       ///toggle vehicle punishment
-                       Selector<PersonalInfoBloc,bool>(
-                         selector: (context,bloc) => bloc.personalInfo.vehiclePunishment ?? false,
-                         builder: (context,vehiclePunishment,_){
-                             return Column(
-                               children: [
-                                 Row(
-                                   children: [
-                                     const Expanded(
-                                       child: Text(
-                                         'Vehicle Punishment:',
-                                         style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
-                                       ),
-                                     ),
-                                     const SizedBox(width: 5),
-                                     Expanded(
-                                       child: Switch(
-                                           value: vehiclePunishment,
-                                           activeColor: Colors.red.shade500,
-                                           onChanged: (bool value) {
-                                             bloc.updatePersonalInfo(vehiclePunishment: value);
-                                           }),
-                                     )
-                                   ],
-                                 ),
-                                 if(vehiclePunishment)
-                                   CustomTextField(
-                                     controller: TextEditingController(text: bloc.personalInfo.vehiclePunishmentDescription),
-                                     onChange: (value) => bloc.updatePersonalInfo(vehiclePunishmentDescription: value),
-                                     labelText: 'Vehicle Punishment Description',
-                                     readOnly: _currentUserRole)
-                               ],
-                             );
-                         },
-                       ),
-                       const SizedBox(height: 8),
-                       ///driving license image
-                       Row(
-                         children: [
-                           Expanded(
-                             child: Stack(
-                               alignment: Alignment.bottomRight,
-                               children: [
-                                 ClipRRect(
-                                   borderRadius: BorderRadius.circular(12),
-                                   child: Flexible(
-                                       child: _frontDrivingImage == null
-                                           ? OpenContainer(
-                                           closedColor: Colors.black12,
-                                           closedBuilder: (context,action) => CachedNetworkImage(
-                                             //todo
-                                             imageUrl: "https:buffr.com/library/content/images/size/w1200/2023/10/free-images.jpg",
-                                             height: SizeConfig.blockSizeVertical * 17,
-                                             width: SizeConfig.blockSizeHorizontal * 41,
-                                             fit: BoxFit.cover,
-                                             errorWidget: (context, error, stackTrace) {
-                                               return Container(
-                                                   height: MediaQuery.of(context).size.height * 0.17,
-                                                   width: MediaQuery.of(context).size.width * 0.4,
-                                                   color: Colors.black12,
-                                                   child: const Center(child: Text("Front Image"))
-                                               );
-                                             },
-                                           ),
-                                           openBuilder: (context,action) => ImageDetailsPage(imageUrl: "https:buffr.com/library/content/images/size/w1200/2023/10/free-images.jpg"))
-                                           : Image.file(
-                                         _frontDrivingImage!,
-                                         width: SizeConfig.blockSizeHorizontal * 41,
-                                         height: SizeConfig.blockSizeVertical * 16,
-                                         fit: BoxFit.cover,
-                                         errorBuilder: (BuildContext context,
-                                             Object error,
-                                             StackTrace? stackTrace) {
-                                           return const Center(
-                                               child: SizedBox(height: 90, width: 90, child: Padding(
-                                                 padding: EdgeInsets.symmetric(vertical: 16.0),
-                                                 child: CircularProgressIndicator(color: Colors.red),
-                                               )));
-                                         },
-                                       )
-                                   ),
-                                 ),
-                                 GestureDetector(
-                                     onTap: (){
-                                       _showPickerDialog(context,1);
-                                     },
-                                     child: Image.asset(
-                                       "lib/icons/add_camera.png",
-                                       width: 30,
-                                       height: 30,
-                                       color: Colors.grey,
-                                     ))
-                               ],
-                             ),
-                           ),
-                           const SizedBox(width: 10,),
-                           Expanded(
-                             child: Stack(
-                               alignment: Alignment.bottomRight,
-                               children: [
-                                 ClipRRect(
-                                   borderRadius: BorderRadius.circular(12),
-                                   child: Flexible(
-                                       child: _backDrivingImage == null
-                                           ? OpenContainer(
-                                           closedBuilder: (context,action) => CachedNetworkImage(
-                                             //todo
-                                             imageUrl: "https:buffer.com/library/content/images/size/w1200/2023/10/free-images.jpg",
-                                             height: SizeConfig.blockSizeVertical * 16,
-                                             width: SizeConfig.blockSizeHorizontal * 40,
-                                             fit: BoxFit.cover,
-
-                                             errorWidget: (context, error, stackTrace) {
-                                               return Container(
-                                                   height: MediaQuery.of(context).size.height * 0.17,
-                                                   width: MediaQuery.of(context).size.width * 0.4,
-                                                   color: Colors.black12,
-                                                   child: const Center(child: Text("Back Image")));
-                                             },
-                                           ),
-                                           closedColor: Colors.black,
-                                           openBuilder: (context,action) =>
-                                           const ImageDetailsPage(imageUrl: "https:buffer.com/library/content/images/size/w1200/2023/10/free-images.jpg")
-                                       )
-                                           : Image.file(
-                                         _backDrivingImage!,
-                                         width: MediaQuery.of(context).size.width * 0.4,
-                                         height: MediaQuery.of(context).size.height * 0.16,
-                                         fit: BoxFit.cover,
-                                         errorBuilder: (BuildContext context,
-                                             Object error,
-                                             StackTrace? stackTrace) {
-                                           return const Center(
-                                               child: SizedBox(height: 90, width: 90, child: Padding(
-                                                 padding: EdgeInsets.symmetric(vertical: 16.0),
-                                                 child: CircularProgressIndicator(color: Colors.red),
-                                               )));
-                                         },
-                                       )),
-                                 ),
-                                 GestureDetector(
-                                     onTap: (){
-                                       _showPickerDialog(context,2);
-                                     },
-                                     child: Image.asset(
-                                       "lib/icons/add_camera.png",
-                                       width: 30,
-                                       height: 30,
-                                       color: Colors.grey,
-                                     ))
-                               ],
-                             ),
-                           ),
-                         ],
-                       )
-                     ],
-                   ),
-                 ],
-               )),
-         )
-     );
+    return Selector<PersonalInfoBloc,bool>(
+          selector: (context,bloc) => bloc.isDrivingLicenseExpanded,
+          builder: (context,isDrivingLicenseExpanded,_){
+            return Container(
+                padding: const EdgeInsets.symmetric(horizontal:20,vertical: 10),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      stops: const [0.4,1.0],
+                      colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade600]
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.deepPurple),
+                ),
+                child: GestureDetector(
+                  onTap: (){
+                    bloc.toggleDrivingExpanded();
+                  },
+                  child: Column(
+                    children: [
+                      Container(
+                        color: Colors.transparent,
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text('Driving License',style: TextStyle(fontFamily: 'Ubuntu')),
+                            Icon(isDrivingLicenseExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
+                          ],
+                        ),
+                      ),
+                      if(isDrivingLicenseExpanded)
+                        Column(
+                          children: [
+                            Selector<PersonalInfoBloc,int?>(
+                              selector: (context,bloc) => bloc.personalInfo.drivingLicenceStatus,
+                              builder: (context,licenseStatus,_){
+                                if(bloc.editMode && _currentUserRole == 1){
+                                  return CustomDropdownButton(
+                                      value: licenseStatus,
+                                      hint: 'License Status',
+                                      items: licenseStatusList,
+                                      onChanged: (int? newValue) {
+                                        bloc.updatePersonalInfo(drivingLicenceStatus: newValue);
+                                      });
+                                }else{
+                                  return Padding(
+                                    padding: const EdgeInsets.only(left: 8.0,bottom: 8,top: 14),
+                                    child: Row(
+                                      children: [
+                                        const Text("License Status : "),
+                                        Text(getLicenseStatusName(licenseStatus),style: const TextStyle(fontFamily: 'Ubuntu'),)
+                                      ],
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
+                            const SizedBox(height: 10),
+                            Selector<PersonalInfoBloc,int?>(
+                              selector: (context,bloc) => bloc.personalInfo.drivingLicenceType,
+                              builder: (context,licenseType,_){
+                                if(bloc.editMode && _currentUserRole == 1){
+                                  return CustomDropdownButton(
+                                      value: licenseType,
+                                      hint: 'License Type',
+                                      items: licenseTypeList,
+                                      onChanged: (int? newValue) {
+                                        bloc.updatePersonalInfo(drivingLicenceType: newValue);
+                                      });
+                                }else{
+                                  return Padding(
+                                    padding: const EdgeInsets.only(left: 8,bottom: 8),
+                                    child: Row(
+                                      children: [
+                                        const Text("License Type : "),
+                                        Text(getLicenseTypeName(licenseType),style: const TextStyle(fontFamily: 'Ubuntu'))
+                                      ],
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
+                            const SizedBox(height: 10),
+                            ///license color drop down
+                            Selector<PersonalInfoBloc,int?>(
+                              selector: (context,bloc) => bloc.personalInfo.drivingLicenceColor,
+                              builder: (context,licenseColor,_){
+                                if(bloc.editMode && _currentUserRole == 1){
+                                  return CustomDropdownButton(
+                                      value: licenseColor,
+                                      hint: 'License Color',
+                                      items: licenseColorList,
+                                      onChanged: (int? value) {
+                                        bloc.updatePersonalInfo(drivingLicenceColor: value);
+                                      });
+                                }else{
+                                  return Padding(
+                                    padding: const EdgeInsets.only(left: 8,bottom: 8),
+                                    child: Row(
+                                      children: [
+                                        const Text("License Color : "),
+                                        Text(getLicenseColorName(licenseColor),style: const TextStyle(fontFamily: 'Ubuntu'))
+                                      ],
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
+                            const SizedBox(height: 10),
+                            ///toggle vehicle punishment
+                            Selector<PersonalInfoBloc,bool>(
+                              selector: (context,bloc) => bloc.personalInfo.vehiclePunishment ?? false,
+                              builder: (context,vehiclePunishment,_){
+                                return Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        const Expanded(
+                                          child: Text(
+                                            'Vehicle Punishment:',
+                                            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 5),
+                                        Expanded(
+                                          child: Switch(
+                                              value: vehiclePunishment,
+                                              activeColor: Colors.red.shade500,
+                                              onChanged: (bool value) {
+                                                bloc.updatePersonalInfo(vehiclePunishment: value);
+                                              }),
+                                        )
+                                      ],
+                                    ),
+                                    if(vehiclePunishment)
+                                      CustomTextField(
+                                          controller: TextEditingController(text: bloc.personalInfo.vehiclePunishmentDescription),
+                                          onChange: (value) => bloc.updatePersonalInfo(vehiclePunishmentDescription: value),
+                                          labelText: 'Vehicle Punishment Description',
+                                          readOnly: _currentUserRole
+                                      )
+                                  ],
+                                );
+                              },
+                            ),
+                            const SizedBox(height: 8),
+                            ///driving license image
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Selector<PersonalInfoBloc,String>(
+                                      selector: (context,bloc) => bloc.personalInfo.drivingLicenseFrontUrl ?? '',
+                                      builder: (context,drivingLicenseFrontUrl,_){
+                                        return Stack(
+                                            alignment: Alignment.bottomRight,
+                                            children: [
+                                              ClipRRect(
+                                                borderRadius: BorderRadius.circular(12),
+                                                child: Flexible(
+                                                  child: OpenContainer(
+                                                      closedColor: Colors.black12,
+                                                      closedBuilder: (context,action) => CachedNetworkImage(
+                                                        imageUrl: bloc.personalInfo.getImageWithBaseUrl(drivingLicenseFrontUrl) ?? '',
+                                                        height: SizeConfig.blockSizeVertical * 17,
+                                                        width: SizeConfig.blockSizeHorizontal * 41,
+                                                        fit: BoxFit.cover,
+                                                        errorWidget: (context, error, stackTrace) {
+                                                          return Container(
+                                                              height: MediaQuery.of(context).size.height * 0.17,
+                                                              width: MediaQuery.of(context).size.width * 0.4,
+                                                              color: Colors.black12,
+                                                              child: const Center(child: Text("Front Image"))
+                                                          );
+                                                        },
+                                                      ),
+                                                      openBuilder: (context,action) =>
+                                                          ImageDetailsPage(imageUrl: bloc.personalInfo.getImageWithBaseUrl(drivingLicenseFrontUrl))
+                                                  ),
+                                                ),
+                                              ),
+                                              GestureDetector(
+                                                  onTap: (){
+                                                    _showPickerDialog(context, 1, bloc);
+                                                  },
+                                                  child: Image.asset(
+                                                    "lib/icons/add_camera.png",
+                                                    width: 30,
+                                                    height: 30,
+                                                    color: Colors.grey,)
+                                              )
+                                            ]
+                                        );
+                                      }
+                                  ),
+                                ),
+                                const SizedBox(width: 10,),
+                                Expanded(
+                                  child: Selector<PersonalInfoBloc,String>(
+                                      selector: (context,bloc) => bloc.personalInfo.drivingLicenseBackUrl ?? '',
+                                      builder: (context,drivingLicenseBackUrl,_){
+                                        return Stack(
+                                            alignment: Alignment.bottomRight,
+                                            children: [
+                                              ClipRRect(
+                                                borderRadius: BorderRadius.circular(12),
+                                                child: Flexible(
+                                                  child: OpenContainer(
+                                                      closedColor: Colors.black12,
+                                                      closedBuilder: (context,action) => CachedNetworkImage(
+                                                        imageUrl: bloc.personalInfo.getImageWithBaseUrl(drivingLicenseBackUrl) ?? '',
+                                                        height: SizeConfig.blockSizeVertical * 17,
+                                                        width: SizeConfig.blockSizeHorizontal * 41,
+                                                        fit: BoxFit.cover,
+                                                        errorWidget: (context, error, stackTrace) {
+                                                          return Container(
+                                                              height: MediaQuery.of(context).size.height * 0.17,
+                                                              width: MediaQuery.of(context).size.width * 0.4,
+                                                              color: Colors.black12,
+                                                              child: const Center(child: Text("Back Image"))
+                                                          );
+                                                        },
+                                                      ),
+                                                      openBuilder: (context,action) =>
+                                                          ImageDetailsPage(imageUrl: bloc.personalInfo.getImageWithBaseUrl(drivingLicenseBackUrl))
+                                                  ),
+                                                ),
+                                              ),
+                                              GestureDetector(
+                                                  onTap: (){
+                                                    _showPickerDialog(context, 2, bloc);
+                                                  },
+                                                  child: Image.asset(
+                                                    "lib/icons/add_camera.png",
+                                                    width: 30,
+                                                    height: 30,
+                                                    color: Colors.grey,)
+                                              )
+                                            ]
+                                        );
+                                      }
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                    ],
+                  ),
+                )
+            );
+          },
+      );
    }
 
    Widget _buildPreviousApplied(BuildContext context){
@@ -1251,11 +1184,11 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     return age;
   }
 
-  Widget bloodTypeWidget(BuildContext context){
+  Widget bloodTypeWidget(BuildContext context) {
     var bloc = context.read<PersonalInfoBloc>();
-    return Selector<PersonalInfoBloc,int?>(
-      selector: (context,bloc) => bloc.personalInfo.bloodType,
-      builder: (context,bloodType,_){
+    return Selector<PersonalInfoBloc, int?>(
+      selector: (context, bloc) => bloc.personalInfo.bloodType,
+      builder: (context, bloodType, _) {
         return SizedBox(
             child: Expanded(
                 child: CustomDropdownButton(
@@ -1264,18 +1197,16 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                     items: bloodTypeList,
                     onChanged: (int? newValue) {
                       bloc.updatePersonalInfo(bloodType: newValue);
-                    })
-                )
-        );
+                    })));
       },
     );
   }
 
-  Widget marriageStatus(BuildContext context){
+  Widget marriageStatus(BuildContext context) {
     var bloc = context.read<PersonalInfoBloc>();
-    return Selector<PersonalInfoBloc,int?>(
-      selector: (context,bloc) => bloc.personalInfo.marriageStatus,
-      builder: (context,marriageStatus,_){
+    return Selector<PersonalInfoBloc, int?>(
+      selector: (context, bloc) => bloc.personalInfo.marriageStatus,
+      builder: (context, marriageStatus, _) {
         return SizedBox(
             child: Expanded(
                 child: CustomDropdownButton(
@@ -1284,9 +1215,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                     items: marriageList,
                     onChanged: (int? newValue) {
                       bloc.updatePersonalInfo(marriageStatus: newValue);
-                    })
-            )
-        );
+                    })));
       },
     );
   }

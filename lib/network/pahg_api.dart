@@ -361,4 +361,11 @@ abstract class PahgApi{
       @Path("user_id") String id,
       @Body() List<PathUserRequest> requestBody
       );
+  
+  @PATCH("$kEndPointPersonalinformations/{id}")
+  Future<PostMethodResponse?> patchPersonalInfo(
+      @Header(kParamAuthorization) String apiKey,
+      @Path("id") int id,
+      @Body() List<PathUserRequest> requestBody
+      );
 }

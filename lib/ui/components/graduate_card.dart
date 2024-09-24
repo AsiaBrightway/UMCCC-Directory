@@ -66,7 +66,9 @@ class _GraduateCardState extends State<GraduateCard> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("${widget.graduate.university}",style: const TextStyle(fontSize: 15,fontFamily: 'Ubuntu'),),
+                      Expanded(
+                          child: Text("${widget.graduate.university}",style: const TextStyle(fontSize: 15,fontFamily: 'Ubuntu'),)
+                      ),
                       const Icon(Icons.keyboard_arrow_down,size: 20,)
                     ],
                   ),

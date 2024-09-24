@@ -97,7 +97,7 @@ class _TrainingCardState extends State<TrainingCard> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("${widget.training.courseName}",style: const TextStyle(fontSize: 15,fontFamily: 'Ubuntu'),),
+                      Expanded(child: Text("${widget.training.courseName}",style: const TextStyle(fontSize: 15,fontFamily: 'Ubuntu'),)),
                       const Icon(Icons.keyboard_arrow_down,size: 20,)
                     ],
                   ),
@@ -111,7 +111,9 @@ class _TrainingCardState extends State<TrainingCard> {
                         child: Row(
                           children: [
                             const Text("Type : ",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 13),),
-                            Text(_trainingTypeName(widget.training.trainingType ?? 0),style: const TextStyle(fontWeight: FontWeight.w300),)
+                            Expanded(
+                                child: Text(_trainingTypeName(widget.training.trainingType ?? 0),style: const TextStyle(fontWeight: FontWeight.w300),)
+                            )
                           ],
                         ),
                       ),
@@ -120,8 +122,9 @@ class _TrainingCardState extends State<TrainingCard> {
                         child: Row(
                           children: [
                             const Text("Provided by: ",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 13)),
-
-                            Text("${widget.training.trainingProvidedBy}",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
+                            Expanded(
+                                child: Text("${widget.training.trainingProvidedBy}",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13))
+                            ),
                           ],
                         ),
                       ),
@@ -143,8 +146,9 @@ class _TrainingCardState extends State<TrainingCard> {
                         child: Row(
                           children: [
                             const Text("Place: ",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 13),),
-
-                            Text("${widget.training.place}",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
+                            Expanded(
+                                child: Text("${widget.training.place}",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13))
+                            ),
                           ],
                         ),
                       ),

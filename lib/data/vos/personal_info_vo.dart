@@ -1,5 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import '../../network/api_constants.dart';
+
 part 'personal_info_vo.g.dart';
 
 @JsonSerializable()
@@ -100,16 +102,16 @@ class PersonalInfoVo {
   @JsonKey(name: 'VehiclePunishmentDescription')
   String? vehiclePunishmentDescription;
 
-  @JsonKey(name: 'nrcFrontUrl')
+  @JsonKey(name: 'NRCFrontUrl')
   String? nrcFrontUrl;
 
-  @JsonKey(name: 'nrcBackUrl')
+  @JsonKey(name: 'NRCBackUrl')
   String? nrcBackUrl;
 
-  @JsonKey(name: 'drivingLicenseFrontUrl')
+  @JsonKey(name: 'DrivingLicenseFrontUrl')
   String? drivingLicenseFrontUrl;
 
-  @JsonKey(name: 'drivingLicenseBackUrl')
+  @JsonKey(name: 'DrivingLicenseBackUrl')
   String? drivingLicenseBackUrl;
 
   @JsonKey(name: 'PreviousApplied')
@@ -261,5 +263,9 @@ class PersonalInfoVo {
         hRDepartmentRecord: hRDepartmentRecord ?? this.hRDepartmentRecord,
         nrcNumber: nrcNumber ?? this.nrcNumber,
         email: email ?? this.email);
+  }
+
+  String getImageWithBaseUrl(String imageUrl){
+    return kBaseImageUrl + (imageUrl ?? "");
   }
 }

@@ -65,7 +65,7 @@ class _SchoolCardState extends State<SchoolCard> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("${widget.school.name}",style: const TextStyle(fontSize: 15,fontFamily: 'Ubuntu'),),
+                      Expanded(child: Text("${widget.school.name}",style: const TextStyle(fontSize: 15,fontFamily: 'Ubuntu'),)),
                       const Icon(Icons.keyboard_arrow_down,size: 20,)
                     ],
                   ),
@@ -93,7 +93,7 @@ class _SchoolCardState extends State<SchoolCard> {
                           children: [
                             const Text("Secondary: ",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 13)),
 
-                            Text("${widget.school.secondary}",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
+                            Expanded(child: Text("${widget.school.secondary}",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13))),
                           ],
                         ),
                       ),
@@ -102,8 +102,9 @@ class _SchoolCardState extends State<SchoolCard> {
                         child: Row(
                           children: [
                             const Text("Achievements: ",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 13),),
-
-                            Expanded(child: Text("${widget.school.maximumAchievement}",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13))),
+                            Expanded(
+                                child: Text("${widget.school.maximumAchievement}",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13))
+                            ),
                           ],
                         ),
                       ),
@@ -112,8 +113,9 @@ class _SchoolCardState extends State<SchoolCard> {
                         child: Row(
                           children: [
                             const Text("Subjects: ",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 13),),
-
-                            Text("${widget.school.subjects}",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
+                            Expanded(
+                                child: Text("${widget.school.subjects}",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13))
+                            ),
                           ],
                         ),
                       ),

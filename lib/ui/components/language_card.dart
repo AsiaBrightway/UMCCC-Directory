@@ -1,8 +1,6 @@
 import 'package:animations/animations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-
-
 import '../../data/vos/language_vo.dart';
 import '../../data/vos/request_body/add_language_request.dart';
 import '../../dialog/language_dialog.dart';
@@ -89,7 +87,9 @@ class _LanguageCardState extends State<LanguageCard> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("${widget.language.name}",style: const TextStyle(fontSize: 15,fontFamily: 'Ubuntu'),),
+                      Expanded(
+                          child: Text("${widget.language.name}",style: const TextStyle(fontSize: 15,fontFamily: 'Ubuntu'),)
+                      ),
                       const Icon(Icons.keyboard_arrow_down,size: 20,)
                     ],
                   ),

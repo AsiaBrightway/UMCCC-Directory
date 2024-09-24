@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:pahg_group/data/models/pahg_model.dart';
 import 'package:pahg_group/data/vos/personal_info_vo.dart';
+import 'package:pahg_group/data/vos/request_body/path_user_request.dart';
 import 'package:pahg_group/data/vos/request_body/personal_info_request.dart';
 
 enum PersonalInfoState { initial, loading, success, error }
@@ -14,8 +17,16 @@ class PersonalInfoBloc extends ChangeNotifier{
   String? _errorMessage;
   bool _isDataEmpty = false;
   String? _updateSuccess;
-  bool _editMode = true;
-
+  bool _editMode = false;
+  bool _isNrcExpanded = false;
+  bool _isAppearanceExpanded = false;
+  bool _isDrivingLicenseExpanded = false;
+  bool _isEmergencyExpanded = false;
+  String _token = "";
+  bool get isAppearanceExpanded => _isAppearanceExpanded;
+  bool get isDrivingLicenseExpanded => _isDrivingLicenseExpanded;
+  bool get isEmergencyExpanded => _isEmergencyExpanded;
+  bool get isNrcExpanded => _isNrcExpanded;
   bool get editMode => _editMode;
   String? get updateSuccess => _updateSuccess;
   PersonalInfoState get updateState => _updateState;
@@ -26,6 +37,7 @@ class PersonalInfoBloc extends ChangeNotifier{
 
   PersonalInfoBloc(String token,String columnValue){
     getPersonalInformation(token, columnValue);
+    _token = token;
   }
 
   ///fetch personal info
@@ -81,9 +93,59 @@ class PersonalInfoBloc extends ChangeNotifier{
     });
   }
 
+  Future<void> uploadImage(int imageType,File image) async{
+    _pahgModel.uploadImage(_token, image).then((onValue){
+      switch(imageType){
+        case 1 :
+          patchImageUrl("DrivingLicenseFrontUrl", "replace", onValue?.file ?? 's');
+          break;
+        case 2 :
+          patchImageUrl("DrivingLicenseBackUrl", "replace", onValue?.file ?? 's');
+          break;
+        case 3 :
+          patchImageUrl("NRCFrontUrl", "replace", 'ok null');
+          break;
+        case 4 :
+          patchImageUrl("NRCBackUrl", "replace", onValue?.file ?? 'n');
+          break;
+      }
+    }).catchError((onError){
+
+    });
+  }
+  
+  Future<void> patchImageUrl(String path,String op,String value) async{
+    PathUserRequest request = PathUserRequest(path, op, value);
+    _pahgModel.patchPersonalInfo(_token,_personalInfo.id!, request).then((onValue){
+      _errorMessage = onValue?.message.toString();
+    }).catchError((onError){
+      _errorMessage = onError.toString();
+    });
+  }
+  
   void toggleEditMode(){
     _editMode = !_editMode;
     _updateState = PersonalInfoState.initial;
+    notifyListeners();
+  }
+
+  void toggleNrcExpanded(){
+    _isNrcExpanded = !_isNrcExpanded;
+    notifyListeners();
+  }
+
+  void toggleAppearanceExpanded(){
+    _isAppearanceExpanded = !_isAppearanceExpanded;
+    notifyListeners();
+  }
+
+  void toggleDrivingExpanded(){
+    _isDrivingLicenseExpanded = !_isDrivingLicenseExpanded;
+    notifyListeners();
+  }
+
+  void toggleEmergencyExpanded(){
+    _isEmergencyExpanded = !_isEmergencyExpanded;
     notifyListeners();
   }
 

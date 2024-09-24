@@ -43,9 +43,15 @@ PersonalInfoRequest _$PersonalInfoRequestFromJson(Map<String, dynamic> json) =>
       vehiclePunishment: json['vehiclePunishment'] as bool?,
       vehiclePunishmentDescription:
           json['vehiclePunishmentDescription'] as String?,
+      drivingLicenseFrontUrl: json['drivingLicenseFrontUrl'] as String?,
+      drivingLicenseBackUrl: json['drivingLicenseBackUrl'] as String?,
+      nrcFrontUrl: json['nrcFrontUrl'] as String?,
+      nrcBackUrl: json['nrcBackUrl'] as String?,
       previousApplied: json['previousApplied'] as bool?,
       previousAppliedDescription: json['previousAppliedDescription'] as String?,
       hRDepartmentRecord: json['hrDepartmentRecord'] as String?,
+      nrcNumber: json['nrcNumber'] as String?,
+      email: json['email'] as String?,
     );
 
 Map<String, dynamic> _$PersonalInfoRequestToJson(
@@ -83,7 +89,13 @@ Map<String, dynamic> _$PersonalInfoRequestToJson(
       'drivingLicenceColor': instance.drivingLicenceColor,
       'vehiclePunishment': instance.vehiclePunishment,
       'vehiclePunishmentDescription': instance.vehiclePunishmentDescription,
+      'drivingLicenseFrontUrl': instance.drivingLicenseFrontUrl,
+      'drivingLicenseBackUrl': instance.drivingLicenseBackUrl,
+      'nrcFrontUrl': instance.nrcFrontUrl,
+      'nrcBackUrl': instance.nrcBackUrl,
       'previousApplied': instance.previousApplied,
       'previousAppliedDescription': instance.previousAppliedDescription,
       'hrDepartmentRecord': instance.hRDepartmentRecord,
+      'nrcNumber': instance.nrcNumber,
+      'email': instance.email,
     };
