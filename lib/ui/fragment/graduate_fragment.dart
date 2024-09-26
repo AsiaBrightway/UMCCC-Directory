@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:pahg_group/data/vos/request_body/path_user_request.dart';
 
 import 'package:provider/provider.dart';
 
@@ -47,8 +48,13 @@ class _GraduateFragmentState extends State<GraduateFragment> {
 
   Future<void> uploadImage() async{
     _model.uploadImage(_token, _image!).then((response){
-      setState(() {
-
+      PathUserRequest request = PathUserRequest("ImageUrl", "replace", response?.file);
+      _model.patchEducationGraduates(_token, _graduateIdForImage, request).then((onValue){
+        _onRefresh();
+      }).catchError((onError){
+        setState(() {
+          showErrorDialog(context, onError.toString());
+        });
       });
     }).catchError((error){
       Navigator.of(context).pop();                                            //dismiss loading

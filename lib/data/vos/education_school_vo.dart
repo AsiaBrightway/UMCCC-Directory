@@ -1,4 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
+
+import '../../network/api_constants.dart';
 part 'education_school_vo.g.dart';
 
 @JsonSerializable()
@@ -28,11 +30,21 @@ class EducationSchoolVo {
   @JsonKey(name: 'Subjects')
   String? subjects;
 
-  EducationSchoolVo(this.id, this.employeeId, this.name, this.fromDate,
-      this.toDate, this.secondary, this.maximumAchievement, this.subjects);
+  @JsonKey(name: 'ImageUrl')
+  String? imageUrl;
+
+  @JsonKey(name: 'Remark')
+  String? remark;
+
+  EducationSchoolVo(this.id, this.employeeId, this.name, this.fromDate,this.toDate,
+      this.secondary, this.maximumAchievement, this.subjects, this.imageUrl,this.remark);
 
   factory EducationSchoolVo.fromJson(Map<String, dynamic> json) =>
       _$EducationSchoolVoFromJson(json);
 
   Map<String, dynamic> toJson() => _$EducationSchoolVoToJson(this);
+
+  String getImageWithBaseUrl(){
+    return kBaseImageUrl + (imageUrl ?? "");
+  }
 }

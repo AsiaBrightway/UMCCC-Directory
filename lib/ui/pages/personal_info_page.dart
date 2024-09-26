@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:animations/animations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -38,6 +39,8 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   final Map<int ,String> licenseStatusList = {1: 'Not Have',2: 'Have',3: 'Still Applying'};
   final Map<int ,String> licenseTypeList = {1: 'က' ,2: 'ခ',3: 'ဃ'};
   final Map<int ,String> licenseColorList = {1: 'Black', 2: 'Red'};
+  final Map<int, String> stateList = {1: '1', 2: '2', 3: '2', 4: '4',5:'5',6:'6',7:'7',8:'8',9:'9',10:'10',11:'11',12:'12',13:'13',14:'14'};
+  final Map<int, String> nationTypeList ={1: 'နိုင်',2: 'ဧည့်',3: 'သာ',4: 'ပြု',5: 'သီ',6: 'စ',};
   String frontDrivingImageUrl = "";
   String backDrivingImageUrl = "";
 
@@ -51,6 +54,27 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     final authModel = Provider.of<AuthProvider>(context,listen: false);
     _token = authModel.token;
     _currentUserRole = authModel.role;
+  }
+
+  Future<void> _selectDate(BuildContext context,PersonalInfoBloc bloc) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2030),
+    );
+    if (picked != null) {
+      bloc.updatePersonalInfo(dateOfBirth: picked.toString(),age: _calculateAge(picked));
+    }
+  }
+
+  int _calculateAge(DateTime birthDate) {
+    DateTime today = DateTime.now();
+    int age = today.year - birthDate.year;
+    if (today.month < birthDate.month || (today.month == birthDate.month && today.day < birthDate.day)) {
+      age--;
+    }
+    return age;
   }
 
   String getBloodType(int? bloodTypeInt) {
@@ -183,7 +207,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                 selector: (context,bloc) => bloc.personalInfoState,
                 builder: (context,personalInfoState,_){
                   var bloc = context.read<PersonalInfoBloc>();
-                  ///Fail Widgets
+                  ///Failed Widgets
                   if(personalInfoState == PersonalInfoState.error){
                     return Center(
                       child: Column(
@@ -385,8 +409,8 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         const Padding(
-                                          padding: EdgeInsets.only(left: 8.0),
-                                          child: Text("Gender :",style: TextStyle(fontFamily: 'Ubuntu',fontSize: 16),),
+                                          padding: EdgeInsets.only(left: 8.0,right: 4),
+                                          child: Text("Gender :",style: TextStyle(fontFamily: 'Ubuntu',fontSize: 14),),
                                         ),
                                         (bloc.personalInfo.gender ?? true)
                                             ? const Text(" Male",style: TextStyle(fontSize: 16))
@@ -437,8 +461,8 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         children: [
                                           const Padding(
-                                            padding: EdgeInsets.only(left: 8.0),
-                                            child: Text("Hand Usage :",style: TextStyle(fontFamily: 'Ubuntu',fontSize: 16),),
+                                            padding: EdgeInsets.only(left: 8.0,right: 4),
+                                            child: Text("Hand Usage :",style: TextStyle(fontFamily: 'Ubuntu',fontSize: 14),),
                                           ),
                                           (bloc.personalInfo.handUsage == 2)
                                               ? const Text(" Right",style: TextStyle(fontSize: 16),)
@@ -475,7 +499,11 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                             children: [
                                               TextSpan(
                                                 text: getBloodType(bloc.personalInfo.bloodType),
-                                                style: TextStyle(fontFamily: 'Ubuntu', color: Theme.of(context).colorScheme.onSurface),
+                                                style: TextStyle(
+                                                    fontFamily: 'Ubuntu',
+                                                    color: Theme.of(context).colorScheme.onSurface,
+                                                    fontSize: 16
+                                                ),
                                               )
                                             ]),
                                       ),
@@ -486,7 +514,10 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                             children: [
                                               TextSpan(
                                                 text: getMarriageStatus(bloc.personalInfo.marriageStatus),
-                                                style: TextStyle(fontFamily: 'Ubuntu',color: Theme.of(context).colorScheme.onSurface),
+                                                style: TextStyle(
+                                                    fontFamily: 'Ubuntu',
+                                                    fontSize: 16,
+                                                    color: Theme.of(context).colorScheme.onSurface),
                                               )
                                             ]),
                                       ),
@@ -558,102 +589,86 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   }
 
   ///build emergency
-   Widget _buildEmergencyContact(BuildContext context){
+  Widget _buildEmergencyContact(BuildContext context){
     var bloc = context.read<PersonalInfoBloc>();
     return Selector<PersonalInfoBloc,bool>(
-          selector: (context,bloc) => bloc.isEmergencyExpanded,
-          builder: (context,isEmergencyExpanded,_){
-            return Container(
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      stops: const [0.4,1.0],
-                      colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade600]
-                  ),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.deepPurple)
+      selector: (context,bloc) => bloc.isEmergencyExpanded,
+      builder: (context,isEmergencyExpanded,_){
+        return Container(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  stops: const [0.4,1.0],
+                  colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade600]
               ),
-              padding: const EdgeInsets.symmetric(horizontal:10,vertical: 10),
-              child: Column(
-                children: [
-                  GestureDetector(
-                    onTap: (){
-                      bloc.toggleEmergencyExpanded();
-                    },
-                    child: Container(
-                      color: Colors.transparent,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.deepPurple)
+          ),
+          padding: const EdgeInsets.symmetric(horizontal:16,vertical: 10),
+          child: GestureDetector(
+            onTap: (){
+              bloc.toggleEmergencyExpanded();
+            },
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  color: Colors.transparent,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Emergency Contact'),
+                      Icon(isEmergencyExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
+                    ],
+                  ),
+                ),
+                if(isEmergencyExpanded)
+                  Column(
+                    children: [
+                      const SizedBox(height: 10,),
+                      CustomTextField(
+                          controller: TextEditingController(text: bloc.personalInfo.emergencyContactName),
+                          onChange: (value) => bloc.updatePersonalInfo(emergencyContactName: value),
+                          labelText: 'Name',readOnly: _currentUserRole
+                      ),
+                      const SizedBox(height: 6,),
+                      CustomTextField(
+                          controller: TextEditingController(text: bloc.personalInfo.emergencyContactRelation),
+                          onChange: (value) => bloc.updatePersonalInfo(emergencyContactRelation: value),
+                          labelText: 'Relation',
+                          readOnly: _currentUserRole),
+                      const SizedBox(height: 6,),
+                      CustomTextField(
+                          controller: TextEditingController(text: bloc.personalInfo.emergencyContactAddress),
+                          onChange: (value) => bloc.updatePersonalInfo(emergencyContactAddress: value),
+                          labelText: 'Address',
+                          readOnly: _currentUserRole),
+                      const SizedBox(height: 6,),
+                      Row(
                         children: [
-                          const Text('Emergency Contact'),
-                          IconButton(
-                            icon: Icon(isEmergencyExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
-                            onPressed: () {
-                              bloc.toggleEmergencyExpanded();
-                            },
+                          Expanded(child: CustomTextField(
+                            controller: TextEditingController(text: bloc.personalInfo.emergencyContactOfficePhone),
+                            onChange: (value) => bloc.updatePersonalInfo(emergencyContactOfficePhone: value),
+                            labelText: 'Cellular Phone',
+                            readOnly: _currentUserRole,
+                            keyboardType: TextInputType.number,)
+                          ),
+                          const SizedBox(width: 8,),
+                          Expanded(child: CustomTextField(
+                            controller: TextEditingController(text: bloc.personalInfo.emergencyContactHomePhone),
+                            onChange: (value) => bloc.updatePersonalInfo(emergencyContactMobilePhone: value),
+                            labelText: 'Home Phone',
+                            readOnly: _currentUserRole,
+                            keyboardType: TextInputType.number,),
                           ),
                         ],
                       ),
-                    ),
+                    ],
                   ),
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 100),
-                    height: isEmergencyExpanded ?  270 : 0.0,
-                    child: Visibility(
-                      visible: isEmergencyExpanded,
-                      child: AnimatedOpacity(
-                        opacity: isEmergencyExpanded ? 1.0 : 0.0,
-                        curve: Curves.easeInOutBack,
-                        duration: const Duration(milliseconds: 100),
-                        child: Column(
-                          children: [
-                            Expanded(child: CustomTextField(
-                                controller: TextEditingController(text: bloc.personalInfo.emergencyContactName),
-                                onChange: (value) => bloc.updatePersonalInfo(emergencyContactName: value),
-                                labelText: 'Name',readOnly: _currentUserRole
-                            )),
-                            const SizedBox(height: 6,),
-                            Expanded(child: CustomTextField(
-                                controller: TextEditingController(text: bloc.personalInfo.emergencyContactRelation),
-                                onChange: (value) => bloc.updatePersonalInfo(emergencyContactRelation: value),
-                                labelText: 'Relation',
-                                readOnly: _currentUserRole)),
-                            const SizedBox(height: 6,),
-                            Expanded(child: CustomTextField(
-                                controller: TextEditingController(text: bloc.personalInfo.emergencyContactAddress),
-                                onChange: (value) => bloc.updatePersonalInfo(emergencyContactAddress: value),
-                                labelText: 'Address',
-                                readOnly: _currentUserRole)),
-                            const SizedBox(height: 6,),
-                            Expanded(
-                              child: Row(
-                                children: [
-                                  Expanded(child: CustomTextField(
-                                    controller: TextEditingController(text: bloc.personalInfo.emergencyContactOfficePhone),
-                                    onChange: (value) => bloc.updatePersonalInfo(emergencyContactOfficePhone: value),
-                                    labelText: 'Cellular Phone',
-                                    readOnly: _currentUserRole,
-                                    keyboardType: TextInputType.number,)
-                                  ),
-                                  const SizedBox(width: 8,),
-                                  Expanded(child: CustomTextField(
-                                    controller: TextEditingController(text: bloc.personalInfo.emergencyContactHomePhone),
-                                    onChange: (value) => bloc.updatePersonalInfo(emergencyContactMobilePhone: value),
-                                    labelText: 'Home Phone',
-                                    readOnly: _currentUserRole,
-                                    keyboardType: TextInputType.number,),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
+              ],
+            ),
+          ),
+        );
+      },
     );
    }
 
@@ -672,12 +687,13 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: Colors.deepPurple)
           ),
-          padding: const EdgeInsets.symmetric(horizontal:20,vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal:16,vertical: 10),
           child: GestureDetector(
             onTap: (){
                 bloc.toggleNrcExpanded();
             },
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 8),
@@ -693,8 +709,45 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                 if(isNrcExpanded)
                   Column(
                     children: [
-                      ///NRC Row
+                      ///NRC Dropdown
                       const SizedBox(height: 18),
+                      if(_currentUserRole == 1)
+                        Row(
+                        children: [
+                          Expanded(child: stateListWidget(context)),
+                          const SizedBox(width: 8),
+                          Expanded(child: townshipDropdown(context)),
+                          const SizedBox(width: 8),
+                          Expanded(child: nationalTypeListDropdown(context)),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Container(
+                              height: 45,
+                              padding: const EdgeInsets.symmetric(horizontal: 6,),
+                              decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.onPrimary,
+                                  border: Border.all(color: Colors.grey.shade600),
+                                  borderRadius: BorderRadius.circular(6)
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 1.0),
+                                child: TextField(
+                                  maxLines: 1,
+                                  //todo
+                                  controller: TextEditingController(text: bloc.personalInfo.nrcNumber),
+                                  keyboardType: TextInputType.number,
+                                  readOnly: _currentUserRole != 1,
+                                  decoration: const InputDecoration(
+                                    labelStyle: TextStyle(fontWeight: FontWeight.w300),
+                                    border: InputBorder.none,
+                                  ),
+                                ),
+                              ),
+                            )
+                          )
+                        ],
+                      ),
+                      const SizedBox(height: 8),
                       Row(
                         children: [
                           Expanded(
@@ -708,7 +761,6 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                       borderRadius: BorderRadius.circular(12),
                                       child: OpenContainer(
                                         closedBuilder:(context,action) => CachedNetworkImage(
-                                          //todo image
                                           imageUrl: bloc.personalInfo.getImageWithBaseUrl(nrcFrontUrl),
                                           height: SizeConfig.blockSizeVertical * 17,
                                           width: SizeConfig.blockSizeHorizontal * 41,
@@ -726,11 +778,12 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                             ImageDetailsPage(imageUrl: bloc.personalInfo.getImageWithBaseUrl(nrcFrontUrl)),
                                       )
                                     ),
-                                    GestureDetector(
-                                        onTap: (){
-                                          _showPickerDialog(context,3,bloc);
-                                        },
-                                        child: Image.asset("lib/icons/add_camera.png", width: 30, height: 30, color: Colors.grey,))
+                                    if(_currentUserRole == 1)
+                                      GestureDetector(
+                                          onTap: (){
+                                            _showPickerDialog(context,3,bloc);
+                                          },
+                                          child: Image.asset("lib/icons/add_camera.png", width: 30, height: 30, color: Colors.grey,))
                                   ],
                                 );
                               },
@@ -750,7 +803,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                             child: OpenContainer(
                                                 closedColor: Colors.black12,
                                                 closedBuilder: (context,action) => CachedNetworkImage(
-                                                  imageUrl: bloc.personalInfo.getImageWithBaseUrl(nrcBackUrl) ?? '',
+                                                  imageUrl: bloc.personalInfo.getImageWithBaseUrl(nrcBackUrl),
                                                   height: SizeConfig.blockSizeVertical * 17,
                                                   width: SizeConfig.blockSizeHorizontal * 41,
                                                   fit: BoxFit.cover,
@@ -768,16 +821,13 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                             ),
                                           ),
                                         ),
-                                        GestureDetector(
-                                            onTap: (){
-                                              _showPickerDialog(context, 2, bloc);
-                                            },
-                                            child: Image.asset(
-                                              "lib/icons/add_camera.png",
-                                              width: 30,
-                                              height: 30,
-                                              color: Colors.grey,)
-                                        )
+                                        if(_currentUserRole == 1)
+                                          GestureDetector(
+                                              onTap: (){
+                                                _showPickerDialog(context, 2, bloc);
+                                              },
+                                              child: Image.asset("lib/icons/add_camera.png", width: 30, height: 30, color: Colors.grey,)
+                                          )
                                       ]
                                   );
                                 }
@@ -795,8 +845,8 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     );
   }
 
-  /// Appearance
-   Widget _buildAppearance(BuildContext context){
+  ///build appearance
+  Widget _buildAppearance(BuildContext context){
     var bloc = context.read<PersonalInfoBloc>();
     return Selector<PersonalInfoBloc,bool>(
         selector: (context,bloc) => bloc.isAppearanceExpanded,
@@ -810,7 +860,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: Colors.deepPurple)
             ),
-            padding: const EdgeInsets.symmetric(horizontal:20,vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal:16,vertical: 10),
             child: GestureDetector(
               onTap: (){
                 bloc.toggleAppearanceExpanded();
@@ -863,291 +913,289 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
    }
 
   ///Driving License
-   Widget _buildDrivingLicense(BuildContext context){
+  Widget _buildDrivingLicense(BuildContext context){
     var bloc = context.read<PersonalInfoBloc>();
     return Selector<PersonalInfoBloc,bool>(
-          selector: (context,bloc) => bloc.isDrivingLicenseExpanded,
-          builder: (context,isDrivingLicenseExpanded,_){
-            return Container(
-                padding: const EdgeInsets.symmetric(horizontal:20,vertical: 10),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      stops: const [0.4,1.0],
-                      colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade600]
+      selector: (context,bloc) => bloc.isDrivingLicenseExpanded,
+      builder: (context,isDrivingLicenseExpanded,_){
+        return Container(
+            padding: const EdgeInsets.symmetric(horizontal:16,vertical: 10),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  stops: const [0.4,1.0],
+                  colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade600]
+              ),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.deepPurple),
+            ),
+            child: GestureDetector(
+              onTap: (){
+                bloc.toggleDrivingExpanded();
+              },
+              child: Column(
+                children: [
+                  Container(
+                    color: Colors.transparent,
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Driving License',style: TextStyle(fontFamily: 'Ubuntu')),
+                        Icon(isDrivingLicenseExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
+                      ],
+                    ),
                   ),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.deepPurple),
-                ),
-                child: GestureDetector(
-                  onTap: (){
-                    bloc.toggleDrivingExpanded();
-                  },
-                  child: Column(
-                    children: [
-                      Container(
-                        color: Colors.transparent,
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text('Driving License',style: TextStyle(fontFamily: 'Ubuntu')),
-                            Icon(isDrivingLicenseExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
-                          ],
-                        ),
-                      ),
-                      if(isDrivingLicenseExpanded)
-                        Column(
-                          children: [
-                            Selector<PersonalInfoBloc,int?>(
-                              selector: (context,bloc) => bloc.personalInfo.drivingLicenceStatus,
-                              builder: (context,licenseStatus,_){
-                                if(bloc.editMode && _currentUserRole == 1){
-                                  return CustomDropdownButton(
-                                      value: licenseStatus,
-                                      hint: 'License Status',
-                                      items: licenseStatusList,
-                                      onChanged: (int? newValue) {
-                                        bloc.updatePersonalInfo(drivingLicenceStatus: newValue);
-                                      });
-                                }else{
-                                  return Padding(
-                                    padding: const EdgeInsets.only(left: 8.0,bottom: 8,top: 14),
-                                    child: Row(
-                                      children: [
-                                        const Text("License Status : "),
-                                        Text(getLicenseStatusName(licenseStatus),style: const TextStyle(fontFamily: 'Ubuntu'),)
-                                      ],
-                                    ),
-                                  );
-                                }
-                              },
-                            ),
-                            const SizedBox(height: 10),
-                            Selector<PersonalInfoBloc,int?>(
-                              selector: (context,bloc) => bloc.personalInfo.drivingLicenceType,
-                              builder: (context,licenseType,_){
-                                if(bloc.editMode && _currentUserRole == 1){
-                                  return CustomDropdownButton(
-                                      value: licenseType,
-                                      hint: 'License Type',
-                                      items: licenseTypeList,
-                                      onChanged: (int? newValue) {
-                                        bloc.updatePersonalInfo(drivingLicenceType: newValue);
-                                      });
-                                }else{
-                                  return Padding(
-                                    padding: const EdgeInsets.only(left: 8,bottom: 8),
-                                    child: Row(
-                                      children: [
-                                        const Text("License Type : "),
-                                        Text(getLicenseTypeName(licenseType),style: const TextStyle(fontFamily: 'Ubuntu'))
-                                      ],
-                                    ),
-                                  );
-                                }
-                              },
-                            ),
-                            const SizedBox(height: 10),
-                            ///license color drop down
-                            Selector<PersonalInfoBloc,int?>(
-                              selector: (context,bloc) => bloc.personalInfo.drivingLicenceColor,
-                              builder: (context,licenseColor,_){
-                                if(bloc.editMode && _currentUserRole == 1){
-                                  return CustomDropdownButton(
-                                      value: licenseColor,
-                                      hint: 'License Color',
-                                      items: licenseColorList,
-                                      onChanged: (int? value) {
-                                        bloc.updatePersonalInfo(drivingLicenceColor: value);
-                                      });
-                                }else{
-                                  return Padding(
-                                    padding: const EdgeInsets.only(left: 8,bottom: 8),
-                                    child: Row(
-                                      children: [
-                                        const Text("License Color : "),
-                                        Text(getLicenseColorName(licenseColor),style: const TextStyle(fontFamily: 'Ubuntu'))
-                                      ],
-                                    ),
-                                  );
-                                }
-                              },
-                            ),
-                            const SizedBox(height: 10),
-                            ///toggle vehicle punishment
-                            Selector<PersonalInfoBloc,bool>(
-                              selector: (context,bloc) => bloc.personalInfo.vehiclePunishment ?? false,
-                              builder: (context,vehiclePunishment,_){
-                                return Column(
+                  if(isDrivingLicenseExpanded)
+                    Column(
+                      children: [
+                        Selector<PersonalInfoBloc,int?>(
+                          selector: (context,bloc) => bloc.personalInfo.drivingLicenceStatus,
+                          builder: (context,licenseStatus,_){
+                            if(bloc.editMode && _currentUserRole == 1){
+                              return CustomDropdownButton(
+                                  value: licenseStatus,
+                                  hint: 'License Status',
+                                  items: licenseStatusList,
+                                  onChanged: (int? newValue) {
+                                    bloc.updatePersonalInfo(drivingLicenceStatus: newValue);
+                                  });
+                            }else{
+                              return Padding(
+                                padding: const EdgeInsets.only(left: 8.0,bottom: 8,top: 14),
+                                child: Row(
                                   children: [
-                                    Row(
-                                      children: [
-                                        const Expanded(
-                                          child: Text(
-                                            'Vehicle Punishment:',
-                                            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 5),
-                                        Expanded(
-                                          child: Switch(
-                                              value: vehiclePunishment,
-                                              activeColor: Colors.red.shade500,
-                                              onChanged: (bool value) {
-                                                bloc.updatePersonalInfo(vehiclePunishment: value);
-                                              }),
-                                        )
-                                      ],
-                                    ),
-                                    if(vehiclePunishment)
-                                      CustomTextField(
-                                          controller: TextEditingController(text: bloc.personalInfo.vehiclePunishmentDescription),
-                                          onChange: (value) => bloc.updatePersonalInfo(vehiclePunishmentDescription: value),
-                                          labelText: 'Vehicle Punishment Description',
-                                          readOnly: _currentUserRole
-                                      )
+                                    const Text("License Status : "),
+                                    Text(getLicenseStatusName(licenseStatus),style: const TextStyle(fontFamily: 'Ubuntu'),)
                                   ],
-                                );
-                              },
-                            ),
-                            const SizedBox(height: 8),
-                            ///driving license image
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Selector<PersonalInfoBloc,String>(
-                                      selector: (context,bloc) => bloc.personalInfo.drivingLicenseFrontUrl ?? '',
-                                      builder: (context,drivingLicenseFrontUrl,_){
-                                        return Stack(
-                                            alignment: Alignment.bottomRight,
-                                            children: [
-                                              ClipRRect(
-                                                borderRadius: BorderRadius.circular(12),
-                                                child: Flexible(
-                                                  child: OpenContainer(
-                                                      closedColor: Colors.black12,
-                                                      closedBuilder: (context,action) => CachedNetworkImage(
-                                                        imageUrl: bloc.personalInfo.getImageWithBaseUrl(drivingLicenseFrontUrl) ?? '',
-                                                        height: SizeConfig.blockSizeVertical * 17,
-                                                        width: SizeConfig.blockSizeHorizontal * 41,
-                                                        fit: BoxFit.cover,
-                                                        errorWidget: (context, error, stackTrace) {
-                                                          return Container(
-                                                              height: MediaQuery.of(context).size.height * 0.17,
-                                                              width: MediaQuery.of(context).size.width * 0.4,
-                                                              color: Colors.black12,
-                                                              child: const Center(child: Text("Front Image"))
-                                                          );
-                                                        },
-                                                      ),
-                                                      openBuilder: (context,action) =>
-                                                          ImageDetailsPage(imageUrl: bloc.personalInfo.getImageWithBaseUrl(drivingLicenseFrontUrl))
-                                                  ),
-                                                ),
-                                              ),
-                                              GestureDetector(
-                                                  onTap: (){
-                                                    _showPickerDialog(context, 1, bloc);
-                                                  },
-                                                  child: Image.asset(
-                                                    "lib/icons/add_camera.png",
-                                                    width: 30,
-                                                    height: 30,
-                                                    color: Colors.grey,)
-                                              )
-                                            ]
-                                        );
-                                      }
-                                  ),
                                 ),
-                                const SizedBox(width: 10,),
-                                Expanded(
-                                  child: Selector<PersonalInfoBloc,String>(
-                                      selector: (context,bloc) => bloc.personalInfo.drivingLicenseBackUrl ?? '',
-                                      builder: (context,drivingLicenseBackUrl,_){
-                                        return Stack(
-                                            alignment: Alignment.bottomRight,
-                                            children: [
-                                              ClipRRect(
-                                                borderRadius: BorderRadius.circular(12),
-                                                child: Flexible(
-                                                  child: OpenContainer(
-                                                      closedColor: Colors.black12,
-                                                      closedBuilder: (context,action) => CachedNetworkImage(
-                                                        imageUrl: bloc.personalInfo.getImageWithBaseUrl(drivingLicenseBackUrl) ?? '',
-                                                        height: SizeConfig.blockSizeVertical * 17,
-                                                        width: SizeConfig.blockSizeHorizontal * 41,
-                                                        fit: BoxFit.cover,
-                                                        errorWidget: (context, error, stackTrace) {
-                                                          return Container(
-                                                              height: MediaQuery.of(context).size.height * 0.17,
-                                                              width: MediaQuery.of(context).size.width * 0.4,
-                                                              color: Colors.black12,
-                                                              child: const Center(child: Text("Back Image"))
-                                                          );
-                                                        },
-                                                      ),
-                                                      openBuilder: (context,action) =>
-                                                          ImageDetailsPage(imageUrl: bloc.personalInfo.getImageWithBaseUrl(drivingLicenseBackUrl))
-                                                  ),
-                                                ),
-                                              ),
-                                              GestureDetector(
-                                                  onTap: (){
-                                                    _showPickerDialog(context, 2, bloc);
-                                                  },
-                                                  child: Image.asset(
-                                                    "lib/icons/add_camera.png",
-                                                    width: 30,
-                                                    height: 30,
-                                                    color: Colors.grey,)
-                                              )
-                                            ]
-                                        );
-                                      }
-                                  ),
-                                ),
-                              ],
-                            )
-                          ],
+                              );
+                            }
+                          },
                         ),
-                    ],
-                  ),
-                )
-            );
-          },
-      );
-   }
+                        const SizedBox(height: 10),
+                        Selector<PersonalInfoBloc,int?>(
+                          selector: (context,bloc) => bloc.personalInfo.drivingLicenceType,
+                          builder: (context,licenseType,_){
+                            if(bloc.editMode && _currentUserRole == 1){
+                              return CustomDropdownButton(
+                                  value: licenseType,
+                                  hint: 'License Type',
+                                  items: licenseTypeList,
+                                  onChanged: (int? newValue) {
+                                    bloc.updatePersonalInfo(drivingLicenceType: newValue);
+                                  });
+                            }else{
+                              return Padding(
+                                padding: const EdgeInsets.only(left: 8,bottom: 8),
+                                child: Row(
+                                  children: [
+                                    const Text("License Type : "),
+                                    Text(getLicenseTypeName(licenseType),style: const TextStyle(fontFamily: 'Ubuntu'))
+                                  ],
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        ///license color drop down
+                        Selector<PersonalInfoBloc,int?>(
+                          selector: (context,bloc) => bloc.personalInfo.drivingLicenceColor,
+                          builder: (context,licenseColor,_){
+                            if(bloc.editMode && _currentUserRole == 1){
+                              return CustomDropdownButton(
+                                  value: licenseColor,
+                                  hint: 'License Color',
+                                  items: licenseColorList,
+                                  onChanged: (int? value) {
+                                    bloc.updatePersonalInfo(drivingLicenceColor: value);
+                                  });
+                            }else{
+                              return Padding(
+                                padding: const EdgeInsets.only(left: 8,bottom: 8),
+                                child: Row(
+                                  children: [
+                                    const Text("License Color : "),
+                                    Text(getLicenseColorName(licenseColor),style: const TextStyle(fontFamily: 'Ubuntu'))
+                                  ],
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        ///toggle vehicle punishment
+                        Selector<PersonalInfoBloc,bool>(
+                          selector: (context,bloc) => bloc.personalInfo.vehiclePunishment ?? false,
+                          builder: (context,vehiclePunishment,_){
+                            return Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    const Expanded(
+                                      child: Text(
+                                        'Vehicle Punishment:',
+                                        style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 5),
+                                    Expanded(
+                                      child: Switch(
+                                          value: vehiclePunishment,
+                                          activeColor: Colors.red.shade500,
+                                          onChanged: (bool value) {
+                                            if(_currentUserRole == 1) {
+                                              bloc.updatePersonalInfo(vehiclePunishment: value);
+                                            }
+                                          }),
+                                    )
+                                  ],
+                                ),
+                                if(vehiclePunishment)
+                                  CustomTextField(
+                                      controller: TextEditingController(text: bloc.personalInfo.vehiclePunishmentDescription),
+                                      onChange: (value) => bloc.updatePersonalInfo(vehiclePunishmentDescription: value),
+                                      labelText: 'Vehicle Punishment Description',
+                                      readOnly: _currentUserRole
+                                  )
+                              ],
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 8),
+                        ///driving license image
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Selector<PersonalInfoBloc,String>(
+                                  selector: (context,bloc) => bloc.personalInfo.drivingLicenseFrontUrl ?? '',
+                                  builder: (context,drivingLicenseFrontUrl,_){
+                                    return Stack(
+                                        alignment: Alignment.bottomRight,
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(12),
+                                            child: Flexible(
+                                              child: OpenContainer(
+                                                  closedColor: Colors.black12,
+                                                  closedBuilder: (context,action) => CachedNetworkImage(
+                                                    imageUrl: bloc.personalInfo.getImageWithBaseUrl(drivingLicenseFrontUrl),
+                                                    height: SizeConfig.blockSizeVertical * 17,
+                                                    width: SizeConfig.blockSizeHorizontal * 41,
+                                                    fit: BoxFit.cover,
+                                                    errorWidget: (context, error, stackTrace) {
+                                                      return Container(
+                                                          height: MediaQuery.of(context).size.height * 0.17,
+                                                          width: MediaQuery.of(context).size.width * 0.4,
+                                                          color: Colors.black12,
+                                                          child: const Center(child: Text("Front Image"))
+                                                      );
+                                                    },
+                                                  ),
+                                                  openBuilder: (context,action) =>
+                                                      ImageDetailsPage(imageUrl: bloc.personalInfo.getImageWithBaseUrl(drivingLicenseFrontUrl))
+                                              ),
+                                            ),
+                                          ),
+                                          if(_currentUserRole == 1)
+                                            GestureDetector(
+                                                onTap: (){
+                                                  _showPickerDialog(context, 1, bloc);
+                                                },
+                                                child: Image.asset("lib/icons/add_camera.png", width: 30, height: 30, color: Colors.grey,)
+                                            )
+                                        ]
+                                    );
+                                  }
+                              ),
+                            ),
+                            const SizedBox(width: 10,),
+                            Expanded(
+                              child: Selector<PersonalInfoBloc,String>(
+                                  selector: (context,bloc) => bloc.personalInfo.drivingLicenseBackUrl ?? '',
+                                  builder: (context,drivingLicenseBackUrl,_){
+                                    return Stack(
+                                        alignment: Alignment.bottomRight,
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(12),
+                                            child: Flexible(
+                                              child: OpenContainer(
+                                                  closedColor: Colors.black12,
+                                                  closedBuilder: (context,action) => CachedNetworkImage(
+                                                    imageUrl: bloc.personalInfo.getImageWithBaseUrl(drivingLicenseBackUrl),
+                                                    height: SizeConfig.blockSizeVertical * 17,
+                                                    width: SizeConfig.blockSizeHorizontal * 41,
+                                                    fit: BoxFit.cover,
+                                                    errorWidget: (context, error, stackTrace) {
+                                                      return Container(
+                                                          height: MediaQuery.of(context).size.height * 0.17,
+                                                          width: MediaQuery.of(context).size.width * 0.4,
+                                                          color: Colors.black12,
+                                                          child: const Center(child: Text("Back Image"))
+                                                      );
+                                                    },
+                                                  ),
+                                                  openBuilder: (context,action) =>
+                                                      ImageDetailsPage(imageUrl: bloc.personalInfo.getImageWithBaseUrl(drivingLicenseBackUrl))
+                                              ),
+                                            ),
+                                          ),
+                                          if(_currentUserRole == 1)
+                                            GestureDetector(
+                                                onTap: (){
+                                                  _showPickerDialog(context, 2, bloc);
+                                                },
+                                                child: Image.asset("lib/icons/add_camera.png", width: 30, height: 30, color: Colors.grey,)
+                                            )
+                                        ]
+                                    );
+                                  }
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                ],
+              ),
+            )
+        );
+      },
+    );
+  }
 
-   Widget _buildPreviousApplied(BuildContext context){
+  Widget _buildPreviousApplied(BuildContext context){
     var bloc = context.read<PersonalInfoBloc>();
-     return Container(
-       padding: const EdgeInsets.symmetric(horizontal: 12,vertical: 6),
-       decoration: BoxDecoration(
-           gradient: LinearGradient(
-               stops: const [0.4,1.0],
-               colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade400]
-           ),
-           borderRadius: BorderRadius.circular(8),
-           border: Border.all(color: Colors.deepPurple)
-       ),
-       child: Selector<PersonalInfoBloc,bool>(
-         selector: (context,bloc) => bloc.personalInfo.previousApplied ?? false,
-         builder: (context,previousApplied,_){
-           return Column(
-             children: [
-               Row(
-                 children: [
-                   const Text('Previous Applied:',style: TextStyle(fontFamily: 'Ubuntu',fontSize: 14),),
-                   const SizedBox(width: 5),
+    return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12,vertical: 6),
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+                stops: const [0.4,1.0],
+                colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade400]
+            ),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: Colors.deepPurple)
+        ),
+        child: Selector<PersonalInfoBloc,bool>(
+          selector: (context,bloc) => bloc.personalInfo.previousApplied ?? false,
+          builder: (context,previousApplied,_){
+            return Column(
+              children: [
+                Row(
+                  children: [
+                    const Text('Previous Applied:',style: TextStyle(fontFamily: 'Ubuntu',fontSize: 14),),
+                    const SizedBox(width: 5),
                     Switch(
                       value: previousApplied, // Set the switch state
                       onChanged: (bool value) {
-                        bloc.updatePersonalInfo(previousApplied: value);
+                        if(_currentUserRole == 1){
+                          bloc.updatePersonalInfo(previousApplied: value);
+                        }
                       },
                     )
                   ],
-               ),
+                ),
                 if(previousApplied)
                   CustomTextField(
                       controller: TextEditingController(
@@ -1156,32 +1204,117 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                           previousAppliedDescription: value),
                       labelText: 'Previous Applied Description',
                       readOnly: _currentUserRole)
-             ],
-           );
-         },
-       )
-     );
-   }
-
-   Future<void> _selectDate(BuildContext context,PersonalInfoBloc bloc) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime(2030),
+              ],
+            );
+          },
+        )
     );
-    if (picked != null) {
-      bloc.updatePersonalInfo(dateOfBirth: picked.toString(),age: _calculateAge(picked));
-    }
   }
 
-  int _calculateAge(DateTime birthDate) {
-    DateTime today = DateTime.now();
-    int age = today.year - birthDate.year;
-    if (today.month < birthDate.month || (today.month == birthDate.month && today.day < birthDate.day)) {
-      age--;
-    }
-    return age;
+  Widget stateListWidget(BuildContext context){
+    var bloc = context.read<PersonalInfoBloc>();
+    return Selector<PersonalInfoBloc,int?>(
+      selector: (context,bloc) => bloc.selectedState,
+      builder: (context,selectedState,_){
+        return SizedBox(
+            child: Expanded(
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton2(
+                    isExpanded: true,
+                    value: selectedState,
+                    hint: const Text('State', style: TextStyle(fontSize: 8)),
+                    items: stateList.entries.map((entry) {
+                      return DropdownMenuItem<int>(
+                        value: entry.key,
+                        child: Text(entry.value, style: const TextStyle(fontSize: 10,fontWeight: FontWeight.w600)),
+                      );
+                    }).toList(),
+                    onChanged: (int? newValue) {
+                      bloc.selectedState = newValue;
+                    },
+                    buttonStyleData: ButtonStyleData(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      height: 40,
+                    ),
+                  ),
+                ))
+        );
+      },
+    );
+  }
+
+  Widget townshipDropdown(BuildContext context){
+    var bloc = context.read<PersonalInfoBloc>();
+    return Selector<PersonalInfoBloc,int?>(
+      selector: (context,bloc) => bloc.selectedTownship,
+      builder: (context,selectedTownship,_){
+        return SizedBox(
+            child: Expanded(
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton2(
+                  isExpanded: true,
+                  value: selectedTownship,
+                  hint: const Text('Tsp', style: TextStyle(fontSize: 8)),
+                  items: stateList.entries.map((entry) {
+                    return DropdownMenuItem<int>(
+                      value: entry.key,
+                      child: Text(entry.value, style: const TextStyle(fontSize: 8,fontWeight: FontWeight.w600)),
+                    );
+                  }).toList(),
+                  onChanged: (int? newValue) {
+                    bloc.selectedTownship = newValue;
+                  },
+                  buttonStyleData: ButtonStyleData(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    height: 40,
+                  ),
+                ),
+              ),
+            )
+        );
+      },
+    );
+  }
+
+  Widget nationalTypeListDropdown(BuildContext context){
+    var bloc = context.read<PersonalInfoBloc>();
+    return Selector<PersonalInfoBloc,int?>(
+      selector: (context,bloc) => bloc.selectedNationalType,
+      builder: (context,selectedNational,_){
+        return SizedBox(
+            child: Expanded(
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton2(
+                  isExpanded: true,
+                  value: selectedNational,
+                  hint: const Text('Ctz', style: TextStyle(fontSize: 8)),
+                  items: nationTypeList.entries.map((entry) {
+                    return DropdownMenuItem<int>(
+                      value: entry.key,
+                      child: Text(entry.value, style: const TextStyle(fontSize: 8,fontWeight: FontWeight.w600)),
+                    );
+                  }).toList(),
+                  onChanged: (int? newValue) {
+                    bloc.selectedNationalType = newValue;
+                  },
+                  buttonStyleData: ButtonStyleData(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    height: 40,
+                  ),
+                ),
+              ),
+            ));
+      },
+    );
   }
 
   Widget bloodTypeWidget(BuildContext context) {

@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import '../../data/models/pahg_model.dart';
 import '../../data/vos/language_vo.dart';
 import '../../data/vos/request_body/add_language_request.dart';
+import '../../data/vos/request_body/path_user_request.dart';
 import '../../dialog/language_dialog.dart';
 import '../../exception/helper_functions.dart';
 import '../../utils/image_compress.dart';
@@ -52,8 +53,13 @@ class _LanguageFragmentState extends State<LanguageFragment> {
 
   Future<void> uploadImage() async{
     _model.uploadImage(_token, _image!).then((response){
-      setState(() {
-
+      PathUserRequest request = PathUserRequest("ImageUrl", "replace", response?.file);
+        _model.patchLanguage(_token, _languageIdForImage, request).then((onValue){
+          _initializeData();
+        }).catchError((onError){
+          setState(() {
+            showErrorDialog(context, onError.toString());
+          });
       });
     }).catchError((error){
       Navigator.of(context).pop();                                            //dismiss loading

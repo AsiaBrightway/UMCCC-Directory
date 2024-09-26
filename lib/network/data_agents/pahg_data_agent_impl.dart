@@ -465,4 +465,32 @@ class PahgDataAgentImpl extends PahgDataAgent{
       throw _createException(onError);
     });
   }
+
+  @override
+  Future<PostMethodResponse?> patchEducationGraduates(String apiKey, int id, List<PathUserRequest> request) {
+    return mApi.patchEducationGraduate(apiKey, id, request).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> patchLanguage(String apiKey, int id, List<PathUserRequest> request) {
+    return mApi.patchLanguage(apiKey, id, request).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> patchTraining(String apiKey, int id, List<PathUserRequest> request) {
+    return mApi.patchTraining(apiKey, id, request).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> patchSchool(String apiKey, int id, List<PathUserRequest> request) {
+    return mApi.patchSchool(apiKey, id, request).catchError((onError){
+      throw _createException(onError);
+    });
+  }
 }

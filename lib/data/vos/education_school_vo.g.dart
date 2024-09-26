@@ -16,6 +16,8 @@ EducationSchoolVo _$EducationSchoolVoFromJson(Map<String, dynamic> json) =>
       json['Secondary'] as String?,
       json['MaximumAchievement'] as String?,
       json['Subjects'] as String?,
+      json['ImageUrl'] as String?,
+      json['Remark'] as String?,
     );
 
 Map<String, dynamic> _$EducationSchoolVoToJson(EducationSchoolVo instance) =>
@@ -28,4 +30,6 @@ Map<String, dynamic> _$EducationSchoolVoToJson(EducationSchoolVo instance) =>
       'Secondary': instance.secondary,
       'MaximumAchievement': instance.maximumAchievement,
       'Subjects': instance.subjects,
+      'ImageUrl': instance.imageUrl,
+      'Remark': instance.remark,
     };

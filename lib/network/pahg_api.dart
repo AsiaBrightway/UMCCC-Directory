@@ -362,8 +362,36 @@ abstract class PahgApi{
       @Body() List<PathUserRequest> requestBody
       );
   
-  @PATCH("$kEndPointPersonalinformations/{id}")
+  @PATCH("$kEndPointPersonalInformation/{id}")
   Future<PostMethodResponse?> patchPersonalInfo(
+      @Header(kParamAuthorization) String apiKey,
+      @Path("id") int id,
+      @Body() List<PathUserRequest> requestBody
+      );
+
+  @PATCH("$kEndPointAddGraduate/{id}")
+  Future<PostMethodResponse?> patchEducationGraduate(
+      @Header(kParamAuthorization) String apiKey,
+      @Path("id") int id,
+      @Body() List<PathUserRequest> requestBody
+      );
+
+  @PATCH("$kEndPointAddLanguage/{id}")
+  Future<PostMethodResponse?> patchLanguage(
+      @Header(kParamAuthorization) String apiKey,
+      @Path("id") int id,
+      @Body() List<PathUserRequest> requestBody
+      );
+
+  @PATCH("$kEndPointAddTraining/{id}")
+  Future<PostMethodResponse?> patchTraining(
+      @Header(kParamAuthorization) String apiKey,
+      @Path("id") int id,
+      @Body() List<PathUserRequest> requestBody
+      );
+
+  @PATCH("$kEndPointUpdateSchool/{id}")
+  Future<PostMethodResponse?> patchSchool(
       @Header(kParamAuthorization) String apiKey,
       @Path("id") int id,
       @Body() List<PathUserRequest> requestBody

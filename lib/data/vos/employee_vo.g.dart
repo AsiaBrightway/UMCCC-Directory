@@ -30,7 +30,7 @@ Map<String, dynamic> _$EmployeeVoToJson(EmployeeVo instance) =>
       'DepartmentId': instance.departmentId,
       'PositionId': instance.positionId,
       'EmployeeNumber': instance.employeeNumber,
-      'AppointmentDate': instance.jdCode,
+      'AppointmentDate': instance.appointmentDate,
       'Remark': instance.remark,
       'DepartmentName': instance.departmentName,
       'Position': instance.position,

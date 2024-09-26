@@ -23,6 +23,13 @@ class PersonalInfoBloc extends ChangeNotifier{
   bool _isDrivingLicenseExpanded = false;
   bool _isEmergencyExpanded = false;
   String _token = "";
+  int? _selectedState;
+  int? _selectedTownship;
+  int? _selectedNationalType;
+
+  int? get selectedState => _selectedState;
+  int? get selectedTownship => _selectedTownship;
+  int? get selectedNationalType => _selectedNationalType;
   bool get isAppearanceExpanded => _isAppearanceExpanded;
   bool get isDrivingLicenseExpanded => _isDrivingLicenseExpanded;
   bool get isEmergencyExpanded => _isEmergencyExpanded;
@@ -97,10 +104,10 @@ class PersonalInfoBloc extends ChangeNotifier{
     _pahgModel.uploadImage(_token, image).then((onValue){
       switch(imageType){
         case 1 :
-          patchImageUrl("DrivingLicenseFrontUrl", "replace", onValue?.file ?? 's');
+          patchImageUrl("DrivingLicenseFrontUrl", "replace", onValue?.file ?? 'temp');
           break;
         case 2 :
-          patchImageUrl("DrivingLicenseBackUrl", "replace", onValue?.file ?? 's');
+          patchImageUrl("DrivingLicenseBackUrl", "replace", onValue?.file ?? 'temp');
           break;
         case 3 :
           patchImageUrl("NRCFrontUrl", "replace", 'ok null');
@@ -118,8 +125,21 @@ class PersonalInfoBloc extends ChangeNotifier{
     PathUserRequest request = PathUserRequest(path, op, value);
     _pahgModel.patchPersonalInfo(_token,_personalInfo.id!, request).then((onValue){
       _errorMessage = onValue?.message.toString();
+      switch(path){
+        case "DrivingLicenseFrontUrl":
+          _personalInfo.drivingLicenseFrontUrl = value;
+          break;
+        case "DrivingLicenseBackUrl":
+          _personalInfo.drivingLicenseBackUrl = value;
+        case "NRCFrontUrl":
+          _personalInfo.nrcFrontUrl = value;
+        case "NRCBackUrl":
+          _personalInfo.nrcBackUrl = value;
+      }
+      notifyListeners();
     }).catchError((onError){
       _errorMessage = onError.toString();
+      notifyListeners();
     });
   }
   
@@ -282,5 +302,20 @@ class PersonalInfoBloc extends ChangeNotifier{
         nrcNumber: _personalInfo.nrcNumber,
         email: _personalInfo.email
     );
+  }
+
+  set selectedState(int? value) {
+    _selectedState = value;
+    notifyListeners();
+  }
+
+  set selectedTownship(int? value) {
+    _selectedTownship = value;
+    notifyListeners();
+  }
+
+  set selectedNationalType(int? value) {
+    _selectedNationalType = value;
+    notifyListeners();
   }
 }

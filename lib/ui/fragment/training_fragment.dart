@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../../data/models/pahg_model.dart';
 import '../../data/vos/request_body/add_training_request.dart';
+import '../../data/vos/request_body/path_user_request.dart';
 import '../../data/vos/training_vo.dart';
 import '../../dialog/training_dialog.dart';
 import '../../exception/helper_functions.dart';
@@ -62,7 +63,12 @@ class _TrainingFragmentState extends State<TrainingFragment> {
 
   Future<void> uploadImage() async{
     _model.uploadImage(_token, _image!).then((response){
-      setState(() {
+      PathUserRequest request = PathUserRequest("ImageUrl", "replace", response?.file);
+      _model.patchTraining(_token, _trainingIdForImage, request).then((onValue){
+        setState(() {
+          _onRefresh();
+        });
+      }).catchError((onError){
 
       });
     }).catchError((error){

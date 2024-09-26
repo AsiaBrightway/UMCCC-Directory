@@ -43,9 +43,6 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
   int positionId = 0;
   int companyId = 0;
   int departmentId = 0;
-  int? _selectedState;
-  int? _selectedTownship;
-  int? _selectedNationalType;
   String? _selectedDepartment;
   String? _selectedCompany;
   String? _selectedPosition;
@@ -58,10 +55,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
   final _emailController = TextEditingController();
   final _employeeNumberController = TextEditingController();
   final _jdCodeController = TextEditingController();
-  final _nationalNumberController = TextEditingController();
   final Map<int, String> userRoles = {1: 'Admin', 2: 'Chairman', 3: 'MD', 4: 'Employee'};
-  final Map<int, String> stateList = {1: '1', 2: '2', 3: '2', 4: '4',5:'5',6:'6',7:'7',8:'8',9:'9',10:'10',11:'11',12:'12',13:'13',14:'14'};
-  final Map<int, String> nationTypeList ={1: 'နိုင်',2: 'ဧည့်',3: 'သာ',4: 'ပြု',5: 'သီ',6: 'စ',};
   int selectedRole = 4;
 
   @override
@@ -85,7 +79,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
         setState(() {
           _userNameController.text = response?.employeeName ?? '';
           _employeeNumberController.text = response?.employeeNumber ?? '';
-          _jdCodeController.text = response?.jdCode ?? '';
+          _jdCodeController.text = response?.appointmentDate ?? '';
           companyId = response?.companyId ?? 0;
           departmentId = response?.departmentId ?? 0;
           positionId = response?.positionId ?? 0;
@@ -288,39 +282,6 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                         ? editDropDown()
                         : showUserData(),
                 ///name text field
-                Row(
-                  children: [
-                    Expanded(child: stateListWidget()),
-                    const SizedBox(width: 8),
-                    Expanded(child: townshipDropdown()),
-                    const SizedBox(width: 8),
-                    Expanded(child: nationalTypeListDropdown()),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Container(
-                        height: 40,
-                        padding: const EdgeInsets.symmetric(horizontal: 6,),
-                        decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            border: Border.all(color: Colors.grey.shade600),
-                            borderRadius: BorderRadius.circular(6)
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 1.0),
-                          child: TextField(
-                            maxLines: 1,
-                            controller: _nationalNumberController,
-                            keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(
-                              labelStyle: TextStyle(fontWeight: FontWeight.w300),
-                              border: InputBorder.none,
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
                 const SizedBox(height: 20),
                 TextField(
                   controller: _userNameController,
@@ -801,95 +762,6 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
         positionId,
         _employeeNumberController.text.toString(),
         _jdCodeController.text.toString()
-    );
-  }
-
-  Widget stateListWidget(){
-    return SizedBox(
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton2(
-          isExpanded: true,
-          value: _selectedState,
-          hint: const Text('state', style: TextStyle(fontSize: 8)),
-          items: stateList.entries.map((entry) {
-            return DropdownMenuItem<int>(
-              value: entry.key,
-              child: Text(entry.value),
-            );
-          }).toList(),
-          onChanged: (int? newValue) {
-            setState(() {
-              _selectedState = newValue!;
-            });
-          },
-          buttonStyleData: ButtonStyleData(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.onTertiaryContainer,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            height: 40,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget townshipDropdown(){
-    return SizedBox(
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton2(
-          isExpanded: true,
-          value: _selectedTownship,
-          items: stateList.entries.map((entry) {
-            return DropdownMenuItem<int>(
-              value: entry.key,
-              child: Text(entry.value),
-            );
-          }).toList(),
-          onChanged: (int? newValue) {
-            setState(() {
-              _selectedTownship = newValue!;
-            });
-          },
-          buttonStyleData: ButtonStyleData(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.onTertiaryContainer,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            height: 40,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget nationalTypeListDropdown(){
-    return SizedBox(
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton2(
-          isExpanded: true,
-          value: _selectedNationalType,
-          hint: const Text('citizen', style: TextStyle(fontSize: 8)),
-          items: nationTypeList.entries.map((entry) {
-            return DropdownMenuItem<int>(
-              value: entry.key,
-              child: Text(entry.value,style: const TextStyle(fontSize: 8)),
-            );
-          }).toList(),
-          onChanged: (int? newValue) {
-            setState(() {
-              _selectedNationalType = newValue!;
-            });
-          },
-          buttonStyleData: ButtonStyleData(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.onTertiaryContainer,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            height: 40,
-          ),
-        ),
-      ),
     );
   }
 

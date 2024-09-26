@@ -41,5 +41,5 @@ Map<String, dynamic> _$AddEmployeeRequestToJson(AddEmployeeRequest instance) =>
       'departmentId': instance.departmentId,
       'positionId': instance.positionId,
       'employeeNumber': instance.employeeNumber,
-      'jdCode': instance.jdCode,
+      'jdCode': instance.appointmentDate,
     };

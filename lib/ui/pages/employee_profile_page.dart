@@ -2,6 +2,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pahg_group/ui/shimmer/employee_profile_shimmer.dart';
 import 'package:pahg_group/widgets/error_employee_widget.dart';
 import 'package:provider/provider.dart';
 import '../../data/vos/employee_vo.dart';
@@ -79,7 +80,7 @@ class _EmployeeProfilePageState extends ConsumerState<EmployeeProfilePage> {
       ///switch ui state with riverpod
       body: switch(employeeState){
 
-        EmployeeStateLoading() => const Center(child: CircularProgressIndicator(),),
+        EmployeeStateLoading() => const Center(child: EmployeeProfileShimmer()),
 
         EmployeeStateFailed(error : String error) => Center(
           child: ErrorEmployeeWidget(
@@ -396,7 +397,7 @@ class _EmployeeProfilePageState extends ConsumerState<EmployeeProfilePage> {
                   children: [
                     Image.asset('lib/icons/employee_jd.png',width: 20,color: Colors.white,),
                     const SizedBox(width: 4),
-                    Text(employee.jdCode ?? '',style: const TextStyle(fontSize: 14,color: Colors.white,fontWeight: FontWeight.w300),)
+                    Text(employee.appointmentDate ?? '',style: const TextStyle(fontSize: 14,color: Colors.white,fontWeight: FontWeight.w300),)
                   ],
                 ),
               ],
@@ -409,25 +410,13 @@ class _EmployeeProfilePageState extends ConsumerState<EmployeeProfilePage> {
   void navigateToPersonal(BuildContext context,EmployeeVo employee) {
     Navigator.push(
       context,
-      PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => PersonalInfoPage(
-          name: employee.employeeName ?? 'null',
-          userId: employee.id ?? '',
-          role: _userRole,
-        ),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          const begin = Offset(1.0, 0.0);
-          const end = Offset.zero;
-          const curve = Curves.ease;
-
-          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-          return SlideTransition(
-            position: animation.drive(tween),
-            child: child,
-          );
-        },
-      ),
+        MaterialPageRoute(
+          builder: (context) => PersonalInfoPage(
+            name: employee.employeeName ?? 'null',
+            userId: employee.id ?? '',
+            role: _userRole,
+          ),
+        )
     );
   }
 

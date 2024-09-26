@@ -10,6 +10,7 @@ import 'package:pahg_group/dialog/update_school_dialog.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/models/pahg_model.dart';
+import '../../data/vos/request_body/path_user_request.dart';
 import '../../utils/image_compress.dart';
 import '../../utils/utils.dart';
 import '../providers/auth_provider.dart';
@@ -79,7 +80,12 @@ class _SchoolFragmentState extends State<SchoolFragment> {
 
   Future<void> uploadImage() async{
     _model.uploadImage(_token, _image!).then((response){
-      setState(() {
+      PathUserRequest request = PathUserRequest("ImageUrl", "replace", response?.file);
+      _model.patchSchool(_token, _schoolIdForImage, request).then((onValue){
+        setState(() {
+          _onRefresh();
+        });
+      }).catchError((onError){
 
       });
     }).catchError((error){

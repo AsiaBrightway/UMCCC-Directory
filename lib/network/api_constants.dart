@@ -2,8 +2,8 @@
 // const String kBaseUrl = "https://www.jlarpyi.com";
 // const String kBaseImageUrl = "https://www.jlarpyi.com/uploadimage/";
 
-const String kBaseUrl = "http://192.168.1.5:86";
-const String kBaseImageUrl = "http://192.168.1.5:86/uploadimage/";
+const String kBaseUrl = "http://192.168.1.7:86";
+const String kBaseImageUrl = "http://192.168.1.7:86/uploadimage/";
 
 //end point
 const String kEndPointLogin = "/v1/api/Token";
@@ -37,7 +37,6 @@ const String kEndPointAddTraining = "/v1/api/Educationtrainings";
 const String kEndPointGetLanguage = "/v1/api/Educationlanguages/filter";
 const String kEndPointAddLanguage = "/v1/api/Educationlanguages";
 
-
 const String kEndPointGetWorkExp = "/v1/api/Workingexperiences/filter";
 const String kEndPointAddWorkExp = "/v1/api/Workingexperiences";
 
@@ -48,8 +47,10 @@ const String kEndPointSearchEmployeeCompany = "/v1/api/Employees/searchbycompany
 const String kEndPointGetFamily = "/v1/api/Families/filter";
 const String kEndPointAddFamily = "/v1/api/Families";
 
+///Patch
 const String kEndPointPatchUserPassword = "/v1/api/Users";
-const String kEndPointPersonalinformations = "/v1/api/Personalinformations";
+const String kEndPointPersonalInformation = "/v1/api/Personalinformations";
+
 //Param
 const String kParamPage = "page";
 const String kParamAuthorization = "Authorization";

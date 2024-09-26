@@ -19,6 +19,8 @@ TrainingVo _$TrainingVoFromJson(Map<String, dynamic> json) => TrainingVo(
       (json['TrainingResult'] as num?)?.toInt(),
       json['Certificate'] as bool?,
       json['Note'] as String?,
+      json['ImageUrl'] as String?,
+      json['Remark'] as String?,
     );
 
 Map<String, dynamic> _$TrainingVoToJson(TrainingVo instance) =>
@@ -35,4 +37,6 @@ Map<String, dynamic> _$TrainingVoToJson(TrainingVo instance) =>
       'TrainingResult': instance.trainingResult,
       'Certificate': instance.certificate,
       'Note': instance.note,
+      'ImageUrl': instance.imageUrl,
+      'Remark': instance.remark,
     };

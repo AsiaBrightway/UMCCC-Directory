@@ -13,7 +13,7 @@ class _PahgApi implements PahgApi {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'http://192.168.1.5:86';
+    baseUrl ??= 'http://192.168.1.7:86';
   }
 
   final Dio _dio;
@@ -1729,6 +1729,142 @@ class _PahgApi implements PahgApi {
             .compose(
               _dio.options,
               '/v1/api/Personalinformations/${id}',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = _result.data == null
+        ? null
+        : PostMethodResponse.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<PostMethodResponse?> patchEducationGraduate(
+    String apiKey,
+    int id,
+    List<PathUserRequest> requestBody,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': apiKey};
+    _headers.removeWhere((k, v) => v == null);
+    final _data = requestBody.map((e) => e.toJson()).toList();
+    final _result = await _dio.fetch<Map<String, dynamic>?>(
+        _setStreamType<PostMethodResponse>(Options(
+      method: 'PATCH',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/v1/api/Educationgraduates/${id}',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = _result.data == null
+        ? null
+        : PostMethodResponse.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<PostMethodResponse?> patchLanguage(
+    String apiKey,
+    int id,
+    List<PathUserRequest> requestBody,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': apiKey};
+    _headers.removeWhere((k, v) => v == null);
+    final _data = requestBody.map((e) => e.toJson()).toList();
+    final _result = await _dio.fetch<Map<String, dynamic>?>(
+        _setStreamType<PostMethodResponse>(Options(
+      method: 'PATCH',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/v1/api/Educationlanguages/${id}',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = _result.data == null
+        ? null
+        : PostMethodResponse.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<PostMethodResponse?> patchTraining(
+    String apiKey,
+    int id,
+    List<PathUserRequest> requestBody,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': apiKey};
+    _headers.removeWhere((k, v) => v == null);
+    final _data = requestBody.map((e) => e.toJson()).toList();
+    final _result = await _dio.fetch<Map<String, dynamic>?>(
+        _setStreamType<PostMethodResponse>(Options(
+      method: 'PATCH',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/v1/api/Educationtrainings/${id}',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = _result.data == null
+        ? null
+        : PostMethodResponse.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<PostMethodResponse?> patchSchool(
+    String apiKey,
+    int id,
+    List<PathUserRequest> requestBody,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': apiKey};
+    _headers.removeWhere((k, v) => v == null);
+    final _data = requestBody.map((e) => e.toJson()).toList();
+    final _result = await _dio.fetch<Map<String, dynamic>?>(
+        _setStreamType<PostMethodResponse>(Options(
+      method: 'PATCH',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/v1/api/Educationschools/${id}',
               queryParameters: queryParameters,
               data: _data,
             )

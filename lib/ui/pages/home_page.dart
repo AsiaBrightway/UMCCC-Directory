@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pahg_group/state/company_list/company_list_notifier.dart';
 import 'package:pahg_group/state/company_list/company_list_state.dart';
+import 'package:pahg_group/ui/shimmer/home_shimmer.dart';
 import 'package:pahg_group/widgets/error_employee_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -75,7 +76,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           : UserDrawer(userId: _userId),
       body: switch(companyListState){
 
-        CompanyListLoading() => const Center(child: CircularProgressIndicator()),
+        CompanyListLoading() => const HomeShimmer(),
 
         CompanyListFailed(error : String error) => Center(
           child: ErrorEmployeeWidget(

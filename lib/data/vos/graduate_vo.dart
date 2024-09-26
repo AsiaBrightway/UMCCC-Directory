@@ -1,4 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
+
+import '../../network/api_constants.dart';
 part 'graduate_vo.g.dart';
 
 @JsonSerializable()
@@ -19,10 +21,20 @@ class GraduateVo{
   @JsonKey(name: 'ReceivedYear')
   String? receivedYear;
 
+  @JsonKey(name: 'ImageUrl')
+  String? imageUrl;
+
+  @JsonKey(name: 'Remark')
+  String? remark;
+
   GraduateVo(this.id, this.employeeId, this.university, this.degreeType,
-      this.receivedYear);
+      this.receivedYear, this.imageUrl, this.remark);
 
   factory GraduateVo.fromJson(Map<String,dynamic> json) => _$GraduateVoFromJson(json);
 
   Map<String,dynamic> toJson() => _$GraduateVoToJson(this);
+
+  String getImageWithBaseUrl(){
+    return kBaseImageUrl + (imageUrl ?? "");
+  }
 }

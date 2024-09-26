@@ -310,4 +310,24 @@ class PahgModel {
     List<PathUserRequest> requestList = [request];
     return mDataAgent.patchPersonalInfo(apiKey, id, requestList);
   }
+
+  Future<PostMethodResponse?> patchEducationGraduates(String apiKey,int id,PathUserRequest request){
+    List<PathUserRequest> requestList = [request];
+    return mDataAgent.patchEducationGraduates(apiKey, id, requestList);
+  }
+
+  Future<PostMethodResponse?> patchLanguage(String apiKey,int id,PathUserRequest request){
+    List<PathUserRequest> requestList = [request];
+    return mDataAgent.patchLanguage(apiKey, id, requestList);
+  }
+
+  Future<PostMethodResponse?> patchTraining(String apiKey,int id,PathUserRequest request){
+    List<PathUserRequest> requestList = [request];
+    return mDataAgent.patchTraining(apiKey, id, requestList);
+  }
+
+  Future<PostMethodResponse?> patchSchool(String apiKey,int id,PathUserRequest request){
+    List<PathUserRequest> requestList = [request];
+    return mDataAgent.patchSchool(apiKey, id, requestList);
+  }
 }

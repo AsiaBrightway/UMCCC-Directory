@@ -188,8 +188,7 @@ class _TrainingCardState extends State<TrainingCard> {
                           OpenContainer(
                             closedBuilder: (context, action) =>
                                 CachedNetworkImage(
-                                  //todo
-                                  imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWJfFCJV-vv9n31dyGa5SQbK7gYflNb-7ClHI55banTVjaxoxMWhrJmO0uqPFe6Da6wv4&usqp=CAU",
+                                  imageUrl: widget.training.getImageWithBaseUrl(),
                                   height: SizeConfig.blockSizeVertical * 12,
                                   width: SizeConfig.blockSizeHorizontal * 30,
                                   fit: BoxFit.cover,
@@ -203,8 +202,8 @@ class _TrainingCardState extends State<TrainingCard> {
                                 ),
                             closedColor: Colors.black12,
                             openBuilder: (context, action) =>
-                            const ImageDetailsPage(
-                                imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWJfFCJV-vv9n31dyGa5SQbK7gYflNb-7ClHI55banTVjaxoxMWhrJmO0uqPFe6Da6wv4&usqp=CAU"),
+                                ImageDetailsPage(
+                                imageUrl: widget.training.getImageWithBaseUrl()),
                           ),
                           GestureDetector(
                               onTap: () {

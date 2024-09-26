@@ -140,4 +140,12 @@ abstract class PahgDataAgent{
   Future<PostMethodResponse?> changeUserInfo(String apiKey,String id,List<PathUserRequest> request);
 
   Future<PostMethodResponse?> patchPersonalInfo(String apiKey,int id,List<PathUserRequest> request);
+
+  Future<PostMethodResponse?> patchEducationGraduates(String apiKey,int id,List<PathUserRequest> request);
+
+  Future<PostMethodResponse?> patchLanguage(String apiKey,int id,List<PathUserRequest> request);
+
+  Future<PostMethodResponse?> patchTraining(String apiKey,int id,List<PathUserRequest> request);
+
+  Future<PostMethodResponse?> patchSchool(String apiKey,int id,List<PathUserRequest> request);
 }

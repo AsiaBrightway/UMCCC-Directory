@@ -28,7 +28,7 @@ class EmployeeVo{
   String? employeeNumber;
 
   @JsonKey(name: 'AppointmentDate')
-  String? jdCode;
+  String? appointmentDate;
 
   @JsonKey(name: 'Remark')
   String? remark;
@@ -50,7 +50,7 @@ class EmployeeVo{
       this.departmentId,
       this.positionId,
       this.employeeNumber,
-      this.jdCode,
+      this.appointmentDate,
       this.remark,
       this.departmentName,
       this.position,

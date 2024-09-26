@@ -12,6 +12,8 @@ GraduateVo _$GraduateVoFromJson(Map<String, dynamic> json) => GraduateVo(
       json['University'] as String?,
       json['DegreeType'] as String?,
       json['ReceivedYear'] as String?,
+      json['ImageUrl'] as String?,
+      json['Remark'] as String?,
     );
 
 Map<String, dynamic> _$GraduateVoToJson(GraduateVo instance) =>
@@ -21,4 +23,6 @@ Map<String, dynamic> _$GraduateVoToJson(GraduateVo instance) =>
       'University': instance.university,
       'DegreeType': instance.degreeType,
       'ReceivedYear': instance.receivedYear,
+      'ImageUrl': instance.imageUrl,
+      'Remark': instance.remark,
     };

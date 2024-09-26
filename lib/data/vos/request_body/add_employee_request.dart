@@ -46,7 +46,7 @@ class AddEmployeeRequest{
   String? employeeNumber;
 
   @JsonKey(name: 'jdCode')
-  String? jdCode;
+  String? appointmentDate;
 
   AddEmployeeRequest(
       this.id,
@@ -63,7 +63,7 @@ class AddEmployeeRequest{
       this.departmentId,
       this.positionId,
       this.employeeNumber,
-      this.jdCode);
+      this.appointmentDate);
 
   factory AddEmployeeRequest.fromJson(Map<String,dynamic> json) => _$AddEmployeeRequestFromJson(json);
 

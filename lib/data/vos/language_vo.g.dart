@@ -12,6 +12,8 @@ LanguageVo _$LanguageVoFromJson(Map<String, dynamic> json) => LanguageVo(
       json['Name'] as String?,
       (json['Proficiency'] as num?)?.toInt(),
       json['Teach'] as bool?,
+      json['ImageUrl'] as String?,
+      json['Remark'] as String?,
     );
 
 Map<String, dynamic> _$LanguageVoToJson(LanguageVo instance) =>
@@ -21,4 +23,6 @@ Map<String, dynamic> _$LanguageVoToJson(LanguageVo instance) =>
       'Name': instance.name,
       'Proficiency': instance.proficiency,
       'Teach': instance.teach,
+      'ImageUrl': instance.imageUrl,
+      'Remark': instance.remark,
     };
