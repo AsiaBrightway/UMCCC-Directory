@@ -2,6 +2,7 @@
 import 'package:animations/animations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:pahg_group/utils/utils.dart';
 import '../../data/vos/education_school_vo.dart';
 import '../../data/vos/request_body/add_school_request.dart';
 import '../../dialog/update_school_dialog.dart';
@@ -78,12 +79,12 @@ class _SchoolCardState extends State<SchoolCard> {
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(
                           children: [
-                            Text("${widget.school.fromDate}",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
+                            Text(Utils.getFormattedDate(widget.school.fromDate),style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
                             Padding(
                               padding: const EdgeInsets.only(left: 8.0,right: 8.0),
                               child: Text("To",style: TextStyle(color: Theme.of(context).colorScheme.primary),),
                             ),
-                            Text("${widget.school.toDate}",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
+                            Text(Utils.getFormattedDate(widget.school.toDate),style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
                           ],
                         ),
                       ),
@@ -144,16 +145,17 @@ class _SchoolCardState extends State<SchoolCard> {
                              ImageDetailsPage(
                                 imageUrl: widget.school.getImageWithBaseUrl()),
                           ),
-                          GestureDetector(
-                              onTap: () {
-                                widget.updateImage(widget.school.id!);
-                              },
-                              child: Image.asset(
-                                "lib/icons/add_camera.png",
-                                width: 30,
-                                height: 30,
-                                color: Colors.grey,
-                              )),
+                          if(widget.userRole == 1)
+                            GestureDetector(
+                                onTap: () {
+                                  widget.updateImage(widget.school.id!);
+                                },
+                                child: Image.asset(
+                                  "lib/icons/add_camera.png",
+                                  width: 30,
+                                  height: 30,
+                                  color: Colors.grey,
+                                )),
                         ],
                       ),
                       (widget.userRole == 1)

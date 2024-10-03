@@ -1,10 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:pahg_group/data/models/pahg_model.dart';
+import 'package:pahg_group/data/vos/nrc_township_vo.dart';
 import 'package:pahg_group/data/vos/personal_info_vo.dart';
+import 'package:pahg_group/data/vos/request_body/get_request.dart';
 import 'package:pahg_group/data/vos/request_body/path_user_request.dart';
 import 'package:pahg_group/data/vos/request_body/personal_info_request.dart';
+import 'package:pahg_group/exception/helper_functions.dart';
 
 enum PersonalInfoState { initial, loading, success, error }
 
@@ -14,6 +18,8 @@ class PersonalInfoBloc extends ChangeNotifier{
   PersonalInfoVo _personalInfo = PersonalInfoVo();
   PersonalInfoState _personalInfoState = PersonalInfoState.initial;
   PersonalInfoState _updateState = PersonalInfoState.initial;
+  String? _nrcNo;
+  String? _nrcNumber;
   String? _errorMessage;
   bool _isDataEmpty = false;
   String? _updateSuccess;
@@ -23,13 +29,28 @@ class PersonalInfoBloc extends ChangeNotifier{
   bool _isDrivingLicenseExpanded = false;
   bool _isEmergencyExpanded = false;
   String _token = "";
+  String _employeeId = "";
   int? _selectedState;
-  int? _selectedTownship;
-  int? _selectedNationalType;
+  String? _selectedTownship;
+  String? _selectedNationalType;
+  List<NrcTownshipVo>? townshipList;
 
+  String? get nrcNo => _nrcNo;
+  String? get selectedNationalType => _selectedNationalType;
+
+  set selectedNationalType(String? value) {
+    _selectedNationalType = value;
+    notifyListeners();
+  }
+
+  void setNrcNo(String? value) {
+    _nrcNo = value;
+    notifyListeners();
+  }
+
+  String? get nrcNumber => _nrcNumber;
   int? get selectedState => _selectedState;
-  int? get selectedTownship => _selectedTownship;
-  int? get selectedNationalType => _selectedNationalType;
+  String? get selectedTownship => _selectedTownship;
   bool get isAppearanceExpanded => _isAppearanceExpanded;
   bool get isDrivingLicenseExpanded => _isDrivingLicenseExpanded;
   bool get isEmergencyExpanded => _isEmergencyExpanded;
@@ -45,6 +66,7 @@ class PersonalInfoBloc extends ChangeNotifier{
   PersonalInfoBloc(String token,String columnValue){
     getPersonalInformation(token, columnValue);
     _token = token;
+    _employeeId = columnValue;
   }
 
   ///fetch personal info
@@ -56,6 +78,7 @@ class PersonalInfoBloc extends ChangeNotifier{
        _isDataEmpty = true;
       }else{
         _personalInfo = onValue.first;
+        _nrcNumber = _personalInfo.nrcNumber;
         _isDataEmpty = false;
       }
       _personalInfoState = PersonalInfoState.success;
@@ -77,6 +100,7 @@ class PersonalInfoBloc extends ChangeNotifier{
       _updateSuccess = onValue?.message;
       _updateState = PersonalInfoState.success;
       _isDataEmpty = false;
+      getPersonalInformation(_token, _employeeId);
       notifyListeners();
     }).catchError((onError){
       _errorMessage = onError.toString();
@@ -92,6 +116,7 @@ class PersonalInfoBloc extends ChangeNotifier{
     _pahgModel.updatePersonalInfo(token, _personalInfo.id!,request).then((onValue){
       _updateSuccess = onValue?.message;
       _updateState = PersonalInfoState.success;
+      _nrcNumber = "$selectedState/$selectedTownship/($selectedNationalType) $_nrcNo";
       notifyListeners();
     }).catchError((onError){
       _errorMessage = onError.toString();
@@ -100,24 +125,41 @@ class PersonalInfoBloc extends ChangeNotifier{
     });
   }
 
-  Future<void> uploadImage(int imageType,File image) async{
+  ///get township
+  Future<void> getTownship(int distinctId) async{
+    GetRequest request = GetRequest(columnName: "StateDistrictNo", columnCondition: 1, columnValue: distinctId.toString());
+    _pahgModel.getTownship(_token, request).then((response){
+      townshipList = [];
+      townshipList = response;
+      notifyListeners();
+    }).catchError((onError){
+
+    });
+  }
+
+  ///context was used only in the function
+  Future<void> uploadImage(BuildContext context,int imageType,File image) async{
+    if(_personalInfo.id == null) {
+      showScaffoldMessage(context, "Personal Info is empty");
+      return;
+    }
     _pahgModel.uploadImage(_token, image).then((onValue){
       switch(imageType){
         case 1 :
-          patchImageUrl("DrivingLicenseFrontUrl", "replace", onValue?.file ?? 'temp');
+          patchImageUrl("DrivingLicenseFrontUrl", "replace", onValue?.file ?? 'null');
           break;
         case 2 :
-          patchImageUrl("DrivingLicenseBackUrl", "replace", onValue?.file ?? 'temp');
+          patchImageUrl("DrivingLicenseBackUrl", "replace", onValue?.file ?? 'null');
           break;
         case 3 :
-          patchImageUrl("NRCFrontUrl", "replace", 'ok null');
+          patchImageUrl("NRCFrontUrl", "replace", onValue?.file ?? 'null');
           break;
         case 4 :
-          patchImageUrl("NRCBackUrl", "replace", onValue?.file ?? 'n');
+          patchImageUrl("NRCBackUrl", "replace", onValue?.file ?? 'null');
           break;
       }
     }).catchError((onError){
-
+      showScaffoldMessage(context, onError.toString());
     });
   }
   
@@ -259,6 +301,7 @@ class PersonalInfoBloc extends ChangeNotifier{
   }
 
   PersonalInfoRequest getPersonalRequest(){
+    String nrcNumber = "$selectedState/$selectedTownship/($selectedNationalType) $_nrcNo";
     return PersonalInfoRequest(
         id: _personalInfo.id,
         address: _personalInfo.address,
@@ -299,23 +342,21 @@ class PersonalInfoBloc extends ChangeNotifier{
         previousApplied: _personalInfo.previousApplied,
         previousAppliedDescription: _personalInfo.previousAppliedDescription,
         hRDepartmentRecord: _personalInfo.hRDepartmentRecord,
-        nrcNumber: _personalInfo.nrcNumber,
+        nrcNumber: nrcNumber,
         email: _personalInfo.email
     );
   }
 
   set selectedState(int? value) {
     _selectedState = value;
+    _selectedTownship = null;
+    getTownship(value!);
     notifyListeners();
   }
 
-  set selectedTownship(int? value) {
+  set selectedTownship(String? value) {
     _selectedTownship = value;
     notifyListeners();
   }
 
-  set selectedNationalType(int? value) {
-    _selectedNationalType = value;
-    notifyListeners();
-  }
 }

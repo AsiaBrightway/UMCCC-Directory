@@ -7,6 +7,7 @@ import 'package:pahg_group/data/vos/request_body/add_training_request.dart';
 import 'package:pahg_group/data/vos/training_vo.dart';
 import 'package:pahg_group/dialog/training_dialog.dart';
 import 'package:pahg_group/ui/themes/colors.dart';
+import 'package:pahg_group/utils/utils.dart';
 
 import '../../utils/size_config.dart';
 import '../pages/image_details_page.dart';
@@ -132,12 +133,12 @@ class _TrainingCardState extends State<TrainingCard> {
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(
                           children: [
-                            Text("${widget.training.startDate}",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
+                            Text(Utils.getFormattedDate(widget.training.startDate),style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
                             Padding(
                               padding: const EdgeInsets.only(left: 8.0,right: 8.0),
                               child: Text("To",style: TextStyle(color: Theme.of(context).colorScheme.primary),),
                             ),
-                            Text("${widget.training.endDate}",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
+                            Text(Utils.getFormattedDate(widget.training.endDate),style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
                           ],
                         ),
                       ),
@@ -205,16 +206,17 @@ class _TrainingCardState extends State<TrainingCard> {
                                 ImageDetailsPage(
                                 imageUrl: widget.training.getImageWithBaseUrl()),
                           ),
-                          GestureDetector(
-                              onTap: () {
-                                widget.updateImage(widget.training.id!);
-                              },
-                              child: Image.asset(
-                                "lib/icons/add_camera.png",
-                                width: 30,
-                                height: 30,
-                                color: Colors.grey,
-                              )),
+                          if(widget.userRole == 1)
+                            GestureDetector(
+                                onTap: () {
+                                  widget.updateImage(widget.training.id!);
+                                },
+                                child: Image.asset(
+                                  "lib/icons/add_camera.png",
+                                  width: 30,
+                                  height: 30,
+                                  color: Colors.grey,
+                                )),
                         ],
                       ),
                       (widget.userRole == 1)

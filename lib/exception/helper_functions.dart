@@ -141,7 +141,7 @@ void showScaffoldMessage(BuildContext context,String name){
     content: Text(name,style: const TextStyle(color: Colors.white),),
     duration: const Duration(milliseconds: 1700),
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-    margin: const EdgeInsets.symmetric(horizontal: 50),
+    margin: const EdgeInsets.symmetric(horizontal: 50,vertical: 10),
     behavior: SnackBarBehavior.floating,
   ));
 }

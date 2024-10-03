@@ -1,6 +1,7 @@
 
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:pahg_group/data/vos/companies_vo.dart';
 import 'package:pahg_group/data/vos/company_images_vo.dart';
 import 'package:pahg_group/data/vos/department_vo.dart';
@@ -9,6 +10,7 @@ import 'package:pahg_group/data/vos/employee_vo.dart';
 import 'package:pahg_group/data/vos/family_vo.dart';
 import 'package:pahg_group/data/vos/graduate_vo.dart';
 import 'package:pahg_group/data/vos/language_vo.dart';
+import 'package:pahg_group/data/vos/nrc_township_vo.dart';
 import 'package:pahg_group/data/vos/personal_info_vo.dart';
 import 'package:pahg_group/data/vos/position_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_company_image_vo.dart';
@@ -329,5 +331,10 @@ class PahgModel {
   Future<PostMethodResponse?> patchSchool(String apiKey,int id,PathUserRequest request){
     List<PathUserRequest> requestList = [request];
     return mDataAgent.patchSchool(apiKey, id, requestList);
+  }
+
+  Future<List<NrcTownshipVo>> getTownship(String apiKey,GetRequest request){
+    List<GetRequest> requestList = [request];
+    return mDataAgent.getTownship(apiKey, requestList).asStream().map((response) => response?.document?.records ?? []).first;
   }
 }

@@ -123,12 +123,11 @@ class PersonalInfoVo {
   @JsonKey(name: 'HRDepartmentRecord')
   String? hRDepartmentRecord;
 
-  @JsonKey(name: 'nrcNumber')
+  @JsonKey(name: 'NRCNumber')
   String? nrcNumber;
 
-  @JsonKey(name: 'email')
+  @JsonKey(name: 'Email')
   String? email;
-
 
   PersonalInfoVo({
       this.id,

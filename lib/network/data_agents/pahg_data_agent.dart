@@ -33,6 +33,7 @@ import '../responses/language_response.dart';
 import '../responses/personal_info_response.dart';
 import '../responses/position_response.dart';
 import '../responses/school_response.dart';
+import '../responses/township_response.dart';
 import '../responses/training_response.dart';
 import '../responses/user_response.dart';
 import '../responses/work_response.dart';
@@ -148,4 +149,6 @@ abstract class PahgDataAgent{
   Future<PostMethodResponse?> patchTraining(String apiKey,int id,List<PathUserRequest> request);
 
   Future<PostMethodResponse?> patchSchool(String apiKey,int id,List<PathUserRequest> request);
+
+  Future<TownshipResponse?> getTownship(String apiKey,List<GetRequest> request);
 }

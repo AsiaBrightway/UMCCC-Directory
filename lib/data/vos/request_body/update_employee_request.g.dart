@@ -16,7 +16,7 @@ UpdateEmployeeRequest _$UpdateEmployeeRequestFromJson(
       (json['departmentId'] as num?)?.toInt(),
       (json['positionId'] as num?)?.toInt(),
       json['employeeNumber'] as String?,
-      json['jdCode'] as String?,
+      json['appointmentDate'] as String?,
     );
 
 Map<String, dynamic> _$UpdateEmployeeRequestToJson(
@@ -29,5 +29,5 @@ Map<String, dynamic> _$UpdateEmployeeRequestToJson(
       'departmentId': instance.departmentId,
       'positionId': instance.positionId,
       'employeeNumber': instance.employeeNumber,
-      'jdCode': instance.jdCode,
+      'appointmentDate': instance.appointmentDate,
     };

@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../network/api_constants.dart';
@@ -70,4 +71,5 @@ class TrainingVo{
   String getImageWithBaseUrl(){
     return kBaseImageUrl + (imageUrl ?? "");
   }
+
 }

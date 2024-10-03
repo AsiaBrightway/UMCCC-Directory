@@ -24,8 +24,8 @@ class UpdateEmployeeRequest{
   @JsonKey(name: 'employeeNumber')
   String? employeeNumber;
 
-  @JsonKey(name: 'jdCode')
-  String? jdCode;
+  @JsonKey(name: 'appointmentDate')
+  String? appointmentDate;
 
   UpdateEmployeeRequest(
       this.id,
@@ -35,7 +35,7 @@ class UpdateEmployeeRequest{
       this.departmentId,
       this.positionId,
       this.employeeNumber,
-      this.jdCode);
+      this.appointmentDate);
 
   factory UpdateEmployeeRequest.fromJson(Map<String,dynamic> json) => _$UpdateEmployeeRequestFromJson(json);
 

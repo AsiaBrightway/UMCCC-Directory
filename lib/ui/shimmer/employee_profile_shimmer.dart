@@ -10,61 +10,64 @@ class EmployeeProfileShimmer extends StatelessWidget {
       enabled: true,
       child:  Padding(
         padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Card(
-                  child: Container(
-                    width: 90,height: 130,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Card(
+                    child: Container(
+                      width: MediaQuery.sizeOf(context).width * 0.3,
+                      height: MediaQuery.sizeOf(context).height * 0.2,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 18,vertical: 26),
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 18,vertical: 26),
                   ),
-                ),
-                const SizedBox(width: 36,),
-                const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 10),
-                    Text('employee name name'),
-                    SizedBox(height: 6),
-                    ///department text
-                    Text('department name'),
-                    SizedBox(height: 6),
-                    ///job position
-                    Text('job position'),
-                    SizedBox(height: 6),
-                    ///employee number
-                    Text('employee number'),
-                    SizedBox(height: 6),
-                    ///jd code text
-                    Text('appointment date'),
-                  ],
-                )
-              ],
-            ),
-            const SizedBox(height: 30),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Cards(),
-                Cards()
-              ],
-            ),
-            const SizedBox(height: 12),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Cards(),
-                Cards()
-              ],
-            ),
-          ],
+                  const SizedBox(width: 36,),
+                  const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 10),
+                      Text('employee name name'),
+                      SizedBox(height: 6),
+                      ///department text
+                      Text('department name'),
+                      SizedBox(height: 6),
+                      ///job position
+                      Text('job position'),
+                      SizedBox(height: 6),
+                      ///employee number
+                      Text('employee number'),
+                      SizedBox(height: 6),
+                      ///jd code text
+                      Text('appointment date'),
+                    ],
+                  )
+                ],
+              ),
+              const SizedBox(height: 40),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(child: Cards()),
+                  Expanded(child: Cards())
+                ],
+              ),
+              const SizedBox(height: 12),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(child: Cards()),
+                  Expanded(child: Cards())
+                ],
+              ),
+            ],
+          ),
         ),
 
       )
@@ -79,8 +82,8 @@ class Cards extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Container(
-        width: 160,
-        height: 140,
+        width: MediaQuery.sizeOf(context).width * 0.4,
+        height: MediaQuery.sizeOf(context).height * 0.2,
         decoration: const BoxDecoration(
           color: Colors.white54
         ),

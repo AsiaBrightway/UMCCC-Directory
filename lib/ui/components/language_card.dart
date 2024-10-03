@@ -143,16 +143,17 @@ class _LanguageCardState extends State<LanguageCard> {
                              ImageDetailsPage(
                                 imageUrl: widget.language.getImageWithBaseUrl()),
                           ),
-                          GestureDetector(
-                              onTap: () {
-                                widget.updateImage(widget.language.id!);
-                              },
-                              child: Image.asset(
-                                "lib/icons/add_camera.png",
-                                width: 30,
-                                height: 30,
-                                color: Colors.grey,
-                              )),
+                          if(widget.userRole == 1)
+                            GestureDetector(
+                                onTap: () {
+                                  widget.updateImage(widget.language.id!);
+                                },
+                                child: Image.asset(
+                                  "lib/icons/add_camera.png",
+                                  width: 30,
+                                  height: 30,
+                                  color: Colors.grey,
+                                )),
                         ],
                       ),
                       (widget.userRole == 1)

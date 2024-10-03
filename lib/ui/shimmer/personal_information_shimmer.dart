@@ -24,6 +24,8 @@ class PersonalInformationShimmer extends StatelessWidget {
       ),
     );
 
+
+
     // return SizedBox(
     //   width: MediaQuery
     //       .of(context)

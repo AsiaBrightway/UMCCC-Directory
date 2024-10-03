@@ -38,6 +38,7 @@ import 'package:pahg_group/network/responses/personal_info_response.dart';
 import 'package:pahg_group/network/responses/position_response.dart';
 import 'package:pahg_group/network/responses/post_method_response.dart';
 import 'package:pahg_group/network/responses/school_response.dart';
+import 'package:pahg_group/network/responses/township_response.dart';
 import 'package:pahg_group/network/responses/training_response.dart';
 import 'package:pahg_group/network/responses/user_response.dart';
 import 'package:pahg_group/network/responses/work_response.dart';
@@ -490,6 +491,13 @@ class PahgDataAgentImpl extends PahgDataAgent{
   @override
   Future<PostMethodResponse?> patchSchool(String apiKey, int id, List<PathUserRequest> request) {
     return mApi.patchSchool(apiKey, id, request).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<TownshipResponse?> getTownship(String apiKey, List<GetRequest> request) {
+    return mApi.getTownship(apiKey, request).catchError((onError){
       throw _createException(onError);
     });
   }

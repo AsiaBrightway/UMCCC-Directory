@@ -283,8 +283,10 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                           }).toList(),
                           onChanged: (String? newValue) {
                             setState(() {
-                              _selectedValue = newValue;
-                              onDropDownChanged(newValue!);
+                              if(_selectedValue != newValue){
+                                _selectedValue = newValue;
+                                onDropDownChanged(newValue!);
+                              }
                             });
                           },
                           dropdownStyleData: DropdownStyleData(

@@ -54,7 +54,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
   final _userNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _employeeNumberController = TextEditingController();
-  final _jdCodeController = TextEditingController();
+  final _appointmentController = TextEditingController();
   final Map<int, String> userRoles = {1: 'Admin', 2: 'Chairman', 3: 'MD', 4: 'Employee'};
   int selectedRole = 4;
 
@@ -79,7 +79,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
         setState(() {
           _userNameController.text = response?.employeeName ?? '';
           _employeeNumberController.text = response?.employeeNumber ?? '';
-          _jdCodeController.text = response?.appointmentDate ?? '';
+          _appointmentController.text = response?.appointmentDate ?? '';
           companyId = response?.companyId ?? 0;
           departmentId = response?.departmentId ?? 0;
           positionId = response?.positionId ?? 0;
@@ -166,7 +166,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
     _emailController.dispose();
     _userNameController.dispose();
     _employeeNumberController.dispose();
-    _jdCodeController.dispose();
+    _appointmentController.dispose();
     super.dispose();
   }
 
@@ -332,7 +332,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                 const SizedBox(height: 14),
                 ///employee jd text field
                 TextField(
-                  controller: _jdCodeController,
+                  controller: _appointmentController,
                   decoration: InputDecoration(
                     floatingLabelStyle: const TextStyle(color: Colors.blue),
                     prefixIcon: Padding(
@@ -761,7 +761,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
         departmentId,
         positionId,
         _employeeNumberController.text.toString(),
-        _jdCodeController.text.toString()
+        _appointmentController.text.toString()
     );
   }
 
@@ -775,7 +775,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
         departmentId,
         positionId,
         _employeeNumberController.text.toString(),
-        _jdCodeController.text.toString());
+        _appointmentController.text.toString());
   }
 
   void clearTextField(){
@@ -783,7 +783,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
     _userNameController.clear();
     _emailController.clear();
     _employeeNumberController.clear();
-    _jdCodeController.clear();
+    _appointmentController.clear();
   }
 
   bool validateInput() {

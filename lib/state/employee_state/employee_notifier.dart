@@ -14,7 +14,6 @@ class EmployeeNotifier extends Notifier<EmployeeState>{
 
   void getEmployee(String token,String userId) async{
     state = EmployeeStateLoading();
-    await Future.delayed(Duration(seconds: 3));
     _model.getEmployeeById(token, userId).then((response){
       if(response != null){
         state = EmployeeStateSuccess(response);

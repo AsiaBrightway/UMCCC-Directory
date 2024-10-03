@@ -2,8 +2,8 @@
 // const String kBaseUrl = "https://www.jlarpyi.com";
 // const String kBaseImageUrl = "https://www.jlarpyi.com/uploadimage/";
 
-const String kBaseUrl = "http://192.168.1.7:86";
-const String kBaseImageUrl = "http://192.168.1.7:86/uploadimage/";
+const String kBaseUrl = "http://192.168.1.14:86";
+const String kBaseImageUrl = "http://192.168.1.14:86/uploadimage/";
 
 //end point
 const String kEndPointLogin = "/v1/api/Token";
@@ -24,6 +24,7 @@ const String kEndPointAddDepartment = "/v1/api/Departments";
 const String kEndPointGetEmployee = "/v1/api/Employees";
 const String kEndPointGetPersonalInfo = "/v1/api/PersonalInformations/filter";
 const String kEndPointAddPersonalInfo = "/v1/api/PersonalInformations";
+const String kEndPointGetNRC = "/v1/api/NRC/filter";
 
 const String kEndPointGetSchool = "/v1/api/Educationschools/filter";
 const String kEndPointUpdateSchool = "/v1/api/Educationschools";

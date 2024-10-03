@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:pahg_group/network/responses/township_response.dart';
 
 import 'package:retrofit/http.dart';
 import 'package:retrofit/retrofit.dart';
@@ -395,5 +396,11 @@ abstract class PahgApi{
       @Header(kParamAuthorization) String apiKey,
       @Path("id") int id,
       @Body() List<PathUserRequest> requestBody
+      );
+
+  @POST(kEndPointGetNRC)
+  Future<TownshipResponse?> getTownship(
+      @Header(kParamAuthorization) String apiKey,
+      @Body() List<GetRequest> requestBody
       );
 }

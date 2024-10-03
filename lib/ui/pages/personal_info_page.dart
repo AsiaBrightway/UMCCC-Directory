@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:pahg_group/data/vos/nrc_township_vo.dart';
 import 'package:provider/provider.dart';
 import '../../bloc/personal_info_bloc.dart';
 import '../../data/vos/personal_info_vo.dart';
@@ -132,10 +133,15 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     ImagePicker imagePicker = ImagePicker();
     XFile? file = await imagePicker.pickImage(source: source);
     if (file != null) {
-      File? compressFile = await compressAndGetFile(File(file.path), file.path,48);
-      if (compressFile != null) {
-        bloc.uploadImage(imageType, compressFile);
-      }
+      compressAndGetFile(File(file.path), file.path,48)
+          .then((onValue){
+            File? compressFile = onValue;
+            if(compressFile != null){
+              bloc.uploadImage(context,imageType, compressFile);
+            }
+          }).catchError((onError){
+            showScaffoldMessage(context, onError.toString());
+          });
     }
   }
 
@@ -269,63 +275,63 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                 const SizedBox(width: 10),
                                 Expanded(
                                   child: CustomTextField(
-                                    controller: TextEditingController(text: bloc.personalInfo.telNoHome),
-                                    labelText: 'Home Phone',
-                                    onChange: (value) => bloc.updatePersonalInfo(telNoHome: value),
-                                    readOnly: _currentUserRole,
-                                    keyboardType: TextInputType.number
+                                      controller: TextEditingController(text: bloc.personalInfo.telNoHome),
+                                      labelText: 'Home Phone',
+                                      onChange: (value) => bloc.updatePersonalInfo(telNoHome: value),
+                                      readOnly: _currentUserRole,
+                                      keyboardType: TextInputType.number
                                   ),
                                 ),
                               ],
                             ),
                             ///date of birth
-                             GestureDetector(
-                               onTap: (){
-                                 if(_currentUserRole == 1){
-                                   _selectDate(context,bloc);
-                                 }
-                               },
-                               child: Selector<PersonalInfoBloc,String?>(
-                                 selector: (context,bloc) => bloc.personalInfo.dateOfBirth,
-                                 builder: (context,dateOfBirth,_){
-                                   return Container(
-                                     width: MediaQuery.of(context).size.width * 0.7,
-                                     margin: const EdgeInsets.symmetric(vertical: 10),
-                                     decoration: BoxDecoration(
-                                         color: Theme.of(context).colorScheme.surfaceBright,
-                                         borderRadius: BorderRadius.circular(12)
-                                     ),
-                                     child: Row(
-                                       children: [
-                                         Container(
-                                           margin: const EdgeInsets.all(8), width: 40, height: 40,
-                                           decoration: BoxDecoration(
-                                               color: Theme.of(context).colorScheme.surfaceBright,
-                                               borderRadius: BorderRadius.circular(24)
-                                           ),
-                                           child: const Icon(Icons.date_range),
-                                         ),
-                                         Column(
-                                           crossAxisAlignment: CrossAxisAlignment.start,
-                                           children: [
-                                             const Text('Date Of Birth',style: TextStyle(fontFamily : 'Ubuntu',fontSize: 15,fontWeight: FontWeight.w300),),
-                                             Text(dateOfBirth ?? '')
-                                           ],
-                                         ),
-                                         const SizedBox(width: 20,),
-                                         Column(
-                                           crossAxisAlignment: CrossAxisAlignment.start,
-                                           children: [
-                                             const Text('Age',style: TextStyle(fontFamily: 'Ubuntu', fontSize: 15,fontWeight: FontWeight.w300),),
-                                             Text(bloc.personalInfo.age.toString())
-                                           ],
-                                         ),
-                                       ],
-                                     ),
-                                   );
-                                 },
-                               ),
-                             ),
+                            GestureDetector(
+                              onTap: (){
+                                if(_currentUserRole == 1){
+                                  _selectDate(context,bloc);
+                                }
+                              },
+                              child: Selector<PersonalInfoBloc,String?>(
+                                selector: (context,bloc) => bloc.personalInfo.dateOfBirth,
+                                builder: (context,dateOfBirth,_){
+                                  return Container(
+                                    width: MediaQuery.of(context).size.width * 0.7,
+                                    margin: const EdgeInsets.symmetric(vertical: 10),
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context).colorScheme.surfaceBright,
+                                        borderRadius: BorderRadius.circular(12)
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          margin: const EdgeInsets.all(8), width: 40, height: 40,
+                                          decoration: BoxDecoration(
+                                              color: Theme.of(context).colorScheme.surfaceBright,
+                                              borderRadius: BorderRadius.circular(24)
+                                          ),
+                                          child: const Icon(Icons.date_range),
+                                        ),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            const Text('Date Of Birth',style: TextStyle(fontFamily : 'Ubuntu',fontSize: 15,fontWeight: FontWeight.w300),),
+                                            Text(dateOfBirth ?? '')
+                                          ],
+                                        ),
+                                        const SizedBox(width: 20,),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            const Text('Age',style: TextStyle(fontFamily: 'Ubuntu', fontSize: 15,fontWeight: FontWeight.w300),),
+                                            Text(bloc.personalInfo.age.toString())
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
                             CustomTextField(
                                 controller: TextEditingController(text: bloc.personalInfo.placeOfBirth),
                                 onChange: (value) => bloc.updatePersonalInfo(placeOfBirth: value),
@@ -367,189 +373,189 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                 onChange: (value) => bloc.updatePersonalInfo(socialActivities: value),
                                 labelText: 'Social Activities',
                                 readOnly: _currentUserRole),
-                             const SizedBox(height: 10,),
-                             Container(
-                               height: 50,
-                               decoration: BoxDecoration(
-                                   borderRadius: BorderRadius.circular(12),
-                                   gradient: LinearGradient(stops: const [0.4,1.0], colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade600])
-                               ),
-                               ///gender radio button
-                               child: (bloc.editMode && _currentUserRole == 1)
-                                   ? Selector<PersonalInfoBloc,bool>(
-                                   selector: (context,bloc) => bloc.personalInfo.gender ?? true,
-                                   builder: (context,gender,_){
-                                     return ButtonBar(
-                                       alignment: MainAxisAlignment.start,
-                                       children: <Widget>[
-                                         const Text('Gender : ',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w400),),
-                                         const Text('Male'),
-                                         Radio(
-                                           value: true,
-                                           groupValue: gender,
-                                           activeColor: colorAccent,
-                                           onChanged: (bool? value){
-                                             bloc.updatePersonalInfo(gender: value);
-                                           },
-                                         ),
-                                         const Text('Female'),
-                                         Radio(
-                                           value: false,
-                                           groupValue: gender,
-                                           activeColor: colorAccent,
-                                           onChanged: (bool? value){
-                                             bloc.updatePersonalInfo(gender: value);
-                                           },
-                                         ),
-                                       ],
-                                     );
-                                     },
-                                    )
-                                   : Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                                        const Padding(
-                                          padding: EdgeInsets.only(left: 8.0,right: 4),
-                                          child: Text("Gender :",style: TextStyle(fontFamily: 'Ubuntu',fontSize: 14),),
-                                        ),
-                                        (bloc.personalInfo.gender ?? true)
-                                            ? const Text(" Male",style: TextStyle(fontSize: 16))
-                                            : const Text(" Female",style: TextStyle(fontSize: 16))
-                                      ],
-                               ),
-                             ),
-                             const SizedBox(height: 10),
-                             ///hand usage radio button
-                             Container(
-                               height: 50,
-                               decoration: BoxDecoration(
-                                 borderRadius: BorderRadius.circular(12),
-                                 gradient: LinearGradient(stops: const [0.4,1.0], colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade600]
-                                 ),
-                               ),
-                               child: (bloc.editMode && _currentUserRole == 1)
-                                   ? Selector<PersonalInfoBloc,int>(
-                                      selector: (context,handUsage) => bloc.personalInfo.handUsage ?? 1,
-                                      builder: (context,handUsage,_){
-                                        return ButtonBar(
-                                          alignment: MainAxisAlignment.start,
-                                          children: <Widget>[
-                                            const Text('Hand Usage : ',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w400),),
-                                            const Text('Left'),
-                                            Radio(
-                                              value: 1,
-                                              groupValue: handUsage,
-                                              activeColor: colorAccent,
-                                              onChanged: (int? value){
-                                                bloc.updatePersonalInfo(handUsage: value);
-                                              },
-                                            ),
-                                            const Text('Right'),
-                                            Radio(
-                                              value: 2,
-                                              groupValue: handUsage,
-                                              activeColor: colorAccent,
-                                              onChanged: (int? value){
-                                                bloc.updatePersonalInfo(handUsage: value);
-                                              },
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                  )
-                                   : Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          const Padding(
-                                            padding: EdgeInsets.only(left: 8.0,right: 4),
-                                            child: Text("Hand Usage :",style: TextStyle(fontFamily: 'Ubuntu',fontSize: 14),),
-                                          ),
-                                          (bloc.personalInfo.handUsage == 2)
-                                              ? const Text(" Right",style: TextStyle(fontSize: 16),)
-                                              : const Text(" Left",style: TextStyle(fontSize: 16))
-                                        ],
-                               ),
-                             ),
-                             const SizedBox(height: 10),
-                             ///blood type and marriage
-                             (bloc.editMode && _currentUserRole == 1)
-                                 ? Row(
-                                  children: [
-                                    Expanded(child: bloodTypeWidget(context)),
-                                    const SizedBox(width: 10),
-                                    Expanded(child: marriageStatus(context))
-                                  ],
-                                )
-                                 : Container(
-                                  height: 50,
-                                  padding: const EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12),
-                                      color: Theme.of(context).colorScheme.surfaceBright
-                                  ),
-
-                                  ///Blood type and marriage status
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      RichText(
-                                        text: TextSpan(
-                                            text: 'Blood Type : ',
-                                            style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-                                            children: [
-                                              TextSpan(
-                                                text: getBloodType(bloc.personalInfo.bloodType),
-                                                style: TextStyle(
-                                                    fontFamily: 'Ubuntu',
-                                                    color: Theme.of(context).colorScheme.onSurface,
-                                                    fontSize: 16
-                                                ),
-                                              )
-                                            ]),
+                            const SizedBox(height: 10,),
+                            Container(
+                              height: 50,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  gradient: LinearGradient(stops: const [0.4,1.0], colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade600])
+                              ),
+                              ///gender radio button
+                              child: (bloc.editMode && _currentUserRole == 1)
+                                  ? Selector<PersonalInfoBloc,bool>(
+                                selector: (context,bloc) => bloc.personalInfo.gender ?? true,
+                                builder: (context,gender,_){
+                                  return ButtonBar(
+                                    alignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      const Text('Gender : ',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w400),),
+                                      const Text('Male'),
+                                      Radio(
+                                        value: true,
+                                        groupValue: gender,
+                                        activeColor: colorAccent,
+                                        onChanged: (bool? value){
+                                          bloc.updatePersonalInfo(gender: value);
+                                        },
                                       ),
-                                      RichText(
-                                        text: TextSpan(
-                                            text: 'Marriage Status : ',
-                                            style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-                                            children: [
-                                              TextSpan(
-                                                text: getMarriageStatus(bloc.personalInfo.marriageStatus),
-                                                style: TextStyle(
-                                                    fontFamily: 'Ubuntu',
-                                                    fontSize: 16,
-                                                    color: Theme.of(context).colorScheme.onSurface),
-                                              )
-                                            ]),
+                                      const Text('Female'),
+                                      Radio(
+                                        value: false,
+                                        groupValue: gender,
+                                        activeColor: colorAccent,
+                                        onChanged: (bool? value){
+                                          bloc.updatePersonalInfo(gender: value);
+                                        },
                                       ),
                                     ],
+                                  );
+                                },
+                              )
+                                  : Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  const Padding(
+                                    padding: EdgeInsets.only(left: 8.0,right: 4),
+                                    child: Text("Gender :",style: TextStyle(fontFamily: 'Ubuntu',fontSize: 14),),
                                   ),
+                                  (bloc.personalInfo.gender ?? true)
+                                      ? const Text(" Male",style: TextStyle(fontSize: 16))
+                                      : const Text(" Female",style: TextStyle(fontSize: 16))
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            ///hand usage radio button
+                            Container(
+                              height: 50,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                gradient: LinearGradient(stops: const [0.4,1.0], colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade600]
                                 ),
-                             const SizedBox(height: 10),
-                             _buildNationalRegiCard(context),
-                             const SizedBox(height: 10),
-                             _buildAppearance(context),
-                             const SizedBox(height: 10),
-                             _buildEmergencyContact(context),
-                             const SizedBox(height: 10),
-                             _buildDrivingLicense(context),
-                             const SizedBox(height: 10),
-                             _buildPreviousApplied(context),
-                             const SizedBox(height: 10),
-                             Row(
-                               mainAxisAlignment: MainAxisAlignment.center,
-                               children: [
-                                 ElevatedButton(
-                                     style: ElevatedButton.styleFrom(
-                                         backgroundColor: Colors.blue,
-                                         foregroundColor: Colors.white
-                                     ),
-                                     onPressed: (){
-                                       Navigator.push(context, MaterialPageRoute(builder: (context) => FamilyPage(empId: widget.userId, userRole: _currentUserRole),));
-                                     },
-                                     child: const Text("Go To Family"))
-                               ],
-                             ),
-                             const SizedBox(height: 20)
+                              ),
+                              child: (bloc.editMode && _currentUserRole == 1)
+                                  ? Selector<PersonalInfoBloc,int>(
+                                selector: (context,handUsage) => bloc.personalInfo.handUsage ?? 1,
+                                builder: (context,handUsage,_){
+                                  return ButtonBar(
+                                    alignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      const Text('Hand Usage : ',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w400),),
+                                      const Text('Left'),
+                                      Radio(
+                                        value: 1,
+                                        groupValue: handUsage,
+                                        activeColor: colorAccent,
+                                        onChanged: (int? value){
+                                          bloc.updatePersonalInfo(handUsage: value);
+                                        },
+                                      ),
+                                      const Text('Right'),
+                                      Radio(
+                                        value: 2,
+                                        groupValue: handUsage,
+                                        activeColor: colorAccent,
+                                        onChanged: (int? value){
+                                          bloc.updatePersonalInfo(handUsage: value);
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              )
+                                  : Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  const Padding(
+                                    padding: EdgeInsets.only(left: 8.0,right: 4),
+                                    child: Text("Hand Usage :",style: TextStyle(fontFamily: 'Ubuntu',fontSize: 14),),
+                                  ),
+                                  (bloc.personalInfo.handUsage == 2)
+                                      ? const Text(" Right",style: TextStyle(fontSize: 16),)
+                                      : const Text(" Left",style: TextStyle(fontSize: 16))
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            ///blood type and marriage
+                            (bloc.editMode && _currentUserRole == 1)
+                                ? Row(
+                              children: [
+                                Expanded(child: bloodTypeWidget(context)),
+                                const SizedBox(width: 10),
+                                Expanded(child: marriageStatus(context))
+                              ],
+                            )
+                                : Container(
+                              height: 50,
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  color: Theme.of(context).colorScheme.surfaceBright
+                              ),
+
+                              ///Blood type and marriage status
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  RichText(
+                                    text: TextSpan(
+                                        text: 'Blood Type : ',
+                                        style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                                        children: [
+                                          TextSpan(
+                                            text: getBloodType(bloc.personalInfo.bloodType),
+                                            style: TextStyle(
+                                                fontFamily: 'Ubuntu',
+                                                color: Theme.of(context).colorScheme.onSurface,
+                                                fontSize: 16
+                                            ),
+                                          )
+                                        ]),
+                                  ),
+                                  RichText(
+                                    text: TextSpan(
+                                        text: 'Marriage Status : ',
+                                        style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                                        children: [
+                                          TextSpan(
+                                            text: getMarriageStatus(bloc.personalInfo.marriageStatus),
+                                            style: TextStyle(
+                                                fontFamily: 'Ubuntu',
+                                                fontSize: 16,
+                                                color: Theme.of(context).colorScheme.onSurface),
+                                          )
+                                        ]),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            _buildNationalRegiCard(context),
+                            const SizedBox(height: 10),
+                            _buildAppearance(context),
+                            const SizedBox(height: 10),
+                            _buildEmergencyContact(context),
+                            const SizedBox(height: 10),
+                            _buildDrivingLicense(context),
+                            const SizedBox(height: 10),
+                            _buildPreviousApplied(context),
+                            const SizedBox(height: 10),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.blue,
+                                        foregroundColor: Colors.white
+                                    ),
+                                    onPressed: (){
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => FamilyPage(empId: widget.userId, userRole: _currentUserRole),));
+                                    },
+                                    child: const Text("Go To Family"))
+                              ],
+                            ),
+                            const SizedBox(height: 20)
                           ],
                         ),
                       ),
@@ -708,6 +714,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                 ),
                 if(isNrcExpanded)
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ///NRC Dropdown
                       const SizedBox(height: 18),
@@ -734,8 +741,9 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                 child: TextField(
                                   maxLines: 1,
                                   //todo
-                                  controller: TextEditingController(text: bloc.personalInfo.nrcNumber),
+                                  controller: TextEditingController(text: bloc.nrcNo),
                                   keyboardType: TextInputType.number,
+                                  onChanged : (value) => bloc.setNrcNo(value),
                                   readOnly: _currentUserRole != 1,
                                   decoration: const InputDecoration(
                                     labelStyle: TextStyle(fontWeight: FontWeight.w300),
@@ -746,6 +754,21 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                             )
                           )
                         ],
+                      ),
+                      const SizedBox(height: 8),
+                      Selector<PersonalInfoBloc,String>(
+                        selector: (context,bloc) => bloc.nrcNumber ?? 'null nrc',
+                        builder: (context,nrcNumber,_){
+                          return Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 8),
+                              decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.onPrimary,
+                                  border: Border.all(color: Colors.grey.shade600),
+                                  borderRadius: BorderRadius.circular(8)
+                              ),
+                              child: Text(nrcNumber)
+                          );
+                        },
                       ),
                       const SizedBox(height: 8),
                       Row(
@@ -781,7 +804,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                     if(_currentUserRole == 1)
                                       GestureDetector(
                                           onTap: (){
-                                            _showPickerDialog(context,3,bloc);
+                                              _showPickerDialog(context,3,bloc);
                                           },
                                           child: Image.asset("lib/icons/add_camera.png", width: 30, height: 30, color: Colors.grey,))
                                   ],
@@ -824,7 +847,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                         if(_currentUserRole == 1)
                                           GestureDetector(
                                               onTap: (){
-                                                _showPickerDialog(context, 2, bloc);
+                                                _showPickerDialog(context, 4, bloc);
                                               },
                                               child: Image.asset("lib/icons/add_camera.png", width: 30, height: 30, color: Colors.grey,)
                                           )
@@ -1248,35 +1271,40 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
 
   Widget townshipDropdown(BuildContext context){
     var bloc = context.read<PersonalInfoBloc>();
-    return Selector<PersonalInfoBloc,int?>(
-      selector: (context,bloc) => bloc.selectedTownship,
-      builder: (context,selectedTownship,_){
-        return SizedBox(
-            child: Expanded(
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton2(
-                  isExpanded: true,
-                  value: selectedTownship,
-                  hint: const Text('Tsp', style: TextStyle(fontSize: 8)),
-                  items: stateList.entries.map((entry) {
-                    return DropdownMenuItem<int>(
-                      value: entry.key,
-                      child: Text(entry.value, style: const TextStyle(fontSize: 8,fontWeight: FontWeight.w600)),
-                    );
-                  }).toList(),
-                  onChanged: (int? newValue) {
-                    bloc.selectedTownship = newValue;
-                  },
-                  buttonStyleData: ButtonStyleData(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                      borderRadius: BorderRadius.circular(8),
+    return Selector<PersonalInfoBloc,List<NrcTownshipVo>?>(
+      selector: (context,bloc) => bloc.townshipList,
+      builder: (context,townshipList,_){
+        return  Selector<PersonalInfoBloc,String?>(
+          selector: (context,bloc) => bloc.selectedTownship,
+          builder: (context,selectedTownship,_){
+            return SizedBox(
+                child: Expanded(
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton2(
+                      isExpanded: true,
+                      value: selectedTownship,
+                      hint: const Text('Tsp', style: TextStyle(fontSize: 8)),
+                      items: bloc.townshipList?.map((NrcTownshipVo value) {
+                        return DropdownMenuItem<String>(
+                          value: value.name,
+                          child: Text(value.name ?? '', style: const TextStyle(fontSize: 8,fontWeight: FontWeight.w600)),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        bloc.selectedTownship = newValue;
+                      },
+                      buttonStyleData: ButtonStyleData(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        height: 40,
+                      ),
                     ),
-                    height: 40,
                   ),
-                ),
-              ),
-            )
+                )
+            );
+          },
         );
       },
     );
@@ -1284,7 +1312,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
 
   Widget nationalTypeListDropdown(BuildContext context){
     var bloc = context.read<PersonalInfoBloc>();
-    return Selector<PersonalInfoBloc,int?>(
+    return Selector<PersonalInfoBloc,String?>(
       selector: (context,bloc) => bloc.selectedNationalType,
       builder: (context,selectedNational,_){
         return SizedBox(
@@ -1295,12 +1323,12 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                   value: selectedNational,
                   hint: const Text('Ctz', style: TextStyle(fontSize: 8)),
                   items: nationTypeList.entries.map((entry) {
-                    return DropdownMenuItem<int>(
-                      value: entry.key,
+                    return DropdownMenuItem<String>(
+                      value: entry.value,
                       child: Text(entry.value, style: const TextStyle(fontSize: 8,fontWeight: FontWeight.w600)),
                     );
                   }).toList(),
-                  onChanged: (int? newValue) {
+                  onChanged: (String? newValue) {
                     bloc.selectedNationalType = newValue;
                   },
                   buttonStyleData: ButtonStyleData(

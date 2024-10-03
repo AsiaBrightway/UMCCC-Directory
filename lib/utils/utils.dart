@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 class Utils {
 
@@ -12,6 +13,19 @@ class Utils {
       age--;
     }
     return age;
+  }
+
+  static String getFormattedDate(String? dateTimeString) {
+    // Parse the ISO 8601 date-time string into a DateTime object
+    if(dateTimeString == null) {
+      return "null";
+    }
+    DateTime dateTime = DateTime.parse(dateTimeString);
+
+    // Format the DateTime object to 'yyyy-MM-dd'
+    String formattedDate = DateFormat('yyyy-MM-dd').format(dateTime);
+
+    return formattedDate;
   }
 
   static void showPickerDialog(BuildContext context, Function(ImageSource) onImageSelected) {

@@ -1,6 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:pahg_group/utils/utils.dart';
 
 
 import '../../data/vos/graduate_vo.dart';
@@ -90,7 +91,7 @@ class _GraduateCardState extends State<GraduateCard> {
                           children: [
                             const Text("Year : ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
 
-                            Text("${widget.graduate.receivedYear}",style: const TextStyle(fontSize: 13)),
+                            Text(Utils.getFormattedDate(widget.graduate.receivedYear),style: const TextStyle(fontSize: 13)),
                           ],
                         ),
                       ),
@@ -118,16 +119,17 @@ class _GraduateCardState extends State<GraduateCard> {
                                 ImageDetailsPage(
                                 imageUrl: widget.graduate.getImageWithBaseUrl()),
                           ),
-                          GestureDetector(
-                              onTap: () {
-                                widget.onUpdateImage(widget.graduate.id!);
-                              },
-                              child: Image.asset(
-                                "lib/icons/add_camera.png",
-                                width: 30,
-                                height: 30,
-                                color: Colors.grey,
-                              )),
+                          if(widget.userRole == 1)
+                            GestureDetector(
+                                onTap: () {
+                                  widget.onUpdateImage(widget.graduate.id!);
+                                },
+                                child: Image.asset(
+                                  "lib/icons/add_camera.png",
+                                  width: 30,
+                                  height: 30,
+                                  color: Colors.grey,
+                                )),
                         ],
                       ),
                       (widget.userRole == 1)

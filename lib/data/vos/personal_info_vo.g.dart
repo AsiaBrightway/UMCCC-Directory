@@ -50,8 +50,8 @@ PersonalInfoVo _$PersonalInfoVoFromJson(Map<String, dynamic> json) =>
       previousApplied: json['PreviousApplied'] as bool?,
       previousAppliedDescription: json['PreviousAppliedDescription'] as String?,
       hRDepartmentRecord: json['HRDepartmentRecord'] as String?,
-      nrcNumber: json['nrcNumber'] as String?,
-      email: json['email'] as String?,
+      nrcNumber: json['NRCNumber'] as String?,
+      email: json['Email'] as String?,
     );
 
 Map<String, dynamic> _$PersonalInfoVoToJson(PersonalInfoVo instance) =>
@@ -95,6 +95,6 @@ Map<String, dynamic> _$PersonalInfoVoToJson(PersonalInfoVo instance) =>
       'PreviousApplied': instance.previousApplied,
       'PreviousAppliedDescription': instance.previousAppliedDescription,
       'HRDepartmentRecord': instance.hRDepartmentRecord,
-      'nrcNumber': instance.nrcNumber,
-      'email': instance.email,
+      'NRCNumber': instance.nrcNumber,
+      'Email': instance.email,
     };
