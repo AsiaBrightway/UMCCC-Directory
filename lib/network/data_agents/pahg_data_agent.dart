@@ -23,6 +23,7 @@ import 'package:pahg_group/network/responses/employee_response.dart';
 import 'package:pahg_group/network/responses/login_response.dart';
 import 'package:pahg_group/network/responses/post_method_response.dart';
 
+import '../responses/category_response.dart';
 import '../responses/company_images_response.dart';
 import '../responses/department_list_response.dart';
 import '../responses/employee_list_response.dart';
@@ -151,4 +152,6 @@ abstract class PahgDataAgent{
   Future<PostMethodResponse?> patchSchool(String apiKey,int id,List<PathUserRequest> request);
 
   Future<TownshipResponse?> getTownship(String apiKey,List<GetRequest> request);
+
+  Future<CategoryResponse?> getCategories(String apiKey,List<GetRequest> request);
 }

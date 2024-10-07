@@ -24,6 +24,7 @@ import 'package:pahg_group/data/vos/request_body/update_employee_request.dart';
 import 'package:pahg_group/exception/custom_exception.dart';
 import 'package:pahg_group/network/data_agents/pahg_data_agent.dart';
 import 'package:pahg_group/network/pahg_api.dart';
+import 'package:pahg_group/network/responses/category_response.dart';
 import 'package:pahg_group/network/responses/company_by_id_response.dart';
 import 'package:pahg_group/network/responses/company_images_response.dart';
 import 'package:pahg_group/network/responses/department_list_response.dart';
@@ -498,6 +499,13 @@ class PahgDataAgentImpl extends PahgDataAgent{
   @override
   Future<TownshipResponse?> getTownship(String apiKey, List<GetRequest> request) {
     return mApi.getTownship(apiKey, request).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<CategoryResponse?> getCategories(String apiKey, List<GetRequest> request) {
+    return mApi.getCategories(apiKey, request).catchError((onError){
       throw _createException(onError);
     });
   }

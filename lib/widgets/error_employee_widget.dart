@@ -7,6 +7,7 @@ class ErrorEmployeeWidget extends StatelessWidget {
   final String errorEmployee;
   final Function() tryAgain;
 
+  
   @override
   Widget build(BuildContext context) {
     return Column(

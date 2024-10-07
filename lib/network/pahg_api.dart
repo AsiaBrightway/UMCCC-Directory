@@ -23,6 +23,7 @@ import '../data/vos/request_body/path_user_request.dart';
 import '../data/vos/request_body/personal_info_request.dart';
 import '../data/vos/request_body/update_employee_request.dart';
 import 'api_constants.dart';
+import 'responses/category_response.dart';
 import 'responses/company_by_id_response.dart';
 import 'responses/company_images_response.dart';
 import 'responses/company_list_response.dart';
@@ -400,6 +401,12 @@ abstract class PahgApi{
 
   @POST(kEndPointGetNRC)
   Future<TownshipResponse?> getTownship(
+      @Header(kParamAuthorization) String apiKey,
+      @Body() List<GetRequest> requestBody
+      );
+
+  @POST(kEndPointGetCategory)
+  Future<CategoryResponse?> getCategories(
       @Header(kParamAuthorization) String apiKey,
       @Body() List<GetRequest> requestBody
       );

@@ -114,7 +114,18 @@ class MyDrawer extends StatelessWidget {
                 },
               ),
             ),
+
             const Padding(padding:  EdgeInsets.symmetric(horizontal: 8.0), child: Divider(),),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: ListTile(
+                leading:  Image.asset('lib/icons/categories.png',width: 25),
+                title: const Text('Add Category',style: TextStyle(fontWeight: FontWeight.w400),),
+                onTap: (){
+                  ///
+                },
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: ListTile(

@@ -1,104 +1,132 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pahg_group/state/company_list/company_list_notifier.dart';
-import 'package:pahg_group/state/company_list/company_list_state.dart';
-import 'package:pahg_group/ui/shimmer/home_shimmer.dart';
-import 'package:pahg_group/widgets/error_employee_widget.dart';
+import 'package:flutter/rendering.dart';
+
 import 'package:provider/provider.dart';
 
+import '../../bloc/home_bloc.dart';
+import '../../data/vos/category_vo.dart';
 import '../../data/vos/companies_vo.dart';
+import '../../widgets/error_employee_widget.dart';
 import '../components/my_drawer.dart';
 import '../components/user_drawer.dart';
 import '../providers/auth_provider.dart';
+import '../shimmer/home_shimmer.dart';
 import 'company_details_page.dart';
 import 'search_page.dart';
 
-class HomePage extends ConsumerStatefulWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  ConsumerState<HomePage> createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends ConsumerState<HomePage> {
+class _HomePageState extends State<HomePage> {
   String _token = '';
   String _userId = '';
   int _role = 0;
-  CompanyListNotifier? companyListNotifier;
-  final companyNotifierProvider = NotifierProvider<CompanyListNotifier,CompanyListState>((){
-    return CompanyListNotifier();
-  });
 
   @override
   void initState() {
     super.initState();
-    Future.microtask(() => _initializeData());
+    _initializeData();
   }
 
   Future<void> _initializeData() async {
-    final authModel = context.read<AuthProvider>();
-    setState(() {
+    final authModel = Provider.of<AuthProvider>(context,listen: false);
       _token = authModel.token;
       _userId = authModel.userId;
       _role = authModel.role;
-    });
-    companyListNotifier?.getCompanyList(_role, _token, _userId);
   }
 
   @override
   Widget build(BuildContext context) {
-    companyListNotifier = ref.read(companyNotifierProvider.notifier);
-    final companyListState = ref.watch(companyNotifierProvider);
-
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      appBar: AppBar(
-        backgroundColor: Colors.blue[800],
-        iconTheme: const IconThemeData(
-          color: Colors.white, // Set the drawer icon color
+    return ChangeNotifierProvider(
+      create : (context) => HomeBloc(_token,_role,_userId),
+      child: Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        appBar: AppBar(
+          backgroundColor: Colors.blue[800],
+          iconTheme: const IconThemeData(
+            color: Colors.white, // Set the drawer icon color
+          ),
+          title: const Text('P A H G', style: TextStyle(color: Colors.white),),
+          centerTitle: true,
+          actions: [
+            (_role == 1 || _role == 2)
+              ? IconButton(
+                onPressed: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => SearchPage(token: _token,searchType: 1)));
+                },
+                icon: const Icon(Icons.search,color: Colors.white)
+            )
+              : const SizedBox(width: 1),
+          ],
         ),
-        title: const Text('P A H G', style: TextStyle(color: Colors.white),),
-        centerTitle: true,
-        actions: [
-          (_role == 1 || _role == 2)
-            ? IconButton(
-              onPressed: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => SearchPage(token: _token,searchType: 1)));
+        drawer:  _role == 1
+            ? MyDrawer(userId: _userId,)
+            : UserDrawer(userId: _userId),
+        body: CustomScrollView(
+          slivers: [
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 8),
+            ),
+            ///category list
+            SliverToBoxAdapter(
+              child: SizedBox(
+                height: 60,
+                child: Selector<HomeBloc,List<CategoryVo>>(
+                  selector: (context,bloc) => bloc.categoryList,
+                  builder: (context,countryList,_){
+                    return ListView.builder(
+                      physics: BouncingScrollPhysics(),
+                      scrollDirection: Axis.horizontal,
+                      shrinkWrap: true,
+                      itemCount: countryList.length,
+                      itemBuilder: (context,index){
+                          return CategoryCardWidget(category: countryList[index]);
+                        },
+                    );
+                  },
+                ),
+              ),
+            ),
+
+            ///company list for user 1,2,3
+            Selector<HomeBloc,HomeState>(
+              selector: (context,bloc) => bloc.homeState,
+              builder: (context,homeState,_){
+                var bloc = context.read<HomeBloc>();
+                if(homeState == HomeState.error){
+                  return SliverToBoxAdapter(
+                      child: ErrorEmployeeWidget(errorEmployee: bloc.companyError, tryAgain: () => bloc.getCompanyList(_userId))
+                  );
+                }
+                else if(homeState == HomeState.success){
+                  return SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                        (context,index){
+                          return companyCardWidget(companies: bloc.companyList[index], index: index);
+                        },
+                      childCount: bloc.companyList.length
+                    ),
+                  );
+                }
+                ///this state was used for employee
+                else if(homeState == HomeState.initial){
+                  return SliverToBoxAdapter(child: Center(child: Image.asset('lib/icons/team_vector.png')));
+                }
+                else {
+                  return const SliverToBoxAdapter(
+                      child: HomeShimmer()
+                  );
+                }
               },
-              icon: const Icon(Icons.search,color: Colors.white)
-          )
-            : const SizedBox(width: 1),
-        ],
+            ),
+          ],
+        )
       ),
-      drawer:  _role == 1
-          ? MyDrawer(userId: _userId,)
-          : UserDrawer(userId: _userId),
-      body: switch(companyListState){
-
-        CompanyListLoading() => const HomeShimmer(),
-
-        CompanyListFailed(error : String error) => Center(
-          child: ErrorEmployeeWidget(
-            errorEmployee: error,
-            tryAgain: () => companyListNotifier?.getCompanyList(_role, _token, _userId),
-          ),
-        ),
-
-        CompanyListSuccess(companies : List<CompaniesVo> companies) => RefreshIndicator(
-          onRefresh: () async {
-            companyListNotifier?.getCompanyList(_role, _token, _userId);
-          },
-          child: ListView.builder(
-            itemCount: companies.length,
-            itemBuilder: (context, index) {
-              return companyCardWidget(companies: companies[index], index: index)                   ;// return GestureDetector(
-            },
-          ),
-        ),
-
-        WidgetForEmployee() => Center(child: Image.asset('lib/icons/team_vector.png')),
-      }
     );
   }
 
@@ -182,4 +210,44 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 }
+
+class CategoryCardWidget extends StatelessWidget {
+  final CategoryVo category;
+  const CategoryCardWidget({super.key, required this.category});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: (){
+
+      },
+      child: Card(
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 1,horizontal: 18),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8.0),
+              color: Theme.of(context).colorScheme.onPrimary,
+              boxShadow: [
+                BoxShadow(color: Colors.grey.withOpacity(0.3),
+                    spreadRadius: 2, // Extends the shadow beyond the box
+                    blurRadius: 2, // Blurs the edges of the shadow
+                    offset: const Offset(0, 3)
+                ),
+            ]
+          ),
+          child: Center(
+            child: Text(
+              category.category ?? '',
+              style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 

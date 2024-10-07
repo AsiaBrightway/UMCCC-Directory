@@ -9,7 +9,7 @@ class HomeShimmer extends StatelessWidget {
     return Skeletonizer(
       enabled: true,
       child: ListView.builder(
-        itemCount: 5,
+        itemCount: 3,
         itemBuilder: (context, index) {
           return Padding(
             padding: const EdgeInsets.all(8.0),

@@ -2,6 +2,7 @@
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:pahg_group/data/vos/category_vo.dart';
 import 'package:pahg_group/data/vos/companies_vo.dart';
 import 'package:pahg_group/data/vos/company_images_vo.dart';
 import 'package:pahg_group/data/vos/department_vo.dart';
@@ -336,5 +337,10 @@ class PahgModel {
   Future<List<NrcTownshipVo>> getTownship(String apiKey,GetRequest request){
     List<GetRequest> requestList = [request];
     return mDataAgent.getTownship(apiKey, requestList).asStream().map((response) => response?.document?.records ?? []).first;
+  }
+
+  Future<List<CategoryVo>> getCategories(String apiKey,GetRequest request){
+    List<GetRequest> requestList = [request];
+    return mDataAgent.getCategories(apiKey, requestList).asStream().map((response) => response?.document?.records ?? []).first;
   }
 }
