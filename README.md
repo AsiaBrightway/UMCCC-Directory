@@ -1,4 +1,4 @@
-# pahg_group
+# PAHG HR Hybrid App
 
 A new Flutter project.
 
