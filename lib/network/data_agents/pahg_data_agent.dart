@@ -2,6 +2,7 @@
 import 'dart:io';
 
 import 'package:pahg_group/data/vos/companies_vo.dart';
+import 'package:pahg_group/data/vos/request_body/add_category_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_company_image_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_company_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_department_request.dart';
@@ -33,6 +34,7 @@ import '../responses/image_upload_response.dart';
 import '../responses/language_response.dart';
 import '../responses/personal_info_response.dart';
 import '../responses/position_response.dart';
+import '../responses/post_response.dart';
 import '../responses/school_response.dart';
 import '../responses/township_response.dart';
 import '../responses/training_response.dart';
@@ -154,4 +156,10 @@ abstract class PahgDataAgent{
   Future<TownshipResponse?> getTownship(String apiKey,List<GetRequest> request);
 
   Future<CategoryResponse?> getCategories(String apiKey,List<GetRequest> request);
+
+  Future<PostMethodResponse?> addCategory(String apiKey,AddCategoryVo requestBody);
+
+  Future<PostMethodResponse?> updateCategory(String apiKey,int id,AddCategoryVo requestBody);
+
+  Future<PostResponse?> getPosts(String apiKey,List<GetRequest> request,int pageNumber,int limit);
 }

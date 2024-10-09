@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:pahg_group/data/vos/companies_vo.dart';
 import 'package:pahg_group/data/vos/error_vo.dart';
+import 'package:pahg_group/data/vos/request_body/add_category_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_company_image_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_company_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_department_request.dart';
@@ -38,6 +39,7 @@ import 'package:pahg_group/network/responses/login_response.dart';
 import 'package:pahg_group/network/responses/personal_info_response.dart';
 import 'package:pahg_group/network/responses/position_response.dart';
 import 'package:pahg_group/network/responses/post_method_response.dart';
+import 'package:pahg_group/network/responses/post_response.dart';
 import 'package:pahg_group/network/responses/school_response.dart';
 import 'package:pahg_group/network/responses/township_response.dart';
 import 'package:pahg_group/network/responses/training_response.dart';
@@ -509,4 +511,26 @@ class PahgDataAgentImpl extends PahgDataAgent{
       throw _createException(onError);
     });
   }
+
+  @override
+  Future<PostMethodResponse?> addCategory(String apiKey, AddCategoryVo requestBody) {
+    return mApi.addCategory(apiKey, requestBody).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> updateCategory(String apiKey, int id, AddCategoryVo requestBody) {
+    return mApi.updateCategory(apiKey, id, requestBody).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<PostResponse?> getPosts(String apiKey, List<GetRequest> request,int pageNumber,int limit) {
+    return mApi.getPosts(apiKey,pageNumber,limit,"id",request).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
 }

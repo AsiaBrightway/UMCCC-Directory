@@ -1,9 +1,6 @@
 
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
-import 'package:pahg_group/data/vos/category_vo.dart';
-import 'package:pahg_group/data/vos/companies_vo.dart';
 import 'package:pahg_group/data/vos/company_images_vo.dart';
 import 'package:pahg_group/data/vos/department_vo.dart';
 import 'package:pahg_group/data/vos/education_school_vo.dart';
@@ -14,6 +11,8 @@ import 'package:pahg_group/data/vos/language_vo.dart';
 import 'package:pahg_group/data/vos/nrc_township_vo.dart';
 import 'package:pahg_group/data/vos/personal_info_vo.dart';
 import 'package:pahg_group/data/vos/position_vo.dart';
+import 'package:pahg_group/data/vos/post_vo.dart';
+import 'package:pahg_group/data/vos/request_body/add_category_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_company_image_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_company_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_department_request.dart';
@@ -28,17 +27,18 @@ import 'package:pahg_group/data/vos/request_body/add_work_request.dart';
 import 'package:pahg_group/data/vos/request_body/get_request.dart';
 import 'package:pahg_group/data/vos/request_body/login_request.dart';
 import 'package:pahg_group/data/vos/request_body/path_user_request.dart';
-import 'package:pahg_group/data/vos/request_body/personal_info_request.dart';
-import 'package:pahg_group/data/vos/request_body/update_employee_request.dart';
-import 'package:pahg_group/data/vos/token_vo.dart';
-import 'package:pahg_group/data/vos/training_vo.dart';
-import 'package:pahg_group/data/vos/user_vo.dart';
-import 'package:pahg_group/data/vos/work_vo.dart';
-import 'package:pahg_group/network/data_agents/pahg_data_agent.dart';
-import 'package:pahg_group/network/data_agents/pahg_data_agent_impl.dart';
-import 'package:pahg_group/network/responses/post_method_response.dart';
-
+import '../../network/data_agents/pahg_data_agent.dart';
+import '../../network/data_agents/pahg_data_agent_impl.dart';
+import '../../network/responses/post_method_response.dart';
+import '../vos/category_vo.dart';
+import '../vos/companies_vo.dart';
 import '../vos/image_vo.dart';
+import '../vos/request_body/personal_info_request.dart';
+import '../vos/request_body/update_employee_request.dart';
+import '../vos/token_vo.dart';
+import '../vos/training_vo.dart';
+import '../vos/user_vo.dart';
+import '../vos/work_vo.dart';
 
 class PahgModel {
   static final PahgModel _singleton = PahgModel._internal();
@@ -342,5 +342,18 @@ class PahgModel {
   Future<List<CategoryVo>> getCategories(String apiKey,GetRequest request){
     List<GetRequest> requestList = [request];
     return mDataAgent.getCategories(apiKey, requestList).asStream().map((response) => response?.document?.records ?? []).first;
+  }
+
+  Future<PostMethodResponse?> addCategory(String apiKey,AddCategoryVo requestBody){
+    return mDataAgent.addCategory(apiKey, requestBody);
+  }
+
+  Future<PostMethodResponse?> updateCategory(String apiKey,int id,AddCategoryVo requestBody){
+    return mDataAgent.updateCategory(apiKey, id, requestBody);
+  }
+
+  Future<List<PostVo>> getPosts(String apiKey,GetRequest request,int pageNumber,int limit){
+    List<GetRequest> requestList = [request];
+    return mDataAgent.getPosts(apiKey, requestList,pageNumber,limit).asStream().map((response) => response?.document?.records ?? []).first;
   }
 }

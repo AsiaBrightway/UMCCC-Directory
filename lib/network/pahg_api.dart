@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:pahg_group/data/vos/request_body/add_category_vo.dart';
 import 'package:pahg_group/network/responses/township_response.dart';
 
 import 'package:retrofit/http.dart';
@@ -38,6 +39,7 @@ import 'responses/login_response.dart';
 import 'responses/personal_info_response.dart';
 import 'responses/position_response.dart';
 import 'responses/post_method_response.dart';
+import 'responses/post_response.dart';
 import 'responses/school_response.dart';
 import 'responses/training_response.dart';
 import 'responses/user_response.dart';
@@ -408,6 +410,28 @@ abstract class PahgApi{
   @POST(kEndPointGetCategory)
   Future<CategoryResponse?> getCategories(
       @Header(kParamAuthorization) String apiKey,
+      @Body() List<GetRequest> requestBody
+      );
+
+  @POST(kEndPointUpdateCategory)
+  Future<PostMethodResponse?> addCategory(
+      @Header(kParamAuthorization) String apiKey,
+      @Body() AddCategoryVo requestBody
+      );
+
+  @PUT("$kEndPointUpdateCategory/{id}")
+  Future<PostMethodResponse?> updateCategory(
+      @Header(kParamAuthorization) String apiKey,
+      @Path("id") int id,
+      @Body() AddCategoryVo requestBody
+      );
+
+  @POST(kEndPointGetPost)
+  Future<PostResponse?> getPosts(
+      @Header(kParamAuthorization) String apiKey,
+      @Query("page") int pageNumber,
+      @Query("itemsPerPage") int limit,
+      @Query("orderBy") String id,
       @Body() List<GetRequest> requestBody
       );
 }

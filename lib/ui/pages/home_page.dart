@@ -1,9 +1,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-
+import 'package:pahg_group/ui/pages/news_feed_page.dart';
 import 'package:provider/provider.dart';
-
 import '../../bloc/home_bloc.dart';
 import '../../data/vos/category_vo.dart';
 import '../../data/vos/companies_vo.dart';
@@ -80,7 +79,7 @@ class _HomePageState extends State<HomePage> {
                   selector: (context,bloc) => bloc.categoryList,
                   builder: (context,countryList,_){
                     return ListView.builder(
-                      physics: BouncingScrollPhysics(),
+                      physics: const BouncingScrollPhysics(),
                       scrollDirection: Axis.horizontal,
                       shrinkWrap: true,
                       itemCount: countryList.length,
@@ -219,11 +218,11 @@ class CategoryCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: (){
-
+        Navigator.push(context, MaterialPageRoute(builder: (context) => NewsFeedPage(categoryId: category.id!,categoryName: category.category ?? ' ',),));
       },
       child: Card(
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: 1,horizontal: 18),
+          padding: const EdgeInsets.symmetric(vertical: 1,horizontal: 18),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8.0),
               color: Theme.of(context).colorScheme.onPrimary,

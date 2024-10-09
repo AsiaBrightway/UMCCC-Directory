@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pahg_group/ui/pages/add_category_page.dart';
 
 
 import '../../dialog/change_password_dialog.dart';
@@ -114,7 +115,6 @@ class MyDrawer extends StatelessWidget {
                 },
               ),
             ),
-
             const Padding(padding:  EdgeInsets.symmetric(horizontal: 8.0), child: Divider(),),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -122,7 +122,17 @@ class MyDrawer extends StatelessWidget {
                 leading:  Image.asset('lib/icons/categories.png',width: 25),
                 title: const Text('Add Category',style: TextStyle(fontWeight: FontWeight.w400),),
                 onTap: (){
-                  ///
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const AddCategoryPage(isAdd: true,),));
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: ListTile(
+                leading:  Image.asset('lib/icons/categories.png',width: 25,color: Colors.orange,),
+                title: const Text('Edit Category',style: TextStyle(fontWeight: FontWeight.w400)),
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const AddCategoryPage(isAdd: false,),));
                 },
               ),
             ),
