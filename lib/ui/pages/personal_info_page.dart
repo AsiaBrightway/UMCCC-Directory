@@ -10,7 +10,7 @@ import 'package:pahg_group/data/vos/nrc_township_vo.dart';
 import 'package:provider/provider.dart';
 import '../../bloc/personal_info_bloc.dart';
 import '../../data/vos/personal_info_vo.dart';
-import '../../exception/helper_functions.dart';
+import '../../utils/helper_functions.dart';
 import '../../utils/image_compress.dart';
 import '../../utils/size_config.dart';
 import '../components/custom_drop_down_button.dart';
@@ -172,7 +172,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                   var bloc = context.read<PersonalInfoBloc>();
                     if(isDataEmpty == true){
                       return IconButton(onPressed: (){
-                        bloc.addPersonalInformation(_token,widget.userId);
+                        bloc.addPersonalInformation(_token,widget.userId,context);
                       }, icon: const Icon(Icons.save,color: Colors.green,));
                     }
                     else{
@@ -180,7 +180,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                         children: [
                           IconButton(
                             onPressed: () {
-                              bloc.updatePersonalInformation(_token);
+                              bloc.updatePersonalInformation(_token,context);
                             },
                             icon: const Icon(Icons.cloud_upload, color: colorAccent),
                           ),
@@ -567,27 +567,6 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                   }
                 },
             ),
-            ///update state changes
-            Selector<PersonalInfoBloc,PersonalInfoState>(
-                selector: (context,bloc) => bloc.updateState,
-              builder: (context,updateState,_){
-                var bloc = context.read<PersonalInfoBloc>();
-                if(updateState == PersonalInfoState.loading){
-                  const CircularProgressIndicator();
-                }
-                else if(updateState == PersonalInfoState.success){
-                  WidgetsBinding.instance.addPostFrameCallback((_){
-                    showSuccessScaffold(context, bloc.updateSuccess.toString());
-                  });
-                }
-                else if(updateState == PersonalInfoState.error){
-                  WidgetsBinding.instance.addPostFrameCallback((_){
-                    showErrorDialog(context, bloc.errorMessage ?? "Unknown error");
-                  });
-                }
-                return const SizedBox(height: 1);
-              },
-            )
           ]
         )
       ),
@@ -740,10 +719,9 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                 padding: const EdgeInsets.only(bottom: 1.0),
                                 child: TextField(
                                   maxLines: 1,
-                                  //todo
                                   controller: TextEditingController(text: bloc.nrcNo),
                                   keyboardType: TextInputType.number,
-                                  onChanged : (value) => bloc.setNrcNo(value),
+                                  onChanged : (value) => bloc.setNrcNo = value,
                                   readOnly: _currentUserRole != 1,
                                   decoration: const InputDecoration(
                                     labelStyle: TextStyle(fontWeight: FontWeight.w300),

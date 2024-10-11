@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pahg_group/data/vos/education_school_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_school_request.dart';
-import 'package:pahg_group/exception/helper_functions.dart';
+import 'package:pahg_group/utils/helper_functions.dart';
 import 'package:pahg_group/ui/components/school_card.dart';
 import 'package:pahg_group/dialog/update_school_dialog.dart';
 import 'package:provider/provider.dart';

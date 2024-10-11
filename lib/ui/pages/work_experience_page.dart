@@ -6,7 +6,7 @@ import '../../data/models/pahg_model.dart';
 import '../../data/vos/request_body/add_work_request.dart';
 import '../../data/vos/work_vo.dart';
 import '../../dialog/work_dialog.dart';
-import '../../exception/helper_functions.dart';
+import '../../utils/helper_functions.dart';
 import '../components/work_exp_card.dart';
 import '../providers/auth_provider.dart';
 

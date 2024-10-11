@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 
 import '../../data/models/pahg_model.dart';
 import '../../data/vos/companies_vo.dart';
-import '../../exception/helper_functions.dart';
+import '../../utils/helper_functions.dart';
 import '../../utils/image_compress.dart';
 import '../../widgets/loading_widget.dart';
 import '../providers/auth_provider.dart';

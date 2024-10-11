@@ -7,7 +7,7 @@ import '../data/models/pahg_model.dart';
 import '../data/vos/category_vo.dart';
 import '../data/vos/request_body/add_category_vo.dart';
 import '../data/vos/request_body/get_request.dart';
-import '../exception/helper_functions.dart';
+import '../utils/helper_functions.dart';
 
 class AddCategoryBloc extends ChangeNotifier{
 

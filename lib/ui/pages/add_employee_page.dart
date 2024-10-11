@@ -13,7 +13,7 @@ import '../../data/vos/position_vo.dart';
 import '../../data/vos/request_body/add_employee_request.dart';
 import '../../data/vos/request_body/get_request.dart';
 import '../../data/vos/request_body/update_employee_request.dart';
-import '../../exception/helper_functions.dart';
+import '../../utils/helper_functions.dart';
 import '../../network/api_constants.dart';
 import '../../utils/image_compress.dart';
 import '../../widgets/loading_widget.dart';

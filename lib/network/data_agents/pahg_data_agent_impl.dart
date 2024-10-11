@@ -14,6 +14,7 @@ import 'package:pahg_group/data/vos/request_body/add_family_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_graduate_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_language_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_position_request.dart';
+import 'package:pahg_group/data/vos/request_body/add_post_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_school_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_training_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_work_request.dart';
@@ -527,8 +528,15 @@ class PahgDataAgentImpl extends PahgDataAgent{
   }
 
   @override
-  Future<PostResponse?> getPosts(String apiKey, List<GetRequest> request,int pageNumber,int limit) {
+  Future<PostResponse?> getPosts(String apiKey, int pageNumber,int limit,List<GetRequest> request,) {
     return mApi.getPosts(apiKey,pageNumber,limit,"id",request).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> addPosts(String apiKey, AddPostRequest requestBody) {
+    return mApi.addPost(apiKey, requestBody).catchError((onError){
       throw _createException(onError);
     });
   }

@@ -10,7 +10,7 @@ import '../../data/vos/language_vo.dart';
 import '../../data/vos/request_body/add_language_request.dart';
 import '../../data/vos/request_body/path_user_request.dart';
 import '../../dialog/language_dialog.dart';
-import '../../exception/helper_functions.dart';
+import '../../utils/helper_functions.dart';
 import '../../utils/image_compress.dart';
 import '../../utils/utils.dart';
 import '../components/language_card.dart';

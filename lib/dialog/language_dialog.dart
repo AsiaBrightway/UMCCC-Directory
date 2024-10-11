@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:pahg_group/data/vos/language_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_language_request.dart';
-import 'package:pahg_group/exception/helper_functions.dart';
+import 'package:pahg_group/utils/helper_functions.dart';
 import 'package:pahg_group/ui/themes/colors.dart';
 
 class LanguageDialog extends StatefulWidget {

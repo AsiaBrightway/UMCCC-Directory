@@ -8,7 +8,7 @@ import 'package:pahg_group/data/vos/personal_info_vo.dart';
 import 'package:pahg_group/data/vos/request_body/get_request.dart';
 import 'package:pahg_group/data/vos/request_body/path_user_request.dart';
 import 'package:pahg_group/data/vos/request_body/personal_info_request.dart';
-import 'package:pahg_group/exception/helper_functions.dart';
+import 'package:pahg_group/utils/helper_functions.dart';
 
 enum PersonalInfoState { initial, loading, success, error }
 
@@ -43,9 +43,8 @@ class PersonalInfoBloc extends ChangeNotifier{
     notifyListeners();
   }
 
-  void setNrcNo(String? value) {
+  set setNrcNo(String? value) {
     _nrcNo = value;
-    notifyListeners();
   }
 
   String? get nrcNumber => _nrcNumber;
@@ -90,7 +89,7 @@ class PersonalInfoBloc extends ChangeNotifier{
     });
   }
 
-  Future<void> addPersonalInformation(String token,String userId) async{
+  Future<void> addPersonalInformation(String token,String userId,BuildContext context) async{
     _updateState = PersonalInfoState.loading;
     notifyListeners();
     PersonalInfoRequest request = getPersonalRequest();
@@ -101,15 +100,17 @@ class PersonalInfoBloc extends ChangeNotifier{
       _updateState = PersonalInfoState.success;
       _isDataEmpty = false;
       getPersonalInformation(_token, _employeeId);
+      showSuccessScaffold(context, onValue?.message ?? '');
       notifyListeners();
     }).catchError((onError){
       _errorMessage = onError.toString();
       _updateState = PersonalInfoState.error;
+      showScaffoldMessage(context, onError.toString());
       notifyListeners();
     });
   }
 
-  Future<void> updatePersonalInformation(String token) async{
+  Future<void> updatePersonalInformation(String token,BuildContext context) async{
     _updateState = PersonalInfoState.loading;
     notifyListeners();
     PersonalInfoRequest request = getPersonalRequest();
@@ -117,10 +118,12 @@ class PersonalInfoBloc extends ChangeNotifier{
       _updateSuccess = onValue?.message;
       _updateState = PersonalInfoState.success;
       _nrcNumber = "$selectedState/$selectedTownship/($selectedNationalType) $_nrcNo";
+      showSuccessScaffold(context, onValue?.message ?? '');
       notifyListeners();
     }).catchError((onError){
       _errorMessage = onError.toString();
       _updateState = PersonalInfoState.error;
+      showScaffoldMessage(context, onError.toString());
       notifyListeners();
     });
   }

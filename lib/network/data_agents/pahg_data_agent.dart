@@ -11,6 +11,7 @@ import 'package:pahg_group/data/vos/request_body/add_family_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_graduate_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_language_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_position_request.dart';
+import 'package:pahg_group/data/vos/request_body/add_post_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_school_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_training_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_work_request.dart';
@@ -161,5 +162,7 @@ abstract class PahgDataAgent{
 
   Future<PostMethodResponse?> updateCategory(String apiKey,int id,AddCategoryVo requestBody);
 
-  Future<PostResponse?> getPosts(String apiKey,List<GetRequest> request,int pageNumber,int limit);
+  Future<PostResponse?> getPosts(String apiKey,int pageNumber,int limit,List<GetRequest> request);
+
+  Future<PostMethodResponse?> addPosts(String apiKey,AddPostRequest requestBody);
 }

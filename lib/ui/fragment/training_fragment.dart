@@ -10,7 +10,7 @@ import '../../data/vos/request_body/add_training_request.dart';
 import '../../data/vos/request_body/path_user_request.dart';
 import '../../data/vos/training_vo.dart';
 import '../../dialog/training_dialog.dart';
-import '../../exception/helper_functions.dart';
+import '../../utils/helper_functions.dart';
 import '../../utils/image_compress.dart';
 import '../../utils/utils.dart';
 import '../components/training_card.dart';

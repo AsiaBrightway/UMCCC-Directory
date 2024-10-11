@@ -21,6 +21,7 @@ import 'package:pahg_group/data/vos/request_body/add_family_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_graduate_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_language_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_position_request.dart';
+import 'package:pahg_group/data/vos/request_body/add_post_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_school_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_training_request.dart';
 import 'package:pahg_group/data/vos/request_body/add_work_request.dart';
@@ -354,6 +355,10 @@ class PahgModel {
 
   Future<List<PostVo>> getPosts(String apiKey,GetRequest request,int pageNumber,int limit){
     List<GetRequest> requestList = [request];
-    return mDataAgent.getPosts(apiKey, requestList,pageNumber,limit).asStream().map((response) => response?.document?.records ?? []).first;
+    return mDataAgent.getPosts(apiKey,pageNumber,limit,requestList).asStream().map((response) => response?.document?.records ?? []).first;
+  }
+
+  Future<PostMethodResponse?> addPost(String apiKey,AddPostRequest request){
+    return mDataAgent.addPosts(apiKey, request);
   }
 }

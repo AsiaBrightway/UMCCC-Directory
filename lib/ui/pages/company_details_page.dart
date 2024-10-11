@@ -13,7 +13,7 @@ import '../../data/vos/company_images_vo.dart';
 import '../../data/vos/department_vo.dart';
 import '../../data/vos/employee_vo.dart';
 import '../../data/vos/request_body/get_request.dart';
-import '../../exception/helper_functions.dart';
+import '../../utils/helper_functions.dart';
 import '../providers/auth_provider.dart';
 import 'employee_profile_page.dart';
 import 'search_page.dart';

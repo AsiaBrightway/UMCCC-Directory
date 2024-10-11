@@ -39,7 +39,7 @@ class NewsFeedBloc extends ChangeNotifier{
     notifyListeners();
     GetRequest request = GetRequest(columnName: "CategoryId", columnCondition: 1, columnValue: categoryId.toString());
     //order by id descending
-    _model.getPosts(_token, request,_currentPage,10).then((onValue){
+    _model.getPosts(_token, request,_currentPage,3).then((onValue){
       _postList = onValue;
       _newsFeedState = NewsFeedState.success;
       notifyListeners();
@@ -59,24 +59,18 @@ class NewsFeedBloc extends ChangeNotifier{
 
     GetRequest request = GetRequest(columnName: "CategoryId", columnCondition: 1, columnValue: categoryId.toString());
     //order by id descending
-    _model.getPosts(_token, request,_currentPage,2).then((onValue){
-      if (_currentPage == 1) {
-        // For the first page, replace the list
-        _postList = onValue;
-      } else {
-        // For subsequent pages, append to the list
-        _postList?.addAll(onValue);
-      }
+    _model.getPosts(_token, request,_currentPage,3).then((onValue){
 
-      if (onValue.length < 2) {
+      _postList = List.from(_postList!)..addAll(onValue);
+      notifyListeners();
+      _currentPage++;
+      if (onValue.length < 3) {
         _hasMore = false;
       }
-      notifyListeners();
     }).catchError((onError){
-
+      notifyListeners();
     });
 
     _isLoadingMore = false;
-    notifyListeners();
   }
 }

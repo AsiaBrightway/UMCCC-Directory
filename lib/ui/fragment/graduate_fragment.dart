@@ -10,7 +10,7 @@ import '../../data/models/pahg_model.dart';
 import '../../data/vos/graduate_vo.dart';
 import '../../data/vos/request_body/add_graduate_request.dart';
 import '../../dialog/graduate_dialog.dart';
-import '../../exception/helper_functions.dart';
+import '../../utils/helper_functions.dart';
 import '../../utils/image_compress.dart';
 import '../../utils/utils.dart';
 import '../components/graduate_card.dart';

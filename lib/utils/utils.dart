@@ -28,6 +28,14 @@ class Utils {
     return formattedDate;
   }
 
+  static String getCurrentDateTime() {
+    // Get the current date and time in UTC
+    DateTime now = DateTime.now().toUtc();
+
+    // Convert it to ISO 8601 string (YYYY-MM-DDTHH:MM:SSZ)
+    return now.toIso8601String();
+  }
+
   static void showPickerDialog(BuildContext context, Function(ImageSource) onImageSelected) {
     showModalBottomSheet(
       context: context,

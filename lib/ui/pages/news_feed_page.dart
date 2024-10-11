@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:pahg_group/bloc/add_news_feed_bloc.dart';
 import 'package:pahg_group/bloc/news_feed_bloc.dart';
 import 'package:pahg_group/data/vos/post_vo.dart';
+import 'package:pahg_group/ui/pages/add_news_feed_page.dart';
 import 'package:pahg_group/ui/shimmer/home_shimmer.dart';
 import 'package:pahg_group/utils/utils.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +21,7 @@ class NewsFeedPage extends StatefulWidget {
 class _NewsFeedPageState extends State<NewsFeedPage> {
 
   String _token = "";
+  int _userRole = 0;
 
   @override
   void initState() {
@@ -33,6 +36,7 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
   Future<void> _initializeData() async {
     final authModel = Provider.of<AuthProvider>(context,listen: false);
     _token = authModel.token;
+    _userRole = authModel.role;
   }
 
   @override
@@ -48,14 +52,29 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
             icon: const Icon(Icons.arrow_back_ios,color: Colors.white,),
             onPressed: _onBackPressed,
           ),
+          actions: [
+            TextButton(
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.green.shade200
+              ),
+                onPressed: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => AddNewsFeedPage(categoryId: widget.categoryId,token: _token,)));
+                },
+                child: const Row(
+                  children: [
+                    Icon(Icons.add_circle),
+                    Text('Post')
+                  ],
+                ))
+          ],
         ),
-        body: Selector<NewsFeedBloc,NewsFeedState>(
-          selector: (context,bloc) => bloc.newsFeedState,
-          builder: (context,newsFeedState,_){
-            if(newsFeedState == NewsFeedState.error){
+        body: Selector<NewsFeedBloc,List<PostVo>?>(
+          selector: (context,bloc) => bloc.postList,
+          builder: (context,postList,_){
+            if(postList == null || postList.isEmpty){
               return const HomeShimmer();
             }
-            if (newsFeedState == NewsFeedState.success) {
+            else {
               var bloc = context.read<NewsFeedBloc>();
               return NotificationListener<ScrollNotification>(
                 onNotification: (scrollNotification) {
@@ -67,14 +86,12 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
                   return false;
                 },
                 child: ListView.builder(
-                  itemCount: bloc.postList?.length,
+                  itemCount: postList.length,
                   itemBuilder: (context, index) {
-                    return NewsFeedCard(postVo: bloc.postList![index]);
+                    return NewsFeedCard(postVo: postList[index]);
                   },
-                ),
+                )
               );
-            } else{
-              return const Center(child: CircularProgressIndicator(),);
             }
           },
         ),
@@ -121,7 +138,7 @@ class NewsFeedCard extends StatelessWidget {
                         style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
                       ),
                       Text(
-                        Utils.timeAgo(postVo.modifiedDate ?? ''),
+                        Utils.timeAgo(postVo.createdDate ?? ''),
                         style: const TextStyle(
                           fontFamily: 'Ubuntu',
                           fontWeight: FontWeight.w400,

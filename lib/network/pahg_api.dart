@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:pahg_group/data/vos/request_body/add_category_vo.dart';
+import 'package:pahg_group/data/vos/request_body/add_post_request.dart';
 import 'package:pahg_group/network/responses/township_response.dart';
 
 import 'package:retrofit/http.dart';
@@ -433,5 +434,11 @@ abstract class PahgApi{
       @Query("itemsPerPage") int limit,
       @Query("orderBy") String id,
       @Body() List<GetRequest> requestBody
+      );
+
+  @POST(kEndPointAddPost)
+  Future<PostMethodResponse?> addPost(
+      @Header(kParamAuthorization) String apiKey,
+      @Body() AddPostRequest requestBody
       );
 }

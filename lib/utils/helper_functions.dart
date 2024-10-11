@@ -135,10 +135,10 @@ void showErrorDialog(BuildContext context,String errorMessage) {
   );
 }
 
-void showScaffoldMessage(BuildContext context,String name){
+void showScaffoldMessage(context,String name){
   ScaffoldMessenger.of(context).showSnackBar( SnackBar(
     backgroundColor: Colors.grey.shade700,
-    content: Text(name,style: const TextStyle(color: Colors.white),),
+    content: Expanded(child: Text(name,style: const TextStyle(color: Colors.white),)),
     duration: const Duration(milliseconds: 1700),
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     margin: const EdgeInsets.symmetric(horizontal: 50,vertical: 10),
@@ -150,7 +150,6 @@ void showSuccessScaffold(BuildContext context,String name){
      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Container(
           padding: const EdgeInsets.all(6),
-          height: 36,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12)
           ),
@@ -158,7 +157,7 @@ void showSuccessScaffold(BuildContext context,String name){
             children: [
               const Icon(Icons.check_circle,size: 20,color: Colors.white,),
               const SizedBox(width: 12),
-              Text(name,style: const TextStyle(fontSize: 15),)
+              Expanded(child: Text(name,style: const TextStyle(fontSize: 15),))
             ],
           ),
         ),

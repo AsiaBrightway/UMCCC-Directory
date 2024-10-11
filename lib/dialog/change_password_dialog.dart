@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:pahg_group/data/models/pahg_model.dart';
 import 'package:pahg_group/data/vos/request_body/path_user_request.dart';
-import 'package:pahg_group/exception/helper_functions.dart';
+import 'package:pahg_group/utils/helper_functions.dart';
 import 'package:pahg_group/ui/pages/login_page.dart';
 import 'package:pahg_group/ui/themes/colors.dart';
 import 'package:provider/provider.dart';
