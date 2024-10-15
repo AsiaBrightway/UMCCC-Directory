@@ -50,6 +50,7 @@ android {
         versionName = flutterVersionName
     }
 
+
     signingConfigs {
         release {
             keyAlias keystoreProperties['keyAlias']

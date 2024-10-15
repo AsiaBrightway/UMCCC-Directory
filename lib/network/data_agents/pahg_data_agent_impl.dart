@@ -528,7 +528,7 @@ class PahgDataAgentImpl extends PahgDataAgent{
   }
 
   @override
-  Future<PostResponse?> getPosts(String apiKey, int pageNumber,int limit,List<GetRequest> request,) {
+  Future<PostResponse?> getPosts(String apiKey, int pageNumber,int limit,List<GetRequest> request) {
     return mApi.getPosts(apiKey,pageNumber,limit,"id",request).catchError((onError){
       throw _createException(onError);
     });
@@ -537,6 +537,20 @@ class PahgDataAgentImpl extends PahgDataAgent{
   @override
   Future<PostMethodResponse?> addPosts(String apiKey, AddPostRequest requestBody) {
     return mApi.addPost(apiKey, requestBody).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> updatePosts(String apiKey, int id, AddPostRequest requestBody) {
+    return mApi.updatePost(apiKey, id,requestBody).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> deletePosts(String apiKey, int id) {
+    return mApi.deletePost(apiKey, id).catchError((onError){
       throw _createException(onError);
     });
   }

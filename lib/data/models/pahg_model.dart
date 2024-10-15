@@ -361,4 +361,12 @@ class PahgModel {
   Future<PostMethodResponse?> addPost(String apiKey,AddPostRequest request){
     return mDataAgent.addPosts(apiKey, request);
   }
+
+  Future<PostMethodResponse?> updatePost(String apiKey,int id,AddPostRequest request){
+    return mDataAgent.updatePosts(apiKey, id, request);
+  }
+
+  Future<PostMethodResponse?> deletePostById(String apiKey,int id){
+    return mDataAgent.deletePosts(apiKey, id);
+  }
 }

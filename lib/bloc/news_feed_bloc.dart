@@ -1,10 +1,11 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
-import 'package:pahg_group/data/vos/request_body/get_request.dart';
+import 'package:pahg_group/utils/helper_functions.dart';
 
 import '../data/models/pahg_model.dart';
 import '../data/vos/post_vo.dart';
+import '../data/vos/request_body/get_request.dart';
 
 enum NewsFeedState { initial, loading, success, error }
 class NewsFeedBloc extends ChangeNotifier{
@@ -17,6 +18,7 @@ class NewsFeedBloc extends ChangeNotifier{
   int _currentPage = 1;
   bool _hasMore = true;
   bool _isLoadingMore = false;
+  int? _categoryId;
 
   List<PostVo>? get postList => _postList;
   NewsFeedState get newsFeedState => _newsFeedState;
@@ -25,7 +27,8 @@ class NewsFeedBloc extends ChangeNotifier{
   ///Constructor
   NewsFeedBloc(String token,int categoryId){
     _token = token;
-    getNewsFeed(categoryId);
+    _categoryId = categoryId;
+    getNewsFeed();
   }
 
   String getCurrentDate() {
@@ -34,12 +37,14 @@ class NewsFeedBloc extends ChangeNotifier{
     return formattedDate;
   }
 
-  Future<void> getNewsFeed(int categoryId) async{
+  Future<void> getNewsFeed() async{
+    _currentPage = 1;
+    _hasMore = true;
     _newsFeedState = NewsFeedState.loading;
     notifyListeners();
-    GetRequest request = GetRequest(columnName: "CategoryId", columnCondition: 1, columnValue: categoryId.toString());
+    GetRequest request = GetRequest(columnName: "CategoryId", columnCondition: 1, columnValue: _categoryId.toString());
     //order by id descending
-    _model.getPosts(_token, request,_currentPage,3).then((onValue){
+    _model.getPosts(_token, request,_currentPage,4).then((onValue){
       _postList = onValue;
       _newsFeedState = NewsFeedState.success;
       notifyListeners();
@@ -52,6 +57,20 @@ class NewsFeedBloc extends ChangeNotifier{
     _currentPage ++;
   }
 
+  ///when you use methods like remove(),
+  ///it doesn't create a new list.
+  ///Flutter's ChangeNotifier might not detect this in-place change.
+  Future<void> deletePost(BuildContext context,PostVo post) async{
+    _model.deletePostById(_token, post.id!).then((onValue){
+      showSuccessScaffold(context, onValue?.message ?? '');
+      _postList = List.from(_postList!);
+      _postList?.remove(post);
+      notifyListeners();
+    }).catchError((onError){
+      showScaffoldMessage(context, onError.toString());
+    });
+  }
+
   Future<void> moreNewsFeed(int categoryId) async{
     if (_isLoadingMore || !_hasMore) return; // Prevents duplicate calls
 
@@ -59,7 +78,7 @@ class NewsFeedBloc extends ChangeNotifier{
 
     GetRequest request = GetRequest(columnName: "CategoryId", columnCondition: 1, columnValue: categoryId.toString());
     //order by id descending
-    _model.getPosts(_token, request,_currentPage,3).then((onValue){
+    _model.getPosts(_token, request,_currentPage,4).then((onValue){
 
       _postList = List.from(_postList!)..addAll(onValue);
       notifyListeners();

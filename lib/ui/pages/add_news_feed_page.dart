@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pahg_group/bloc/add_news_feed_bloc.dart';
+import 'package:pahg_group/data/vos/post_vo.dart';
 import 'package:provider/provider.dart';
 
 import '../../utils/helper_functions.dart';
@@ -12,7 +13,8 @@ import '../../utils/image_compress.dart';
 class AddNewsFeedPage extends StatefulWidget {
   final String token;
   final int categoryId;
-  const AddNewsFeedPage({super.key, required this.categoryId, required this.token});
+  final PostVo? post;
+  const AddNewsFeedPage({super.key,this.post, required this.categoryId, required this.token});
 
   @override
   State<AddNewsFeedPage> createState() => _AddNewsFeedPageState();
@@ -21,7 +23,7 @@ class AddNewsFeedPage extends StatefulWidget {
 class _AddNewsFeedPageState extends State<AddNewsFeedPage> {
 
   void _onBackPressed() {
-    Navigator.of(context).pop();
+    Navigator.pop(context,false);
   }
 
   Future<void> selectImage(ImageSource source,AddNewsFeedBloc bloc) async{
@@ -44,10 +46,14 @@ class _AddNewsFeedPageState extends State<AddNewsFeedPage> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => AddNewsFeedBloc(widget.token),
+      create: (context) => AddNewsFeedBloc(widget.token,widget.post),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Create Post',style: TextStyle(fontFamily: 'Ubuntu')),
+          title: Text(
+              (widget.post != null)
+                  ? 'Update Post'
+                  : 'Create Post',
+              style: const TextStyle(fontFamily: 'Ubuntu')),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios),
             onPressed: _onBackPressed,
@@ -55,22 +61,42 @@ class _AddNewsFeedPageState extends State<AddNewsFeedPage> {
           actions: [
             Consumer<AddNewsFeedBloc>(
               builder: (context,bloc,child){
-                return Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        elevation: 2,
-                        padding: const EdgeInsets.symmetric(horizontal: 18,vertical: 6),
-                        backgroundColor: Colors.blueAccent,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(6), // Adjust corner radius here
+                if(widget.post == null ){
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          elevation: 2,
+                          padding: const EdgeInsets.symmetric(horizontal: 18,vertical: 6),
+                          backgroundColor: Colors.blueAccent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(6), // Adjust corner radius here
+                          ),
                         ),
-                      ),
-                      onPressed: () {
-                        bloc.addPost(context, widget.categoryId);
-                      },
-                      child: const Text('POST',style: TextStyle(color: Colors.white))),
-                );
+                        onPressed: () {
+                          bloc.addPost(context, widget.categoryId);
+                        },
+                        child: const Text('POST',style: TextStyle(color: Colors.white))),
+                  );
+                }
+                else{
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          elevation: 2,
+                          padding: const EdgeInsets.symmetric(horizontal: 18,vertical: 6),
+                          backgroundColor: Colors.orangeAccent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(6), // Adjust corner radius here
+                          ),
+                        ),
+                        onPressed: () {
+                          bloc.updatePost(context, widget.categoryId);
+                        },
+                        child: const Text('UPDATE',style: TextStyle(color: Colors.white))),
+                  );
+                }
               },
             )
           ],
@@ -92,7 +118,7 @@ class _AddNewsFeedPageState extends State<AddNewsFeedPage> {
                           errorText: bloc.errorTitle,
                           border: InputBorder.none,
                           hintText: 'Please enter post title',
-                          labelStyle: TextStyle(fontWeight: FontWeight.w300),
+                          labelStyle: const TextStyle(fontWeight: FontWeight.w300),
                           floatingLabelBehavior: FloatingLabelBehavior.always
                       ),
                     ),
@@ -114,39 +140,69 @@ class _AddNewsFeedPageState extends State<AddNewsFeedPage> {
                       ),
                     ),
                   ),
-                  Selector<AddNewsFeedBloc,File?>(
-                    selector: (context,bloc) => bloc.image,
-                    builder: (context,image,_){
-                      if(image != null){
-                        return Stack(
-                          alignment: Alignment.topRight,
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 6,vertical: 8),
-                              child: ClipRRect(
-                                child: Image.file(
-                                  image,
-                                  width: MediaQuery.of(context).size.width * 0.96,
-                                  height: MediaQuery.of(context).size.height * 0.3,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                            GestureDetector(
-                                onTap: (){
-                                  bloc.deleteImage();
-                                },
-                                child: const Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Icon(Icons.cancel,size: 30,color: Colors.grey),
-                                )
-                            )
-                          ],
-                        );
-                      }else{
-                        return const SizedBox(height: 1);
-                      }
-                    })
+                  (bloc.featureImageIsForUpdate == null)
+                      ? Selector<AddNewsFeedBloc,File?>(
+                          selector: (context,bloc) => bloc.image,
+                          builder: (context,image,_){
+                            if(image != null){
+                              return Stack(
+                                alignment: Alignment.topRight,
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.symmetric(horizontal: 6,vertical: 8),
+                                    child: ClipRRect(
+                                      child: Image.file(
+                                        image,
+                                        width: MediaQuery.of(context).size.width * 0.96,
+                                        height: MediaQuery.of(context).size.height * 0.3,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                      onTap: (){
+                                        bloc.deleteImage();
+                                      },
+                                      child: const Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Icon(Icons.cancel,size: 30,color: Colors.grey),
+                                      )
+                                  )
+                                ],
+                              );
+                            }else{
+                              return const SizedBox(height: 1);
+                            }
+                          }
+                      )
+                      : Selector<AddNewsFeedBloc,String?>(
+                          selector: (context,bloc) => bloc.featureImageIsForUpdate,
+                          builder: (context,featureUpdateImage,_){
+                            if(featureUpdateImage != null){
+                              return Stack(
+                                alignment: Alignment.topRight,
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.symmetric(horizontal: 6,vertical: 8),
+                                    child: ClipRRect(
+                                      child: Image.network(widget.post!.getImageWithBaseUrl()),
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                      onTap: (){
+                                        bloc.deleteUpdateImage();
+                                      },
+                                      child: const Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Icon(Icons.cancel,size: 30,color: Colors.grey),
+                                      )
+                                  )
+                                ],
+                              );
+                            }else{
+                              return const SizedBox(height: 1);
+                            }
+                          })
                 ],
               );
             },

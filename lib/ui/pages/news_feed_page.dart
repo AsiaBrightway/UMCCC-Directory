@@ -1,5 +1,6 @@
+import 'package:animations/animations.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:pahg_group/bloc/add_news_feed_bloc.dart';
 import 'package:pahg_group/bloc/news_feed_bloc.dart';
 import 'package:pahg_group/data/vos/post_vo.dart';
 import 'package:pahg_group/ui/pages/add_news_feed_page.dart';
@@ -8,6 +9,7 @@ import 'package:pahg_group/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth_provider.dart';
+import 'image_details_page.dart';
 
 class NewsFeedPage extends StatefulWidget {
   final int categoryId;
@@ -39,6 +41,14 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
     _userRole = authModel.role;
   }
 
+  Future<void> callPostsAfterAdd(NewsFeedBloc bloc) async {
+    final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => AddNewsFeedPage(categoryId:widget.categoryId,token: _token)));
+    if (result == true) {
+      // Data has been updated, refresh the data
+      bloc.getNewsFeed();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<NewsFeedBloc>(
@@ -53,19 +63,28 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
             onPressed: _onBackPressed,
           ),
           actions: [
-            TextButton(
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.green.shade200
-              ),
-                onPressed: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => AddNewsFeedPage(categoryId: widget.categoryId,token: _token,)));
+            if(_userRole == 1)
+              Selector<NewsFeedBloc,NewsFeedState>(
+                selector: (context,bloc) => bloc.newsFeedState,
+                builder: (context,newsFeedState,_){
+                  var bloc = context.read<NewsFeedBloc>();
+                  return TextButton(
+                      style: TextButton.styleFrom(
+                          foregroundColor: Colors.green.shade200
+                      ),
+                      onPressed: (){
+                        callPostsAfterAdd(bloc);
+                      },
+                      child: const Row(
+                        children: [
+                          Icon(Icons.add_circle),
+                          const SizedBox(width: 2),
+                          Text('POST')
+                        ],
+                      )
+                  );
                 },
-                child: const Row(
-                  children: [
-                    Icon(Icons.add_circle),
-                    Text('Post')
-                  ],
-                ))
+              )
           ],
         ),
         body: Selector<NewsFeedBloc,List<PostVo>?>(
@@ -85,10 +104,10 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
                   }
                   return false;
                 },
-                child: ListView.builder(
+                child: ListView. builder(
                   itemCount: postList.length,
                   itemBuilder: (context, index) {
-                    return NewsFeedCard(postVo: postList[index]);
+                    return NewsFeedCard(postVo: postList[index],categoryId: widget.categoryId,token: _token);
                   },
                 )
               );
@@ -100,10 +119,88 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
   }
 }
 
-class NewsFeedCard extends StatelessWidget {
+class NewsFeedCard extends StatefulWidget {
   final PostVo postVo;
+  final String token;
+  final int categoryId;
+  const NewsFeedCard({super.key, required this.postVo, required this.token, required this.categoryId});
 
-  const NewsFeedCard({super.key, required this.postVo});
+  @override
+  State<NewsFeedCard> createState() => _NewsFeedCardState();
+}
+
+class _NewsFeedCardState extends State<NewsFeedCard> {
+
+  Future<void> onTapEdit(PostVo post) async {
+    final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => AddNewsFeedPage(categoryId:widget.categoryId,token: widget.token,post: post)));
+    if (result == true) {
+      // Data has been updated, refresh the data
+      var bloc = context.read<NewsFeedBloc>();
+      bloc.getNewsFeed();
+    }
+  }
+
+  Future<void> onTapDelete() async{
+    var bloc = context.read<NewsFeedBloc>();
+    bloc.deletePost(context, widget.postVo);
+    Navigator.pop(context);
+  }
+
+  void _onDeleteDialog(){
+    showDialog(
+      context: context,
+      builder: (BuildContext context){
+        return AlertDialog(
+          icon: const Text("Delete post",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold)),
+          content: const Text('Are you sure to delete?',style: TextStyle(fontSize: 16),),
+          actions: [
+            TextButton(
+              child: const Text("cancel"),
+              onPressed: (){
+                Navigator.of(context).pop();
+              },
+            ),
+            ElevatedButton(
+              onPressed: () async{
+                onTapDelete();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void showPickerDialog(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext bc) {
+        return SafeArea(
+          child: Wrap(
+            children: <Widget>[
+              ListTile(
+                leading: const Icon(Icons.edit,color: Colors.orangeAccent,),
+                title: const Text('Edit'),
+                onTap: () {
+                  Navigator.pop(context,false);
+                  onTapEdit(widget.postVo);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.delete,color: Colors.redAccent,),
+                title: const Text('Delete'),
+                onTap: () {
+                  Navigator.pop(context,false);
+                  _onDeleteDialog();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -138,7 +235,7 @@ class NewsFeedCard extends StatelessWidget {
                         style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
                       ),
                       Text(
-                        Utils.timeAgo(postVo.createdDate ?? ''),
+                        Utils.timeAgo(widget.postVo.createdDate ?? ''),
                         style: const TextStyle(
                           fontFamily: 'Ubuntu',
                           fontWeight: FontWeight.w400,
@@ -149,7 +246,11 @@ class NewsFeedCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const Icon(Icons.more_horiz_outlined),
+              IconButton(
+                  onPressed: (){
+                    showPickerDialog(context);
+                  },
+                  icon: Icon(Icons.more_horiz_outlined)),
             ],
           ),
         ),
@@ -158,29 +259,41 @@ class NewsFeedCard extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Text(
-            postVo.postTitle ?? '',
+            widget.postVo.postTitle ?? '',
             style: const TextStyle(fontWeight: FontWeight.w600,fontSize: 16),
           ),
         ),
         /// feature image
-        if(postVo.featureImageUrl != null)
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 6,vertical: 8),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-              child: Image.network(
-                postVo.featureImageUrl ?? '',
-                width: MediaQuery.of(context).size.width * 0.96,
-                height: MediaQuery.of(context).size.height * 0.3,
-                fit: BoxFit.cover,
-              ),
-            ),
+        if(widget.postVo.featureImageUrl != null)
+          ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: OpenContainer(
+                  closedBuilder:(context,action) => CachedNetworkImage(
+                    imageUrl: widget.postVo.getImageWithBaseUrl(),
+                    height: MediaQuery.of(context).size.height * 0.3,
+                    width: MediaQuery.of(context).size.width * 0.96,
+                    fit: BoxFit.cover,
+                    errorWidget: (context, error, stackTrace) {
+                      return Container(
+                          height: MediaQuery.of(context).size.height * 0.3,
+                          width:  MediaQuery.of(context).size.width * 0.96,
+                          color: Colors.black12,
+                          child: const Center(child: Text("Front Image")));
+                    },
+                  ),
+                  closedColor: Colors.black12,
+                  openBuilder: (context,action) =>
+                      ImageDetailsPage(imageUrl: widget.postVo.getImageWithBaseUrl()),
+                ),
+              )
           ),
         /// content text
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: ExpandableText(
-            text: postVo.postContent ?? 'To implement expandable and collapsible text in your news feed, you can use a custom widget that manages the expanded and collapsed states. Here’s how you can achieve this:',
+            text: widget.postVo.postContent ?? 'To implement expandable and collapsible text in your news feed, you can use a custom widget that manages the expanded and collapsed states. Here’s how you can achieve this:',
             trimLines: 2,
           ),
         ),

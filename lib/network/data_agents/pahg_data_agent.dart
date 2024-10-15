@@ -165,4 +165,8 @@ abstract class PahgDataAgent{
   Future<PostResponse?> getPosts(String apiKey,int pageNumber,int limit,List<GetRequest> request);
 
   Future<PostMethodResponse?> addPosts(String apiKey,AddPostRequest requestBody);
+
+  Future<PostMethodResponse?> updatePosts(String apiKey,int id,AddPostRequest requestBody);
+
+  Future<PostMethodResponse?> deletePosts(String apiKey,int id);
 }

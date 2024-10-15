@@ -441,4 +441,17 @@ abstract class PahgApi{
       @Header(kParamAuthorization) String apiKey,
       @Body() AddPostRequest requestBody
       );
+
+  @PUT("$kEndPointAddPost/{id}")
+  Future<PostMethodResponse?> updatePost(
+      @Header(kParamAuthorization) String apiKey,
+      @Path("id") int id,
+      @Body() AddPostRequest requestBody
+      );
+
+  @DELETE("$kEndPointAddPost/{id}")
+  Future<PostMethodResponse?> deletePost(
+      @Header(kParamAuthorization) String apiKey,
+      @Path("id") int id,
+      );
 }
