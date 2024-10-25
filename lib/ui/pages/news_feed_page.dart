@@ -4,10 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:pahg_group/bloc/news_feed_bloc.dart';
 import 'package:pahg_group/data/vos/post_vo.dart';
 import 'package:pahg_group/ui/pages/add_news_feed_page.dart';
-import 'package:pahg_group/ui/shimmer/home_shimmer.dart';
 import 'package:pahg_group/utils/utils.dart';
 import 'package:provider/provider.dart';
-
 import '../providers/auth_provider.dart';
 import 'image_details_page.dart';
 
@@ -57,7 +55,7 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
         appBar: AppBar(
           backgroundColor: Colors.blue[800],
           centerTitle: true,
-          title: Text(widget.categoryName,style: TextStyle(color: Colors.white),),
+          title: Text(widget.categoryName,style: const TextStyle(color: Colors.white),),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios,color: Colors.white,),
             onPressed: _onBackPressed,
@@ -78,8 +76,8 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
                       child: const Row(
                         children: [
                           Icon(Icons.add_circle),
-                          const SizedBox(width: 2),
-                          Text('POST')
+                          SizedBox(width: 2),
+                          Text('NEW')
                         ],
                       )
                   );
@@ -91,7 +89,9 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
           selector: (context,bloc) => bloc.postList,
           builder: (context,postList,_){
             if(postList == null || postList.isEmpty){
-              return const HomeShimmer();
+              return const Center(
+                  child: Text('Empty')
+              );
             }
             else {
               var bloc = context.read<NewsFeedBloc>();
@@ -107,7 +107,7 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
                 child: ListView. builder(
                   itemCount: postList.length,
                   itemBuilder: (context, index) {
-                    return NewsFeedCard(postVo: postList[index],categoryId: widget.categoryId,token: _token);
+                    return NewsFeedCard(postVo: postList[index],categoryId: widget.categoryId,token: _token,role: _userRole,);
                   },
                 )
               );
@@ -122,8 +122,9 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
 class NewsFeedCard extends StatefulWidget {
   final PostVo postVo;
   final String token;
+  final int role;
   final int categoryId;
-  const NewsFeedCard({super.key, required this.postVo, required this.token, required this.categoryId});
+  const NewsFeedCard({super.key, required this.postVo, required this.token, required this.categoryId, required this.role});
 
   @override
   State<NewsFeedCard> createState() => _NewsFeedCardState();
@@ -246,11 +247,13 @@ class _NewsFeedCardState extends State<NewsFeedCard> {
                   ),
                 ],
               ),
-              IconButton(
-                  onPressed: (){
-                    showPickerDialog(context);
-                  },
-                  icon: Icon(Icons.more_horiz_outlined)),
+              if(widget.role == 1)
+                IconButton(
+                    onPressed: (){
+                      showPickerDialog(context);
+                    },
+                    icon: const Icon(Icons.more_horiz_outlined)
+                ),
             ],
           ),
         ),
@@ -293,7 +296,7 @@ class _NewsFeedCardState extends State<NewsFeedCard> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: ExpandableText(
-            text: widget.postVo.postContent ?? 'To implement expandable and collapsible text in your news feed, you can use a custom widget that manages the expanded and collapsed states. Here’s how you can achieve this:',
+            text: widget.postVo.postContent ?? '',
             trimLines: 2,
           ),
         ),

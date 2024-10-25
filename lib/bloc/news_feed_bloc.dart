@@ -44,7 +44,7 @@ class NewsFeedBloc extends ChangeNotifier{
     notifyListeners();
     GetRequest request = GetRequest(columnName: "CategoryId", columnCondition: 1, columnValue: _categoryId.toString());
     //order by id descending
-    _model.getPosts(_token, request,_currentPage,4).then((onValue){
+    _model.getPosts(_token, request,_currentPage,10).then((onValue){
       _postList = onValue;
       _newsFeedState = NewsFeedState.success;
       notifyListeners();
@@ -78,7 +78,7 @@ class NewsFeedBloc extends ChangeNotifier{
 
     GetRequest request = GetRequest(columnName: "CategoryId", columnCondition: 1, columnValue: categoryId.toString());
     //order by id descending
-    _model.getPosts(_token, request,_currentPage,4).then((onValue){
+    _model.getPosts(_token, request,_currentPage,10).then((onValue){
 
       _postList = List.from(_postList!)..addAll(onValue);
       notifyListeners();

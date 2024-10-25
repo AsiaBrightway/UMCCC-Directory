@@ -1,6 +1,7 @@
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:pahg_group/ui/pages/news_feed_page.dart';
 import 'package:provider/provider.dart';
 import '../../bloc/home_bloc.dart';
@@ -30,6 +31,8 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _initializeData();
+    requestPermission();
+
   }
 
   Future<void> _initializeData() async {
@@ -37,6 +40,18 @@ class _HomePageState extends State<HomePage> {
       _token = authModel.token;
       _userId = authModel.userId;
       _role = authModel.role;
+  }
+
+  void requestPermission() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    NotificationSettings settings = await messaging.requestPermission();
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      debugPrint('User granted permission');
+    } else {
+      debugPrint('User declined or has not accepted permission');
+    }
   }
 
   @override

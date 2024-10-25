@@ -1,13 +1,16 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 
 import '../../data/models/pahg_model.dart';
 import '../../data/vos/user_vo.dart';
+import '../../fcm/fcm_service.dart';
 import '../../utils/helper_functions.dart';
 import '../providers/auth_provider.dart';
 import 'home_page.dart';
 import 'login_page.dart';
+import 'news_feed_page.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -18,11 +21,24 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State<SplashPage> {
   final PahgModel _pahgModel = PahgModel();
+  bool _isNotificationLaunch = false;
+  String? _postId;
 
   @override
   void initState() {
     super.initState();
-    Future.microtask(() => _checkLoginStatus());
+    FCMService().setUpInteractMessage(onMessageOpenedApp: _handleNotificationRouting);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkLoginStatus();
+    });
+  }
+
+  /// Handle routing if the app is launched from a notification click
+  void _handleNotificationRouting(RemoteMessage message) {
+    setState(() {
+      _isNotificationLaunch = true;  // Mark that we are handling a notification
+      _postId = message.data['post_id'];  // Capture post ID from the notification
+    });
   }
 
   Future<void> _checkLoginStatus() async {
@@ -38,7 +54,20 @@ class _SplashPageState extends State<SplashPage> {
           if(response != null){
             UserVo userData = response ;
             authProvider.setTokenAndRoleAndUserId( bearerToken, userData.userRolesId ?? 0, userId);
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>  const HomePage()));
+
+            // Check if the app was launched via a notification and navigate accordingly
+            if (_isNotificationLaunch && _postId != null) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => NewsFeedPage(categoryId: int.parse(_postId!), categoryName: 'Name')),
+              );
+            } else {
+              // Regular launch, go to home page
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const HomePage()),
+              );
+            }
           }else {
             showErrorDialog(context, 'No record found!');
           }
@@ -58,7 +87,10 @@ class _SplashPageState extends State<SplashPage> {
         });
     } else {
       // Token does not exist, navigate to login page
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginPage(),));
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginPage()),
+      );
     }
   }
 

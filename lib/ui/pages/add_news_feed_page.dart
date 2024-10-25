@@ -135,7 +135,7 @@ class _AddNewsFeedPageState extends State<AddNewsFeedPage> {
                           border: InputBorder.none,
                           errorText: bloc.errorContent,
                           hintText: 'What\'s on your mind?',
-                          labelStyle: TextStyle(fontWeight: FontWeight.w300),
+                          labelStyle: const TextStyle(fontWeight: FontWeight.w300),
                           floatingLabelBehavior: FloatingLabelBehavior.always
                       ),
                     ),

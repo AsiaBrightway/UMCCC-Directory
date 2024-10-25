@@ -13,7 +13,7 @@ class _PahgApi implements PahgApi {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'http://192.168.1.5:86';
+    baseUrl ??= 'http://192.168.1.4:86';
   }
 
   final Dio _dio;

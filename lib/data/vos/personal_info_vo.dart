@@ -265,6 +265,6 @@ class PersonalInfoVo {
   }
 
   String getImageWithBaseUrl(String imageUrl){
-    return kBaseImageUrl + (imageUrl ?? "");
+    return kBaseImageUrl + (imageUrl);
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pahg_group/utils/utils.dart';
 
 
 import '../../data/vos/request_body/add_work_request.dart';
@@ -102,12 +103,12 @@ class _WorkExpCardState extends State<WorkExpCard> {
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(
                           children: [
-                            Text("${widget.work.fromDate}",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
+                            Text(Utils.getFormattedDate(widget.work.fromDate),style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
                             Padding(
                               padding: const EdgeInsets.only(left: 8.0,right: 8.0),
                               child: Text("To",style: TextStyle(color: Theme.of(context).colorScheme.primary),),
                             ),
-                            Text("${widget.work.toDate}",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
+                            Text(Utils.getFormattedDate(widget.work.toDate),style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
                           ],
                         ),
                       ),

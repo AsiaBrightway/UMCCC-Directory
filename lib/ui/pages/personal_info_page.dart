@@ -7,6 +7,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pahg_group/data/vos/nrc_township_vo.dart';
+import 'package:pahg_group/utils/utils.dart';
 import 'package:provider/provider.dart';
 import '../../bloc/personal_info_bloc.dart';
 import '../../data/vos/personal_info_vo.dart';
@@ -315,10 +316,10 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             const Text('Date Of Birth',style: TextStyle(fontFamily : 'Ubuntu',fontSize: 15,fontWeight: FontWeight.w300),),
-                                            Text(dateOfBirth ?? '')
+                                            Text(Utils.getFormattedDate(dateOfBirth) ?? '')
                                           ],
                                         ),
-                                        const SizedBox(width: 20,),
+                                        const SizedBox(width: 20),
                                         Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
@@ -378,7 +379,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                               height: 50,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(12),
-                                  gradient: LinearGradient(stops: const [0.4,1.0], colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade600])
+                                  color: Theme.of(context).colorScheme.surfaceBright
                               ),
                               ///gender radio button
                               child: (bloc.editMode && _currentUserRole == 1)
@@ -429,9 +430,8 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                             Container(
                               height: 50,
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                gradient: LinearGradient(stops: const [0.4,1.0], colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade600]
-                                ),
+                                  borderRadius: BorderRadius.circular(12),
+                                  color: Theme.of(context).colorScheme.surfaceBright
                               ),
                               child: (bloc.editMode && _currentUserRole == 1)
                                   ? Selector<PersonalInfoBloc,int>(
@@ -552,7 +552,13 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                     onPressed: (){
                                       Navigator.push(context, MaterialPageRoute(builder: (context) => FamilyPage(empId: widget.userId, userRole: _currentUserRole),));
                                     },
-                                    child: const Text("Go To Family"))
+                                    child: const Row(
+                                      children: [
+                                        Text("Go To Family"),
+                                        SizedBox(width: 4),
+                                        Icon(Icons.keyboard_double_arrow_right)
+                                      ],
+                                    )),
                               ],
                             ),
                             const SizedBox(height: 20)
@@ -583,7 +589,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
           decoration: BoxDecoration(
               gradient: LinearGradient(
                   stops: const [0.4,1.0],
-                  colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade600]
+                  colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade200]
               ),
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: Colors.deepPurple)
@@ -667,7 +673,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
           decoration: BoxDecoration(
               gradient: LinearGradient(
                   stops: const [0.4,1.0],
-                  colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade600]
+                  colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade200]
               ),
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: Colors.deepPurple)
@@ -856,7 +862,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
             decoration: BoxDecoration(
                 gradient: LinearGradient(
                     stops: const [0.4,1.0],
-                    colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade600]
+                    colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade200]
                 ),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: Colors.deepPurple)
@@ -924,7 +930,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                   stops: const [0.4,1.0],
-                  colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade600]
+                  colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade200]
               ),
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: Colors.deepPurple),
@@ -1173,7 +1179,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
         decoration: BoxDecoration(
             gradient: LinearGradient(
                 stops: const [0.4,1.0],
-                colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade400]
+                colors: [Theme.of(context).colorScheme.surfaceBright,Colors.blue.shade200]
             ),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(color: Colors.deepPurple)

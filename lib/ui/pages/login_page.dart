@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -34,6 +35,7 @@ class _LoginPageState extends State<LoginPage> {
           UserVo? userVo = await _pahgModel.getUserById(bearerToken, tokenVo.userId!);
           saveToken(bearerToken, userVo!.userRolesId!, tokenVo.userId!);
           await Future.delayed(const Duration(milliseconds: 1000));
+          subscribeToTopic();
           Navigator.of(context).pop();
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
         } catch (e) {
@@ -48,6 +50,11 @@ class _LoginPageState extends State<LoginPage> {
           showErrorDialog(context,e.toString());
         }
       }
+  }
+
+  ///subscribe to topic
+  Future<void> subscribeToTopic() async {
+    await FirebaseMessaging.instance.subscribeToTopic('all');
   }
 
   void saveToken(String token,int userRole,String userId) async{

@@ -1,4 +1,5 @@
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,14 +11,18 @@ void showUnauthorizedDialog(BuildContext context,String errorMessage){
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        icon: const Icon(Icons.error_outline_sharp,color: Colors.redAccent,),
-        content: Text(errorMessage,style: const TextStyle(fontSize: 18),),
+        icon: const Icon(Icons.cloud_off,color: Colors.redAccent),
+        content: Text(errorMessage,textAlign: TextAlign.center,style: const TextStyle(fontSize: 18),),
         actions: <Widget>[
-          TextButton(
-            onPressed: () {
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginPage(),));
-            },
-            child: const Text('OK'),
+          Center(
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginPage(),));
+              },
+              child: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8),child: Text('OK')
+              ),
+            ),
           ),
         ],
       );
@@ -121,13 +126,18 @@ void showErrorDialog(BuildContext context,String errorMessage) {
     builder: (BuildContext context) {
       return AlertDialog(
         icon: const Icon(Icons.cloud_off),
-        content: Text(errorMessage),
+        content: Text(errorMessage,textAlign: TextAlign.center),
         actions: <Widget>[
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: const Text('OK'),
+            child: const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('OK'),
+              ],
+            ),
           ),
         ],
       );
@@ -171,6 +181,11 @@ void showSuccessScaffold(BuildContext context,String name){
     );
 }
 
+///subscribe to topic
+Future<void> unsubscribeFromTopic() async {
+  await FirebaseMessaging.instance.unsubscribeFromTopic('all');
+}
+
 void showLogoutDialog(BuildContext context){
   showDialog(
     context: context,
@@ -194,6 +209,7 @@ void showLogoutDialog(BuildContext context){
               Navigator.of(context).pop();
               AuthProvider authProvider = Provider.of<AuthProvider>(context,listen: false);
               authProvider.clearTokenAndRoleAndId();
+              unsubscribeFromTopic();
               Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginPage()));
             },
             child: const Text('OK'),

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pahg_group/data/vos/post_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_post_request.dart';
+import 'package:pahg_group/fcm/fcm_service.dart';
 import 'package:pahg_group/utils/helper_functions.dart';
 import 'package:pahg_group/utils/utils.dart';
 
@@ -17,6 +18,7 @@ class AddNewsFeedBloc extends ChangeNotifier{
   final PahgModel _model = PahgModel();
   String _token = "";
   String _postTitle = "";
+  String _createdDateForUpdate = "";
   String _postContent = "";
   String? _featureImageIsForUpdate;
   File? _image;
@@ -24,6 +26,7 @@ class AddNewsFeedBloc extends ChangeNotifier{
   String? _errorContent;
   int? _postId;
 
+  String get createdDateForUpdate => _createdDateForUpdate;
   String? get errorTitle => _errorTitle;
   String? get errorContent => _errorContent;
   String? get featureImageIsForUpdate => _featureImageIsForUpdate;
@@ -60,6 +63,7 @@ class AddNewsFeedBloc extends ChangeNotifier{
        _postId = post.id!;
       _postTitle = post.postTitle!;
       _postContent = post.postContent ?? '';
+      _createdDateForUpdate = post.createdDate!;
       _featureImageIsForUpdate = post.featureImageUrl;
       notifyListeners();
     }
@@ -88,7 +92,7 @@ class AddNewsFeedBloc extends ChangeNotifier{
     if (_image != null) {
       _model.uploadImage(_token, image!).then((onValue) {
         // Proceed to create post after image upload
-        AddPostRequest request = AddPostRequest(_postId, _postTitle, _postTitle, onValue?.file, _postContent, categoryId, Utils.getCurrentDateTime(), false, null, null, null, null,);
+        AddPostRequest request = AddPostRequest(_postId, _postTitle, _postTitle, onValue?.file, _postContent, categoryId,createdDateForUpdate, false, null, null, null,Utils.getCurrentDateTime());
 
         _model.updatePost(_token,_postId!, request).then((value) {
           // Show success message
@@ -105,7 +109,7 @@ class AddNewsFeedBloc extends ChangeNotifier{
     }
     // If no image was selected, just create the post.I use featureImage because it can be already exit in update state
     else {
-      AddPostRequest request = AddPostRequest(_postId, _postTitle, _postTitle, _featureImageIsForUpdate,_postContent,categoryId,Utils.getCurrentDateTime(),false, null, null, null, null,);
+      AddPostRequest request = AddPostRequest(_postId, _postTitle, _postTitle, _featureImageIsForUpdate,_postContent,categoryId,createdDateForUpdate,false, null, null, null, Utils.getCurrentDateTime());
 
       _model.updatePost(_token, _postId!,request).then((value) {
         // Show success message
@@ -145,7 +149,8 @@ class AddNewsFeedBloc extends ChangeNotifier{
           AddPostRequest request = AddPostRequest(0, _postTitle, _postTitle, onValue?.file, _postContent, categoryId, Utils.getCurrentDateTime(), false, null, null, null, null,);
 
           _model.addPost(_token, request).then((value) {
-            // Show success message
+            /// this is send notification
+            FCMService().sendTopicNotification(categoryId,'all', _postTitle, _postContent);
             showSuccessScaffold(context, value?.message ?? 'Post added successfully');
             Navigator.pop(context,true);
           }).catchError((onError) {
@@ -162,7 +167,8 @@ class AddNewsFeedBloc extends ChangeNotifier{
         AddPostRequest request = AddPostRequest(0, _postTitle, _postTitle, _featureImageIsForUpdate,_postContent,categoryId,Utils.getCurrentDateTime(),false, null, null, null, null,);
 
         _model.addPost(_token, request).then((value) {
-          // Show success message
+          ///this is send notification
+          FCMService().sendTopicNotification(categoryId,'all', _postTitle, _postContent);
           showSuccessScaffold(context, value?.message ?? 'Post added successfully');
           Navigator.pop(context,true);
         }).catchError((onError) {

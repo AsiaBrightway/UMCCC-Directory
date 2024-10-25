@@ -158,10 +158,13 @@ class _EmployeeProfilePageState extends ConsumerState<EmployeeProfilePage> {
                                   const Text('Personal Info',style: TextStyle(fontWeight: FontWeight.w500),),
                                   const Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [ Padding(
-                                        padding: EdgeInsets.only(right: 8.0,top: 8),
-                                        child: Text('more details >>',style: TextStyle(color: colorAccent,fontSize: 12),),
-                                      )
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.only(right: 8.0, top: 8),
+                                          child: Text('more details >>',
+                                            style: TextStyle(color: colorAccent, fontSize: 12),
+                                          ),
+                                        )
                                       ]
                                   )
                                 ],
@@ -292,29 +295,31 @@ class _EmployeeProfilePageState extends ConsumerState<EmployeeProfilePage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           ///Discipline
-          Container(
-            width: MediaQuery.of(context).size.width * 0.42,
-            height: 140,
-            decoration: BoxDecoration(
-                border: Border.all(color: Colors.black,width: 1,),
-                borderRadius: BorderRadius.circular(8),
-                color: Theme.of(context).colorScheme.secondaryContainer
-            ),
-            child: Column(
-              children: [
-                const SizedBox(height: 20,),
-                Image.asset('lib/icons/discipline.png',width: 50,height: 50,color: Theme.of(context).colorScheme.onSurface,),
-                const SizedBox(height: 10,),
-                const Text('Discipline',style: TextStyle(fontWeight: FontWeight.w500),),
-                const Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [ Padding(
-                      padding: EdgeInsets.only(right: 8.0,top: 8),
-                      child: Text('more details >>',style: TextStyle(color: colorAccent,fontSize: 12),),
-                    )
-                    ]
-                )
-              ],
+          Card(
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.42,
+              height: 140,
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black,width: 1,),
+                  borderRadius: BorderRadius.circular(8),
+                  color: Theme.of(context).colorScheme.secondaryContainer
+              ),
+              child: Column(
+                children: [
+                  const SizedBox(height: 20,),
+                  Image.asset('lib/icons/discipline.png',width: 50,height: 50,color: Theme.of(context).colorScheme.onSurface,),
+                  const SizedBox(height: 10,),
+                  const Text('Discipline',style: TextStyle(fontWeight: FontWeight.w500),),
+                  const Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [ Padding(
+                        padding: EdgeInsets.only(right: 8.0,top: 8),
+                        child: Text('more details >>',style: TextStyle(color: colorAccent,fontSize: 12),),
+                      )
+                      ]
+                  )
+                ],
+              ),
             ),
           ),
         ],
