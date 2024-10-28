@@ -101,7 +101,7 @@ class _AddCategoryPageState extends State<AddCategoryPage> {
                                   child: DropdownButton2(
                                     isExpanded: true,
                                     value: selectedParentId,
-                                    hint: const Text('Parent ID', style: TextStyle(fontSize: 10)),
+                                    hint: const Text('', style: TextStyle(fontSize: 10)),
                                     items: categoryList?.map((CategoryVo value) {
                                       return DropdownMenuItem<int>(
                                         value: value.id,
@@ -115,7 +115,7 @@ class _AddCategoryPageState extends State<AddCategoryPage> {
                                           bloc.selectedParentId = categoryVo.id;
                                           bloc.isActive = categoryVo.isActive!;
                                           bloc.updateId = newValue;
-                                          bloc.updateCategoryName(newValue.toString());
+                                          bloc.updateCategoryName(categoryVo.category);
                                         });
                                       }else{
                                         bloc.selectedParentId = newValue;
@@ -136,6 +136,7 @@ class _AddCategoryPageState extends State<AddCategoryPage> {
                                   ),
                                 ),
                               );
+
                             }
                         ),
                         const SizedBox(height: 16),

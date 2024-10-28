@@ -168,7 +168,7 @@ class FCMService {
 
       });
     }catch(e){
-      print(e);
+      //print(e);
     }
   }
 

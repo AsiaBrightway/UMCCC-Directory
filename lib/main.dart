@@ -3,10 +3,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:pahg_group/fcm/fcm_service.dart';
-import 'package:pahg_group/ui/pages/home_page.dart';
-import 'package:pahg_group/ui/pages/news_feed_page.dart';
 
 import 'package:provider/provider.dart' as provider;
+import 'firebase_options.dart';
 import 'ui/pages/splash_page.dart';
 import 'ui/providers/auth_provider.dart';
 import 'ui/themes/dark_mode.dart';
@@ -17,13 +16,11 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
   await Firebase.initializeApp();
-
-  print("Handling a background message: ${message.messageId}");
 }
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   FCMService().listenForMessages();
   runApp(
     riverpod.ProviderScope(
@@ -51,12 +48,7 @@ class MyApp extends StatelessWidget {
       theme: lightMode,
       darkTheme: darkMode,
       themeMode: ThemeMode.system,
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const SplashPage(),
-        '/home': (context) => const HomePage(),
-        '/news_page': (context) => const NewsFeedPage(categoryId: 0,categoryName: "News"), // Define the NewsFeedPage route
-      },
+      home: const SplashPage(),
     );
   }
 }

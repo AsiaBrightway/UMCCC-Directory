@@ -1,7 +1,6 @@
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:pahg_group/ui/pages/news_feed_page.dart';
 import 'package:provider/provider.dart';
 import '../../bloc/home_bloc.dart';
@@ -184,12 +183,12 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(companies.companyName!,style: const TextStyle(
+                    Text(companies.companyName ?? '',style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold
                     )),
                     const SizedBox(height: 10),
-                    Text(companies.address!)
+                    Text(companies.address ?? '')
                   ],
                 ),
               )
@@ -233,7 +232,7 @@ class CategoryCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => NewsFeedPage(categoryId: category.id!,categoryName: category.category ?? ' ',),));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => NewsFeedPage(categoryId: category.id ?? 0,categoryName: category.category ?? ' ',),));
       },
       child: Card(
         child: Container(

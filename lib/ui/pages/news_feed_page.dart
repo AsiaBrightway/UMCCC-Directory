@@ -88,7 +88,10 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
         body: Selector<NewsFeedBloc,List<PostVo>?>(
           selector: (context,bloc) => bloc.postList,
           builder: (context,postList,_){
-            if(postList == null || postList.isEmpty){
+            if(postList == null){
+              return const Center(child: CircularProgressIndicator());
+            }
+            else if(postList.isEmpty){
               return const Center(
                   child: Text('Empty')
               );
