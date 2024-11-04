@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pahg_group/bloc/news_feed_bloc.dart';
 import 'package:pahg_group/data/vos/post_vo.dart';
 import 'package:pahg_group/ui/pages/add_news_feed_page.dart';
+import 'package:pahg_group/ui/shimmer/news_feed_shimmer.dart';
 import 'package:pahg_group/utils/utils.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
@@ -89,11 +90,17 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
           selector: (context,bloc) => bloc.postList,
           builder: (context,postList,_){
             if(postList == null){
-              return const Center(child: CircularProgressIndicator());
+              return const NewsFeedShimmer();
             }
             else if(postList.isEmpty){
-              return const Center(
-                  child: Text('Empty')
+              return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset('lib/icons/no_data_empty.png',width: 200,height: 200,fit: BoxFit.cover,),
+                      const Text('Empty')
+                    ],
+                  ),
               );
             }
             else {

@@ -1,10 +1,4 @@
 
-// const String kBaseUrl = "https://www.jlarpyi.com";
-// const String kBaseImageUrl = "https://www.jlarpyi.com/uploadimage/";
-
-const String kBaseUrl = "http://192.168.1.6:86";
-const String kBaseImageUrl = "http://192.168.1.6:86/uploadimage/";
-
 //end point
 const String kEndPointLogin = "/v1/api/Token";
 const String kEndPointGetCompanies = "/v1/api/Companies";

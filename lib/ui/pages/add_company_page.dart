@@ -6,7 +6,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:pahg_group/utils/utils.dart';
 import 'package:provider/provider.dart';
-
 import '../../data/models/pahg_model.dart';
 import '../../data/vos/companies_vo.dart';
 import '../../utils/helper_functions.dart';
@@ -390,7 +389,10 @@ class _AddCompanyPageState extends State<AddCompanyPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Text('Start Date ',style: TextStyle(color: Colors.black,fontSize: 16,fontFamily: 'Roboto',fontWeight: FontWeight.w500),),
-                            Text(Utils.getFormattedDate(_date),style: const TextStyle(color: Colors.black,fontFamily: 'Roboto',fontWeight: FontWeight.w300),)
+                            Text(_date.isEmpty
+                                ? _date
+                                : Utils.getFormattedDate(_date),
+                            style: const TextStyle(color: Colors.black,fontFamily: 'Roboto',fontWeight: FontWeight.w300),)
                           ],
                         )
                       ],

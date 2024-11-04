@@ -22,8 +22,19 @@ class _LoginPageState extends State<LoginPage> {
   bool _isObscure = true;
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final FocusNode _emailFocusNode = FocusNode();
+  final FocusNode _passwordFocusNode = FocusNode();
   bool isSuccess = false;
   final PahgModel _pahgModel = PahgModel();
+
+  @override
+  void dispose(){
+    _emailController.dispose();
+    _passwordController.dispose();
+    _emailFocusNode.dispose();
+    _passwordFocusNode.dispose();
+    super.dispose();
+  }
 
   ///used delay await because shared preferences read and write need time.
   Future<void> userLogin() async{
@@ -95,7 +106,7 @@ class _LoginPageState extends State<LoginPage> {
                         color: Colors.white,
                       ),
                     ),
-                    const SizedBox(height: 20,),
+                    const SizedBox(height: 20),
                     Container(
                       height: 50,
                       width: double.infinity,
@@ -112,6 +123,7 @@ class _LoginPageState extends State<LoginPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 25),
                 child: TextField(
                   controller: _emailController,
+                  focusNode: _emailFocusNode,
                   decoration: InputDecoration(
                     prefixIcon: const Icon(Icons.email),
                     labelText: 'Email',
@@ -119,6 +131,10 @@ class _LoginPageState extends State<LoginPage> {
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
+                  onSubmitted: (_) {
+                    // Move focus to the password field
+                    FocusScope.of(context).requestFocus(_passwordFocusNode);
+                  },
                 ),
               ),
               ///Password text field
@@ -126,6 +142,7 @@ class _LoginPageState extends State<LoginPage> {
                 padding: const EdgeInsets.all(25.0),
                 child: TextField(
                   controller: _passwordController,
+                  focusNode: _passwordFocusNode,
                   obscureText: _isObscure,
                   decoration: InputDecoration(
                     prefixIcon: const Icon(Icons.lock),

@@ -82,26 +82,30 @@ class _HomePageState extends State<HomePage> {
             : UserDrawer(userId: _userId),
         body: CustomScrollView(
           slivers: [
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 8),
-            ),
+
             ///category list
             SliverToBoxAdapter(
-              child: SizedBox(
-                height: 60,
-                child: Selector<HomeBloc,List<CategoryVo>>(
-                  selector: (context,bloc) => bloc.categoryList,
-                  builder: (context,countryList,_){
-                    return ListView.builder(
-                      physics: const BouncingScrollPhysics(),
-                      scrollDirection: Axis.horizontal,
-                      shrinkWrap: true,
-                      itemCount: countryList.length,
-                      itemBuilder: (context,index){
-                          return CategoryCardWidget(category: countryList[index]);
-                        },
-                    );
-                  },
+              child: Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: SizedBox(
+                  height: 60,
+                  child: Selector<HomeBloc,List<CategoryVo>>(
+                    selector: (context,bloc) => bloc.categoryList,
+                    builder: (context,countryList,_){
+                      return countryList.isNotEmpty
+                            ? ListView.builder(
+                                physics: const BouncingScrollPhysics(),
+                                scrollDirection: Axis.horizontal,
+                                shrinkWrap: true,
+                                itemCount: countryList.length,
+                                itemBuilder: (context, index) {
+                                  return CategoryCardWidget(
+                                      category: countryList[index]);
+                                },
+                              )
+                            : const SizedBox.shrink();
+                    },
+                  ),
                 ),
               ),
             ),

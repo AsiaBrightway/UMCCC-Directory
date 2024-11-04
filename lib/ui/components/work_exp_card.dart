@@ -60,7 +60,7 @@ class _WorkExpCardState extends State<WorkExpCard> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("${widget.work.companyName}",style: const TextStyle(fontSize: 16,fontFamily: 'Ubuntu'),),
+                      Expanded(child: Text("${widget.work.companyName}",style: const TextStyle(fontSize: 16,fontFamily: 'Ubuntu'),)),
                       const Icon(Icons.keyboard_arrow_down,size: 20,)
                     ],
                   ),
@@ -75,7 +75,7 @@ class _WorkExpCardState extends State<WorkExpCard> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             const Text("Rank : ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
-                            Text("${widget.work.rank}",style: const TextStyle(fontSize: 15,fontFamily: 'Ubuntu'),),
+                            Expanded(child: Text("${widget.work.rank}",style: const TextStyle(fontSize: 15,fontFamily: 'Ubuntu'),)),
                           ],
                         ),
                       ),
@@ -95,7 +95,7 @@ class _WorkExpCardState extends State<WorkExpCard> {
                           children: [
                             const Text("Responsibilities : ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
 
-                            Text("${widget.work.detailResponsibilities}",style: const TextStyle(fontSize: 13)),
+                            Expanded(child: Text("${widget.work.detailResponsibilities}",style: const TextStyle(fontSize: 13))),
                           ],
                         ),
                       ),
@@ -108,7 +108,7 @@ class _WorkExpCardState extends State<WorkExpCard> {
                               padding: const EdgeInsets.only(left: 8.0,right: 8.0),
                               child: Text("To",style: TextStyle(color: Theme.of(context).colorScheme.primary),),
                             ),
-                            Text(Utils.getFormattedDate(widget.work.toDate),style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
+                            Expanded(child: Text(Utils.getFormattedDate(widget.work.toDate),style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13))),
                           ],
                         ),
                       ),

@@ -17,17 +17,23 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   final _searchController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
   late SearchEmployeeBloc _searchEmployeeBloc ;
 
   @override
   void initState() {
     super.initState();
     _searchEmployeeBloc = SearchEmployeeBloc(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      FocusScope.of(context).requestFocus(_searchFocusNode);
+    });
   }
 
   @override
   void dispose() {
     _searchEmployeeBloc.onDispose();
+    _searchFocusNode.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -45,7 +51,7 @@ class _SearchPageState extends State<SearchPage> {
           onPressed: _onBackPressed,
         ),
         backgroundColor: Colors.blue.shade800,
-        title: const Text("SEARCH PAGE",style: TextStyle(color: Colors.white,fontSize: 14),),
+        title: const Text("SEARCH",style: TextStyle(color: Colors.white,fontSize: 14),),
         centerTitle: true,
       ),
       body: Column(
@@ -58,6 +64,7 @@ class _SearchPageState extends State<SearchPage> {
               borderRadius: BorderRadius.circular(24)
             ),
             child: TextField(
+              focusNode: _searchFocusNode,
               onChanged: (value) {
                 if(widget.searchType == 1){
                   /// 1 is coming from home page 2 is from company page
@@ -105,7 +112,7 @@ class _SearchPageState extends State<SearchPage> {
                       child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.cloud_off),
+                      const Icon(Icons.cloud_off),
                       Text(snapshot.error.toString()),
                     ],
                   ));

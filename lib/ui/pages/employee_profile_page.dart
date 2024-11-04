@@ -284,14 +284,10 @@ class _EmployeeProfilePageState extends ConsumerState<EmployeeProfilePage> {
   }
 
   Widget disciplineCard(){
-
-    double screenWidth = MediaQuery.of(context).size.width;
-    bool isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
-
-    double paddingWidth = isPortrait ? screenWidth * 0.064 : screenWidth * 0.07;
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: paddingWidth,vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 12,vertical: 12),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           ///Discipline
@@ -321,6 +317,12 @@ class _EmployeeProfilePageState extends ConsumerState<EmployeeProfilePage> {
                 ],
               ),
             ),
+          ),
+          const SizedBox(width: 18,),
+          ///this is only use to adjust the container
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.42,
+            height: 140,
           ),
         ],
       ),
@@ -400,7 +402,7 @@ class _EmployeeProfilePageState extends ConsumerState<EmployeeProfilePage> {
                 ///jd code text
                 Row(
                   children: [
-                    Image.asset('lib/icons/employee_jd.png',width: 20,color: Colors.white,),
+                    Image.asset('lib/icons/calendar3.png',width: 20,color: Colors.white,),
                     const SizedBox(width: 4),
                     Text(employee.appointmentDate ?? '',style: const TextStyle(fontSize: 14,color: Colors.white,fontWeight: FontWeight.w300),)
                   ],

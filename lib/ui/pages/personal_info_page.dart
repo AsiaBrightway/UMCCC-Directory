@@ -316,7 +316,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             const Text('Date Of Birth',style: TextStyle(fontFamily : 'Ubuntu',fontSize: 15,fontWeight: FontWeight.w300),),
-                                            Text(Utils.getFormattedDate(dateOfBirth) ?? '')
+                                            Text(Utils.getFormattedDate(dateOfBirth))
                                           ],
                                         ),
                                         const SizedBox(width: 20),

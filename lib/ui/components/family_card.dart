@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pahg_group/utils/utils.dart';
 
 
 import '../../data/vos/family_vo.dart';
@@ -102,9 +103,9 @@ class _FamilyCardState extends State<FamilyCard> {
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(
                           children: [
-                            const Text("Date of Birth : ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
+                            const Text("Date of Birth : ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 12),),
 
-                            Text("${widget.family.dateOfBirth}",style: const TextStyle(fontSize: 13)),
+                            Text(Utils.getFormattedDate(widget.family.dateOfBirth),style: const TextStyle(fontSize: 13)),
                           ],
                         ),
                       ),

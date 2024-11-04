@@ -49,11 +49,11 @@ class FCMService {
     await initFlutterLocalNotification();
     await registerChannel();
     messaging.getToken().then((fcmToken) {
-      debugPrint("FCM Token for Device ======> $fcmToken");
+
     });
 
     FirebaseMessaging.onMessage.listen((remoteMessage) {
-      debugPrint("Notification Sent From Server while in foreground");
+      //debugPrint("Notification Sent From Server while in foreground");
       RemoteNotification? notification = remoteMessage.notification;
       AndroidNotification? android = remoteMessage.notification?.android;
 
@@ -77,7 +77,6 @@ class FCMService {
 
     ///background click
     FirebaseMessaging.onMessageOpenedApp.listen((remoteMessage){
-      debugPrint("Notification Click in Background");
       handleMessage(remoteMessage.data['post_id']);
     });
   }
@@ -87,7 +86,6 @@ class FCMService {
     messaging.getInitialMessage().then((remoteMessage) {
       if(remoteMessage != null){
         onMessageOpenedApp(remoteMessage);
-        debugPrint("Message Launched ${remoteMessage.data['post_id']}");
       }
     });
   }
@@ -171,6 +169,7 @@ class FCMService {
       //print(e);
     }
   }
+
 
   String truncateMessage(String message, {int maxLength = 80}) {
     return message.length > maxLength ? '${message.substring(0, maxLength)} ...' : message;

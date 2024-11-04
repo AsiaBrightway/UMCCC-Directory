@@ -99,6 +99,10 @@ class _FamilyPageState extends State<FamilyPage> {
     });
   }
 
+  void _onBackPressed() {
+    Navigator.of(context).pop();
+  }
+
   Future<void> _initializeData() async{
     final authModel = Provider.of<AuthProvider>(context,listen: false);
     _token = authModel.token;
@@ -121,48 +125,57 @@ class _FamilyPageState extends State<FamilyPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text("Family Member"),
+        backgroundColor: Colors.blue[800],
+        title: const Text("Family Member",style: TextStyle(color: Colors.white),),
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios,color: Colors.white
+          ),
+          onPressed: _onBackPressed,
+        ),
       ),
+      floatingActionButton: (widget.userRole == 1)
+          ? FloatingActionButton.extended(
+              onPressed: () {
+                showFamilyDialog(context, family: null, onUpdate: _onAdd);
+              },
+              backgroundColor: Colors.orangeAccent,
+              icon: const Icon(Icons.add),
+              label: const Text('Add Work Exp'),
+            )
+          : null,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Row(
+              ///we need this guy to get the center to family card xD
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  (widget.userRole == 1)
-                      ? Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: ElevatedButton(
-                        onPressed: (){
-                          showFamilyDialog(context,family: null, onUpdate: _onAdd);
-                        },
-                        child: const Text("Add Family")
-                    ),
-                  )
-                      : const SizedBox(height: 1),
-                ],
               ),
               (familyList.isNotEmpty)
                   ? Column(
-                children: familyList.map((family) {
-                  return FamilyCard(token: _token, userRole: widget.userRole, onUpdate: _onUpdate, onDelete: _onDelete, family: family);
-                }).toList(),
-              )
+                      children: familyList.map((family) {
+                      return FamilyCard(
+                          token: _token,
+                          userRole: widget.userRole,
+                          onUpdate: _onUpdate,
+                          onDelete: _onDelete,
+                          family: family);}).toList())
                   : isLoading
-                  ? const Padding(
-                padding: EdgeInsets.all(16.0),
-                child: CircularProgressIndicator(),
-              )
-                  : const Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text(
-                  "Empty",
-                  style: TextStyle(fontFamily: 'Ubuntu'),
-                ),
-              ),
+                      ? const Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: CircularProgressIndicator(),
+                        )
+                      : const Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Text(
+                            "Empty",
+                            style: TextStyle(fontFamily: 'Ubuntu'),
+                          ),
+                        ),
             ],
           ),
         ),

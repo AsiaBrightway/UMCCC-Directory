@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:pahg_group/ui/components/empty_data_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/models/pahg_model.dart';
@@ -170,11 +171,8 @@ class _WorkExperiencePageState extends State<WorkExperiencePage> {
                         )
                       : const Padding(
                           padding: EdgeInsets.all(16.0),
-                          child: Text(
-                            "Empty",
-                            style: TextStyle(fontFamily: 'Ubuntu'),
-                          ),
-                        ),
+                          child: EmptyDataWidget()
+                          )
             ],
           ),
         ),
