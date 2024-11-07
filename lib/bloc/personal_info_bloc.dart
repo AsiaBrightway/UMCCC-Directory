@@ -26,6 +26,7 @@ class PersonalInfoBloc extends ChangeNotifier{
   bool _editMode = false;
   bool _isNrcExpanded = false;
   bool _isAppearanceExpanded = false;
+  bool _isNrcChanged = false;
   bool _isDrivingLicenseExpanded = false;
   bool _isEmergencyExpanded = false;
   String _token = "";
@@ -40,6 +41,8 @@ class PersonalInfoBloc extends ChangeNotifier{
 
   set selectedNationalType(String? value) {
     _selectedNationalType = value;
+    _nrcNumber == null;
+    _isNrcChanged = true;
     notifyListeners();
   }
 
@@ -75,6 +78,7 @@ class PersonalInfoBloc extends ChangeNotifier{
     _pahgModel.getPersonalInfo(token,"EmployeeId", columnValue).then((onValue){
       if(onValue.isEmpty){
        _isDataEmpty = true;
+       _editMode = true;
       }else{
         _personalInfo = onValue.first;
         _nrcNumber = _personalInfo.nrcNumber;
@@ -99,6 +103,7 @@ class PersonalInfoBloc extends ChangeNotifier{
       _updateSuccess = onValue?.message;
       _updateState = PersonalInfoState.success;
       _isDataEmpty = false;
+      _isNrcChanged = false;
       getPersonalInformation(_token, _employeeId);
       showSuccessScaffold(context, onValue?.message ?? '');
       notifyListeners();
@@ -117,7 +122,7 @@ class PersonalInfoBloc extends ChangeNotifier{
     _pahgModel.updatePersonalInfo(token, _personalInfo.id!,request).then((onValue){
       _updateSuccess = onValue?.message;
       _updateState = PersonalInfoState.success;
-      _nrcNumber = "$selectedState/$selectedTownship/($selectedNationalType) $_nrcNo";
+      _isNrcChanged = false;
       showSuccessScaffold(context, onValue?.message ?? '');
       notifyListeners();
     }).catchError((onError){
@@ -304,7 +309,9 @@ class PersonalInfoBloc extends ChangeNotifier{
   }
 
   PersonalInfoRequest getPersonalRequest(){
-    String nrcNumber = "$selectedState/$selectedTownship/($selectedNationalType) $_nrcNo";
+    if(_isNrcChanged){
+       _nrcNumber = "$selectedState/$selectedTownship/($selectedNationalType) $_nrcNo";
+    }
     return PersonalInfoRequest(
         id: _personalInfo.id,
         address: _personalInfo.address,
@@ -345,7 +352,7 @@ class PersonalInfoBloc extends ChangeNotifier{
         previousApplied: _personalInfo.previousApplied,
         previousAppliedDescription: _personalInfo.previousAppliedDescription,
         hRDepartmentRecord: _personalInfo.hRDepartmentRecord,
-        nrcNumber: nrcNumber,
+        nrcNumber: _nrcNumber,
         email: _personalInfo.email
     );
   }
@@ -354,11 +361,13 @@ class PersonalInfoBloc extends ChangeNotifier{
     _selectedState = value;
     _selectedTownship = null;
     getTownship(value!);
+    _isNrcChanged = true;
     notifyListeners();
   }
 
   set selectedTownship(String? value) {
     _selectedTownship = value;
+    _isNrcChanged = true;
     notifyListeners();
   }
 

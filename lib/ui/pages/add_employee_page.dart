@@ -207,7 +207,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
               children: [
                 Center(
                   child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 20.0),
+                      padding: const EdgeInsets.symmetric(vertical: 10.0),
                       child : GestureDetector(
                           onTap: () async {
                             ImagePicker imagePicker = ImagePicker();
@@ -231,8 +231,8 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                   borderRadius: BorderRadius.circular(16),
                                   child: Image.network(
                                     imageUrlForProfile,
-                                    width: MediaQuery.of(context).size.width * 0.22,
-                                    height: MediaQuery.of(context).size.height * 0.15,
+                                    width: MediaQuery.of(context).size.width * 0.28,
+                                    height: MediaQuery.of(context).size.height * 0.18,
                                     fit: BoxFit.cover,
                                     errorBuilder: (context, error, stackTrace) {
                                       return Image.asset(
@@ -262,7 +262,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                   borderRadius: BorderRadius.circular(16),
                                   child: Image.file(
                                     _image!,
-                                    width: MediaQuery.of(context).size.width * 0.22,
+                                    width: MediaQuery.of(context).size.width * 0.28,
                                     height: MediaQuery.of(context).size.height * 0.15,
                                     fit: BoxFit.cover,
                                     errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {

@@ -2,7 +2,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../fcm/access_firebase_token.dart';
-import '../../network/api_constants.dart';
 part 'post_vo.g.dart';
 
 @JsonSerializable()

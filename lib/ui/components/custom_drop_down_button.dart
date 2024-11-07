@@ -28,40 +28,38 @@ class CustomDropdownButton<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton2<T>(
-          isExpanded: true,
-          value: value,
-          hint: Text(
-            hint,
-            style: const TextStyle(fontSize: 14),
-          ),
-          items: items.entries.map((entry) {
-            return DropdownMenuItem<T>(
-              value: entry.key,
-              child: Text(
-                entry.value,
-                style: TextStyle(
-                  overflow: TextOverflow.ellipsis,
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-              ),
-            );
-          }).toList(),
-          onChanged: onChanged,
-          buttonStyleData: ButtonStyleData(
-            elevation: 4,
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.onPrimary,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: Colors.black26,
+    return DropdownButtonHideUnderline(
+      child: DropdownButton2<T>(
+        isExpanded: true,
+        value: value,
+        hint: Text(
+          hint,
+          style: const TextStyle(fontSize: 14),
+        ),
+        items: items.entries.map((entry) {
+          return DropdownMenuItem<T>(
+            value: entry.key,
+            child: Text(
+              entry.value,
+              style: TextStyle(
+                overflow: TextOverflow.ellipsis,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            height: 44,
+          );
+        }).toList(),
+        onChanged: onChanged,
+        buttonStyleData: ButtonStyleData(
+          elevation: 4,
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.onPrimary,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: Colors.black26,
+            ),
           ),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          height: 44,
         ),
       ),
     );

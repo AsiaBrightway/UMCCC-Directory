@@ -681,20 +681,25 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
           padding: const EdgeInsets.symmetric(horizontal:16,vertical: 10),
           child: GestureDetector(
             onTap: (){
-                bloc.toggleNrcExpanded();
+
             },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  color: Colors.transparent,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('National Card',style: TextStyle(fontFamily: 'Ubuntu'),),
-                      Icon(isNrcExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
-                    ],
+                GestureDetector(
+                  onTap: (){
+                    bloc.toggleNrcExpanded();
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    color: Colors.transparent,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('National Card',style: TextStyle(fontFamily: 'Ubuntu'),),
+                        Icon(isNrcExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
+                      ],
+                    ),
                   ),
                 ),
                 if(isNrcExpanded)
@@ -707,15 +712,12 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                         Row(
                         children: [
                           Expanded(child: stateListWidget(context)),
-                          const SizedBox(width: 8),
                           Expanded(child: townshipDropdown(context)),
-                          const SizedBox(width: 8),
                           Expanded(child: nationalTypeListDropdown(context)),
-                          const SizedBox(width: 8),
                           Expanded(
                             child: Container(
                               height: 45,
-                              padding: const EdgeInsets.symmetric(horizontal: 6,),
+                              padding: const EdgeInsets.symmetric(horizontal: 6),
                               decoration: BoxDecoration(
                                   color: Theme.of(context).colorScheme.onPrimary,
                                   border: Border.all(color: Colors.grey.shade600),
@@ -764,26 +766,23 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                 return Stack(
                                   alignment: Alignment.bottomRight,
                                   children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(12),
-                                      child: OpenContainer(
-                                        closedBuilder:(context,action) => CachedNetworkImage(
-                                          imageUrl: bloc.personalInfo.getImageWithBaseUrl(nrcFrontUrl),
-                                          height: SizeConfig.blockSizeVertical * 17,
-                                          width: SizeConfig.blockSizeHorizontal * 41,
-                                          fit: BoxFit.cover,
-                                          errorWidget: (context, error, stackTrace) {
-                                            return Container(
-                                                height: SizeConfig.blockSizeVertical * 17,
-                                                width: SizeConfig.blockSizeHorizontal * 40,
-                                                color: Colors.black12,
-                                                child: const Center(child: Text("Front Image")));
-                                          },
-                                        ),
-                                        closedColor: Colors.black12,
-                                        openBuilder: (context,action) =>
-                                            ImageDetailsPage(imageUrl: bloc.personalInfo.getImageWithBaseUrl(nrcFrontUrl)),
-                                      )
+                                    OpenContainer(
+                                      closedBuilder:(context,action) => CachedNetworkImage(
+                                        imageUrl: bloc.personalInfo.getImageWithBaseUrl(nrcFrontUrl),
+                                        height: SizeConfig.blockSizeVertical * 17,
+                                        width: SizeConfig.blockSizeHorizontal * 40,
+                                        fit: BoxFit.cover,
+                                        errorWidget: (context, error, stackTrace) {
+                                          return Container(
+                                              height: SizeConfig.blockSizeVertical * 17,
+                                              width: SizeConfig.blockSizeHorizontal * 40,
+                                              color: Colors.black12,
+                                              child: const Center(child: Text("Front Image")));
+                                        },
+                                      ),
+                                      closedColor: Colors.black12,
+                                      openBuilder: (context,action) =>
+                                          ImageDetailsPage(imageUrl: bloc.personalInfo.getImageWithBaseUrl(nrcFrontUrl)),
                                     ),
                                     if(_currentUserRole == 1)
                                       GestureDetector(
@@ -796,7 +795,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                               },
                             ),
                           ),
-                          const SizedBox(width: 10,),
+                          const SizedBox(width: 10),
                           Expanded(
                             child: Selector<PersonalInfoBloc,String>(
                                 selector: (context,bloc) => bloc.personalInfo.nrcBackUrl ?? '',
@@ -804,29 +803,24 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                   return Stack(
                                       alignment: Alignment.bottomRight,
                                       children: [
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.circular(12),
-                                          child: Flexible(
-                                            child: OpenContainer(
-                                                closedColor: Colors.black12,
-                                                closedBuilder: (context,action) => CachedNetworkImage(
-                                                  imageUrl: bloc.personalInfo.getImageWithBaseUrl(nrcBackUrl),
-                                                  height: SizeConfig.blockSizeVertical * 17,
-                                                  width: SizeConfig.blockSizeHorizontal * 41,
-                                                  fit: BoxFit.cover,
-                                                  errorWidget: (context, error, stackTrace) {
-                                                    return Container(
-                                                        height: MediaQuery.of(context).size.height * 0.17,
-                                                        width: MediaQuery.of(context).size.width * 0.4,
-                                                        color: Colors.black12,
-                                                        child: const Center(child: Text("Back Image"))
-                                                    );
-                                                  },
-                                                ),
-                                                openBuilder: (context,action) =>
-                                                    ImageDetailsPage(imageUrl: bloc.personalInfo.getImageWithBaseUrl(nrcBackUrl))
+                                        OpenContainer(
+                                            closedColor: Colors.black12,
+                                            closedBuilder: (context,action) => CachedNetworkImage(
+                                              imageUrl: bloc.personalInfo.getImageWithBaseUrl(nrcBackUrl),
+                                              height: SizeConfig.blockSizeVertical * 17,
+                                              width: SizeConfig.blockSizeHorizontal * 40,
+                                              fit: BoxFit.cover,
+                                              errorWidget: (context, error, stackTrace) {
+                                                return Container(
+                                                    height: SizeConfig.blockSizeVertical * 17,
+                                                    width: SizeConfig.blockSizeHorizontal * 40,
+                                                    color: Colors.black12,
+                                                    child: const Center(child: Text("Back Image"))
+                                                );
+                                              },
                                             ),
-                                          ),
+                                            openBuilder: (context,action) =>
+                                                ImageDetailsPage(imageUrl: bloc.personalInfo.getImageWithBaseUrl(nrcBackUrl))
                                         ),
                                         if(_currentUserRole == 1)
                                           GestureDetector(
@@ -1080,29 +1074,24 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                     return Stack(
                                         alignment: Alignment.bottomRight,
                                         children: [
-                                          ClipRRect(
-                                            borderRadius: BorderRadius.circular(12),
-                                            child: Flexible(
-                                              child: OpenContainer(
-                                                  closedColor: Colors.black12,
-                                                  closedBuilder: (context,action) => CachedNetworkImage(
-                                                    imageUrl: bloc.personalInfo.getImageWithBaseUrl(drivingLicenseFrontUrl),
-                                                    height: SizeConfig.blockSizeVertical * 17,
-                                                    width: SizeConfig.blockSizeHorizontal * 41,
-                                                    fit: BoxFit.cover,
-                                                    errorWidget: (context, error, stackTrace) {
-                                                      return Container(
-                                                          height: MediaQuery.of(context).size.height * 0.17,
-                                                          width: MediaQuery.of(context).size.width * 0.4,
-                                                          color: Colors.black12,
-                                                          child: const Center(child: Text("Front Image"))
-                                                      );
-                                                    },
-                                                  ),
-                                                  openBuilder: (context,action) =>
-                                                      ImageDetailsPage(imageUrl: bloc.personalInfo.getImageWithBaseUrl(drivingLicenseFrontUrl))
+                                          OpenContainer(
+                                              closedColor: Colors.black12,
+                                              closedBuilder: (context,action) => CachedNetworkImage(
+                                                imageUrl: bloc.personalInfo.getImageWithBaseUrl(drivingLicenseFrontUrl),
+                                                height: SizeConfig.blockSizeVertical * 17,
+                                                width: SizeConfig.blockSizeHorizontal * 41,
+                                                fit: BoxFit.cover,
+                                                errorWidget: (context, error, stackTrace) {
+                                                  return Container(
+                                                      height: MediaQuery.of(context).size.height * 0.17,
+                                                      width: MediaQuery.of(context).size.width * 0.4,
+                                                      color: Colors.black12,
+                                                      child: const Center(child: Text("Front Image"))
+                                                  );
+                                                },
                                               ),
-                                            ),
+                                              openBuilder: (context,action) =>
+                                                  ImageDetailsPage(imageUrl: bloc.personalInfo.getImageWithBaseUrl(drivingLicenseFrontUrl))
                                           ),
                                           if(_currentUserRole == 1)
                                             GestureDetector(
@@ -1124,29 +1113,24 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                     return Stack(
                                         alignment: Alignment.bottomRight,
                                         children: [
-                                          ClipRRect(
-                                            borderRadius: BorderRadius.circular(12),
-                                            child: Flexible(
-                                              child: OpenContainer(
-                                                  closedColor: Colors.black12,
-                                                  closedBuilder: (context,action) => CachedNetworkImage(
-                                                    imageUrl: bloc.personalInfo.getImageWithBaseUrl(drivingLicenseBackUrl),
-                                                    height: SizeConfig.blockSizeVertical * 17,
-                                                    width: SizeConfig.blockSizeHorizontal * 41,
-                                                    fit: BoxFit.cover,
-                                                    errorWidget: (context, error, stackTrace) {
-                                                      return Container(
-                                                          height: MediaQuery.of(context).size.height * 0.17,
-                                                          width: MediaQuery.of(context).size.width * 0.4,
-                                                          color: Colors.black12,
-                                                          child: const Center(child: Text("Back Image"))
-                                                      );
-                                                    },
-                                                  ),
-                                                  openBuilder: (context,action) =>
-                                                      ImageDetailsPage(imageUrl: bloc.personalInfo.getImageWithBaseUrl(drivingLicenseBackUrl))
+                                          OpenContainer(
+                                              closedColor: Colors.black12,
+                                              closedBuilder: (context,action) => CachedNetworkImage(
+                                                imageUrl: bloc.personalInfo.getImageWithBaseUrl(drivingLicenseBackUrl),
+                                                height: SizeConfig.blockSizeVertical * 17,
+                                                width: SizeConfig.blockSizeHorizontal * 41,
+                                                fit: BoxFit.cover,
+                                                errorWidget: (context, error, stackTrace) {
+                                                  return Container(
+                                                      height: MediaQuery.of(context).size.height * 0.17,
+                                                      width: MediaQuery.of(context).size.width * 0.4,
+                                                      color: Colors.black12,
+                                                      child: const Center(child: Text("Back Image"))
+                                                  );
+                                                },
                                               ),
-                                            ),
+                                              openBuilder: (context,action) =>
+                                                  ImageDetailsPage(imageUrl: bloc.personalInfo.getImageWithBaseUrl(drivingLicenseBackUrl))
                                           ),
                                           if(_currentUserRole == 1)
                                             GestureDetector(
@@ -1223,97 +1207,22 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     return Selector<PersonalInfoBloc,int?>(
       selector: (context,bloc) => bloc.selectedState,
       builder: (context,selectedState,_){
-        return SizedBox(
-            child: Expanded(
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton2(
-                    isExpanded: true,
-                    value: selectedState,
-                    hint: const Text('State', style: TextStyle(fontSize: 8)),
-                    items: stateList.entries.map((entry) {
-                      return DropdownMenuItem<int>(
-                        value: entry.key,
-                        child: Text(entry.value, style: const TextStyle(fontSize: 10,fontWeight: FontWeight.w600)),
-                      );
-                    }).toList(),
-                    onChanged: (int? newValue) {
-                      bloc.selectedState = newValue;
-                    },
-                    buttonStyleData: ButtonStyleData(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      height: 40,
-                    ),
-                  ),
-                ))
-        );
-      },
-    );
-  }
-
-  Widget townshipDropdown(BuildContext context){
-    var bloc = context.read<PersonalInfoBloc>();
-    return Selector<PersonalInfoBloc,List<NrcTownshipVo>?>(
-      selector: (context,bloc) => bloc.townshipList,
-      builder: (context,townshipList,_){
-        return  Selector<PersonalInfoBloc,String?>(
-          selector: (context,bloc) => bloc.selectedTownship,
-          builder: (context,selectedTownship,_){
-            return SizedBox(
-                child: Expanded(
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton2(
-                      isExpanded: true,
-                      value: selectedTownship,
-                      hint: const Text('Tsp', style: TextStyle(fontSize: 8)),
-                      items: bloc.townshipList?.map((NrcTownshipVo value) {
-                        return DropdownMenuItem<String>(
-                          value: value.name,
-                          child: Text(value.name ?? '', style: const TextStyle(fontSize: 8,fontWeight: FontWeight.w600)),
-                        );
-                      }).toList(),
-                      onChanged: (String? newValue) {
-                        bloc.selectedTownship = newValue;
-                      },
-                      buttonStyleData: ButtonStyleData(
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.onPrimary,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        height: 40,
-                      ),
-                    ),
-                  ),
-                )
-            );
-          },
-        );
-      },
-    );
-  }
-
-  Widget nationalTypeListDropdown(BuildContext context){
-    var bloc = context.read<PersonalInfoBloc>();
-    return Selector<PersonalInfoBloc,String?>(
-      selector: (context,bloc) => bloc.selectedNationalType,
-      builder: (context,selectedNational,_){
-        return SizedBox(
-            child: Expanded(
+        return Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 4),
               child: DropdownButtonHideUnderline(
                 child: DropdownButton2(
                   isExpanded: true,
-                  value: selectedNational,
-                  hint: const Text('Ctz', style: TextStyle(fontSize: 8)),
-                  items: nationTypeList.entries.map((entry) {
-                    return DropdownMenuItem<String>(
-                      value: entry.value,
-                      child: Text(entry.value, style: const TextStyle(fontSize: 8,fontWeight: FontWeight.w600)),
+                  value: selectedState,
+                  hint: const Text('State', style: TextStyle(fontSize: 8)),
+                  items: stateList.entries.map((entry) {
+                    return DropdownMenuItem<int>(
+                      value: entry.key,
+                      child: Text(entry.value, style: const TextStyle(fontSize: 12,fontWeight: FontWeight.w600)),
                     );
                   }).toList(),
-                  onChanged: (String? newValue) {
-                    bloc.selectedNationalType = newValue;
+                  onChanged: (int? newValue) {
+                    bloc.selectedState = newValue;
                   },
                   buttonStyleData: ButtonStyleData(
                     decoration: BoxDecoration(
@@ -1329,20 +1238,101 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     );
   }
 
+  Widget townshipDropdown(BuildContext context){
+    var bloc = context.read<PersonalInfoBloc>();
+    return Selector<PersonalInfoBloc,List<NrcTownshipVo>?>(
+      selector: (context,bloc) => bloc.townshipList,
+      builder: (context,townshipList,_){
+        return  Selector<PersonalInfoBloc,String?>(
+          selector: (context,bloc) => bloc.selectedTownship,
+          builder: (context,selectedTownship,_){
+            return Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(right: 4.0),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton2(
+                    isExpanded: true,
+                    value: selectedTownship,
+                    hint: const Text('Tsp', style: TextStyle(fontSize: 8)),
+                    items: bloc.townshipList?.map((NrcTownshipVo value) {
+                      return DropdownMenuItem<String>(
+                        value: value.name,
+                        child: Text(value.name ?? '', style: const TextStyle(fontSize: 12,fontWeight: FontWeight.w600)),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      bloc.selectedTownship = newValue;
+                    },
+                    buttonStyleData: ButtonStyleData(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      height: 40,
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget nationalTypeListDropdown(BuildContext context){
+    var bloc = context.read<PersonalInfoBloc>();
+    return Selector<PersonalInfoBloc,String?>(
+      selector: (context,bloc) => bloc.selectedNationalType,
+      builder: (context,selectedNational,_){
+        return Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(right: 4.0),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton2(
+                isExpanded: true,
+                value: selectedNational,
+                hint: const Text('Ctz', style: TextStyle(fontSize: 8)),
+                items: nationTypeList.entries.map((entry) {
+                  return DropdownMenuItem<String>(
+                    value: entry.value,
+                    child: Text(entry.value, style: const TextStyle(fontSize: 12,fontWeight: FontWeight.w600)),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  bloc.selectedNationalType = newValue;
+                },
+                dropdownStyleData: DropdownStyleData(
+
+                ),
+                buttonStyleData: ButtonStyleData(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.onPrimary,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  height: 40,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Widget bloodTypeWidget(BuildContext context) {
     var bloc = context.read<PersonalInfoBloc>();
     return Selector<PersonalInfoBloc, int?>(
       selector: (context, bloc) => bloc.personalInfo.bloodType,
       builder: (context, bloodType, _) {
-        return SizedBox(
-            child: Expanded(
-                child: CustomDropdownButton(
-                    value: bloodType,
-                    hint: 'Blood Type',
-                    items: bloodTypeList,
-                    onChanged: (int? newValue) {
-                      bloc.updatePersonalInfo(bloodType: newValue);
-                    })));
+        return Expanded(
+            child: CustomDropdownButton(
+                value: bloodType,
+                hint: 'Blood Type',
+                items: bloodTypeList,
+                onChanged: (int? newValue) {
+                  bloc.updatePersonalInfo(bloodType: newValue);
+                }));
       },
     );
   }
@@ -1352,15 +1342,14 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     return Selector<PersonalInfoBloc, int?>(
       selector: (context, bloc) => bloc.personalInfo.marriageStatus,
       builder: (context, marriageStatus, _) {
-        return SizedBox(
-            child: Expanded(
-                child: CustomDropdownButton(
-                    value: marriageStatus,
-                    hint: 'Marriage Status',
-                    items: marriageList,
-                    onChanged: (int? newValue) {
-                      bloc.updatePersonalInfo(marriageStatus: newValue);
-                    })));
+        return Expanded(
+            child: CustomDropdownButton(
+                value: marriageStatus,
+                hint: 'Marriage Status',
+                items: marriageList,
+                onChanged: (int? newValue) {
+                  bloc.updatePersonalInfo(marriageStatus: newValue);
+                }));
       },
     );
   }

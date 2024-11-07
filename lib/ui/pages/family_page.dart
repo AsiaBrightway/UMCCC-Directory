@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
-
 import '../../data/models/pahg_model.dart';
 import '../../data/vos/family_vo.dart';
 import '../../data/vos/request_body/add_family_request.dart';
@@ -141,7 +140,7 @@ class _FamilyPageState extends State<FamilyPage> {
               },
               backgroundColor: Colors.orangeAccent,
               icon: const Icon(Icons.add),
-              label: const Text('Add Work Exp'),
+              label: const Text('Add Family'),
             )
           : null,
       body: SingleChildScrollView(

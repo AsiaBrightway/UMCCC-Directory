@@ -47,9 +47,9 @@ class _HomePageState extends State<HomePage> {
     NotificationSettings settings = await messaging.requestPermission();
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      debugPrint('User granted permission');
+      //debugPrint('User granted permission');
     } else {
-      debugPrint('User declined or has not accepted permission');
+      //debugPrint('User declined or has not accepted permission');
     }
   }
 
@@ -103,7 +103,7 @@ class _HomePageState extends State<HomePage> {
                                       category: countryList[index]);
                                 },
                               )
-                            : const SizedBox.shrink();
+                            : const SizedBox(height: 1);
                     },
                   ),
                 ),
@@ -124,7 +124,7 @@ class _HomePageState extends State<HomePage> {
                   return SliverList(
                     delegate: SliverChildBuilderDelegate(
                         (context,index){
-                          return companyCardWidget(companies: bloc.companyList[index], index: index);
+                          return companyCardWidget(company: bloc.companyList[index], index: index);
                         },
                       childCount: bloc.companyList.length
                     ),
@@ -147,7 +147,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget companyCardWidget({required CompaniesVo companies,required int index}){
+  Widget companyCardWidget({required CompaniesVo company,required int index}){
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Ink(
@@ -165,7 +165,7 @@ class _HomePageState extends State<HomePage> {
         ),
         child: InkWell(
           onTap: (){
-            navigateToCompany(context,index,companies);
+            navigateToCompany(context,index,company);
           },
           child: Row(
             children: [
@@ -174,7 +174,7 @@ class _HomePageState extends State<HomePage> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(15),
                     child: Image.network(
-                      companies.getImageWithBaseUrl(),width: 80,height: 80,fit: BoxFit.cover,
+                      company.getImageWithBaseUrl(),width: 80,height: 80,fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace){
                         return Image.asset('assets/simple_placeholder.png',width: 90,height: 90,fit: BoxFit.cover,);
                       },
@@ -182,17 +182,17 @@ class _HomePageState extends State<HomePage> {
                   )
               ),
               const SizedBox(width: 16,),
-              Flexible(
+              Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(companies.companyName ?? '',style: const TextStyle(
+                    Text(company.companyName ?? '',style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold
                     )),
                     const SizedBox(height: 10),
-                    Text(companies.address ?? '')
+                    Text(company.address ?? '')
                   ],
                 ),
               )

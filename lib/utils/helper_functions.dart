@@ -148,7 +148,7 @@ void showErrorDialog(BuildContext context,String errorMessage) {
 void showScaffoldMessage(context,String name){
   ScaffoldMessenger.of(context).showSnackBar( SnackBar(
     backgroundColor: Colors.grey.shade700,
-    content: Expanded(child: Text(name,style: const TextStyle(color: Colors.white),)),
+    content: Text(name,style: const TextStyle(color: Colors.white),),
     duration: const Duration(milliseconds: 1700),
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     margin: const EdgeInsets.symmetric(horizontal: 50,vertical: 10),
