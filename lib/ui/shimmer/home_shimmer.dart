@@ -8,7 +8,7 @@ class HomeShimmer extends StatelessWidget {
   Widget build(BuildContext context) {
     /// Set to any specific height that fits your layout
     return SizedBox(
-      height: 110,
+      height: 400,
       child: Skeletonizer(
         enabled: true,
         child: ListView.builder(

@@ -10,7 +10,6 @@ import 'package:pahg_group/data/vos/nrc_township_vo.dart';
 import 'package:pahg_group/utils/utils.dart';
 import 'package:provider/provider.dart';
 import '../../bloc/personal_info_bloc.dart';
-import '../../data/vos/personal_info_vo.dart';
 import '../../utils/helper_functions.dart';
 import '../../utils/image_compress.dart';
 import '../../utils/size_config.dart';
@@ -33,7 +32,26 @@ class PersonalInfoPage extends StatefulWidget {
 }
 
 class _PersonalInfoPageState extends State<PersonalInfoPage> {
-  List<PersonalInfoVo> personalInfo = [];
+  final addressController = TextEditingController();
+  final _cellularPhoneController = TextEditingController();
+  final _homePhoneController = TextEditingController();
+  final _placeOfBirthController = TextEditingController();
+  final _nationalityController = TextEditingController();
+  final _religionController = TextEditingController();
+  final _raceController = TextEditingController();
+  final _healthController = TextEditingController();
+  final _hairColorController = TextEditingController();
+  final _skinColorController = TextEditingController();
+  final _eyeColorController = TextEditingController();
+  final _emergencyNameController = TextEditingController();
+  final _emergencyRelationController = TextEditingController();
+  final _emergencyAddressController = TextEditingController();
+  final _vehiclePunishmentDescription = TextEditingController();
+  final _previousAppliedDescription = TextEditingController();
+  final _sportsHobbyController = TextEditingController();
+  final _socialActivitiesController = TextEditingController();
+  final _emergencyCellularPhone = TextEditingController();
+  final _emergencyHomePhone = TextEditingController();
   String _token = '';
   int _currentUserRole = 0;
   final Map<int, String> bloodTypeList = {1: 'A', 2: 'B', 3: 'O', 4: 'AB'};
@@ -233,6 +251,26 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                   }
                   ///Success Widgets
                   else if(personalInfoState == PersonalInfoState.success){
+                    addressController.text = bloc.personalInfo.address ?? '';
+                    _cellularPhoneController.text = bloc.personalInfo.telNoOffice ?? '';
+                    _homePhoneController.text = bloc.personalInfo.telNoHome ?? '';
+                    _placeOfBirthController.text = bloc.personalInfo.placeOfBirth ?? '';
+                    _nationalityController.text = bloc.personalInfo.nationality ?? '';
+                    _religionController.text = bloc.personalInfo.religion ?? '';
+                    _raceController.text = bloc.personalInfo.race ?? '';
+                    _healthController.text = bloc.personalInfo.health ?? '';
+                    _sportsHobbyController.text = bloc.personalInfo.sportAndHobby ?? '';
+                    _socialActivitiesController.text = bloc.personalInfo.socialActivities ?? '';
+                    _hairColorController.text = bloc.personalInfo.hairColor ?? '';
+                    _skinColorController.text = bloc.personalInfo.skinColor ?? '';
+                    _eyeColorController.text = bloc.personalInfo.eyeColor ?? '';
+                    _emergencyNameController.text = bloc.personalInfo.emergencyContactName ?? '';
+                    _emergencyHomePhone.text = bloc.personalInfo.emergencyContactHomePhone ?? '';
+                    _emergencyRelationController.text = bloc.personalInfo.emergencyContactRelation ?? '';
+                    _emergencyCellularPhone.text = bloc.personalInfo.emergencyContactMobilePhone ?? '';
+                    _emergencyAddressController.text = bloc.personalInfo.emergencyContactAddress ?? '';
+                    _previousAppliedDescription.text = bloc.personalInfo.previousAppliedDescription ?? '';
+                    _vehiclePunishmentDescription.text = bloc.personalInfo.vehiclePunishmentDescription ?? '';
                     return SingleChildScrollView(
                       child: Padding(
                         padding: const EdgeInsets.only(left: 14,right: 10,top: 10),
@@ -248,14 +286,15 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                   borderRadius: BorderRadius.circular(8)
                               ),
                               child: TextField(
-                                controller: TextEditingController(text: bloc.personalInfo.address),
+                                controller: addressController,
                                 readOnly: _currentUserRole != 1,
                                 onChanged: (value) => bloc.updatePersonalInfo(address: value),
                                 keyboardType: TextInputType.multiline,
-                                decoration: const InputDecoration(
+                                decoration: InputDecoration(
                                     labelText: 'Address',
+                                    hintText: bloc.personalInfo.address,
                                     border: InputBorder.none,
-                                    labelStyle: TextStyle(fontWeight: FontWeight.w300),
+                                    labelStyle: const TextStyle(fontWeight: FontWeight.w300),
                                     floatingLabelBehavior: FloatingLabelBehavior.always
                                 ),
                               ),
@@ -266,7 +305,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                 Expanded(
                                   ///cellular is mobile phone
                                     child: CustomTextField(
-                                      controller: TextEditingController(text: bloc.personalInfo.telNoOffice),
+                                      controller: _cellularPhoneController,
                                       labelText: 'Cellular Phone',
                                       onChange: (value) => bloc.updatePersonalInfo(telNoOffice: value),
                                       readOnly: _currentUserRole,
@@ -276,7 +315,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                 const SizedBox(width: 10),
                                 Expanded(
                                   child: CustomTextField(
-                                      controller: TextEditingController(text: bloc.personalInfo.telNoHome),
+                                      controller: _homePhoneController,
                                       labelText: 'Home Phone',
                                       onChange: (value) => bloc.updatePersonalInfo(telNoHome: value),
                                       readOnly: _currentUserRole,
@@ -323,7 +362,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                         Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            const Text('Age',style: TextStyle(fontFamily: 'Ubuntu', fontSize: 15,fontWeight: FontWeight.w300),),
+                                            const Text('Age',style: TextStyle(fontFamily: 'Ubuntu', fontSize: 15,fontWeight: FontWeight.w300)),
                                             Text(bloc.personalInfo.age.toString())
                                           ],
                                         ),
@@ -334,43 +373,43 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                               ),
                             ),
                             CustomTextField(
-                                controller: TextEditingController(text: bloc.personalInfo.placeOfBirth),
+                                controller: _placeOfBirthController,
                                 onChange: (value) => bloc.updatePersonalInfo(placeOfBirth: value),
                                 labelText: 'Place of Birth',
                                 readOnly: _currentUserRole),
                             const SizedBox(height: 10),
                             CustomTextField(
-                                controller: TextEditingController(text: bloc.personalInfo.nationality),
+                                controller: _nationalityController,
                                 onChange: (value) => bloc.updatePersonalInfo(nationality: value),
                                 labelText: 'Nationality',
                                 readOnly: _currentUserRole),
                             const SizedBox(height: 10),
                             CustomTextField(
-                                controller: TextEditingController(text: bloc.personalInfo.religion),
+                                controller: _religionController,
                                 onChange: (value) => bloc.updatePersonalInfo(religion: value),
                                 labelText: 'Religion',
                                 readOnly: _currentUserRole),
                             const SizedBox(height: 10),
                             CustomTextField(
-                                controller: TextEditingController(text: bloc.personalInfo.race),
+                                controller: _raceController,
                                 onChange: (value) => bloc.updatePersonalInfo(race: value),
                                 labelText: 'Race',
                                 readOnly: _currentUserRole),
                             const SizedBox(height: 10),
                             CustomTextField(
-                                controller: TextEditingController(text: bloc.personalInfo.health),
+                                controller: _healthController,
                                 onChange: (value) => bloc.updatePersonalInfo(health: value),
                                 labelText: 'Health',
                                 readOnly: _currentUserRole),
                             const SizedBox(height: 10),
                             CustomTextField(
-                                controller: TextEditingController(text: bloc.personalInfo.sportAndHobby),
+                                controller: _sportsHobbyController,
                                 onChange: (value) => bloc.updatePersonalInfo(sportAndHobby: value),
                                 labelText: 'Sports,Hobby',
                                 readOnly: _currentUserRole),
                             const SizedBox(height: 10),
                             CustomTextField(
-                                controller: TextEditingController(text: bloc.personalInfo.socialActivities),
+                                controller: _socialActivitiesController,
                                 onChange: (value) => bloc.updatePersonalInfo(socialActivities: value),
                                 labelText: 'Social Activities',
                                 readOnly: _currentUserRole),
@@ -617,36 +656,36 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                     children: [
                       const SizedBox(height: 10,),
                       CustomTextField(
-                          controller: TextEditingController(text: bloc.personalInfo.emergencyContactName),
+                          controller: _emergencyNameController,
                           onChange: (value) => bloc.updatePersonalInfo(emergencyContactName: value),
                           labelText: 'Name',readOnly: _currentUserRole
                       ),
-                      const SizedBox(height: 6,),
+                      const SizedBox(height: 6),
                       CustomTextField(
-                          controller: TextEditingController(text: bloc.personalInfo.emergencyContactRelation),
+                          controller: _emergencyRelationController,
                           onChange: (value) => bloc.updatePersonalInfo(emergencyContactRelation: value),
                           labelText: 'Relation',
                           readOnly: _currentUserRole),
                       const SizedBox(height: 6,),
                       CustomTextField(
-                          controller: TextEditingController(text: bloc.personalInfo.emergencyContactAddress),
+                          controller: _emergencyAddressController,
                           onChange: (value) => bloc.updatePersonalInfo(emergencyContactAddress: value),
                           labelText: 'Address',
                           readOnly: _currentUserRole),
-                      const SizedBox(height: 6,),
+                      const SizedBox(height: 6),
                       Row(
                         children: [
                           Expanded(child: CustomTextField(
-                            controller: TextEditingController(text: bloc.personalInfo.emergencyContactOfficePhone),
-                            onChange: (value) => bloc.updatePersonalInfo(emergencyContactOfficePhone: value),
+                            controller: _emergencyCellularPhone,
+                            onChange: (value) => bloc.updatePersonalInfo(emergencyContactMobilePhone: value),
                             labelText: 'Cellular Phone',
                             readOnly: _currentUserRole,
                             keyboardType: TextInputType.number,)
                           ),
                           const SizedBox(width: 8,),
                           Expanded(child: CustomTextField(
-                            controller: TextEditingController(text: bloc.personalInfo.emergencyContactHomePhone),
-                            onChange: (value) => bloc.updatePersonalInfo(emergencyContactMobilePhone: value),
+                            controller: _emergencyHomePhone,
+                            onChange: (value) => bloc.updatePersonalInfo(emergencyContactHomePhone: value),
                             labelText: 'Home Phone',
                             readOnly: _currentUserRole,
                             keyboardType: TextInputType.number,),
@@ -679,167 +718,160 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
               border: Border.all(color: Colors.deepPurple)
           ),
           padding: const EdgeInsets.symmetric(horizontal:16,vertical: 10),
-          child: GestureDetector(
-            onTap: (){
-
-            },
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: (){
-                    bloc.toggleNrcExpanded();
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    color: Colors.transparent,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('National Card',style: TextStyle(fontFamily: 'Ubuntu'),),
-                        Icon(isNrcExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
-                      ],
-                    ),
-                  ),
-                ),
-                if(isNrcExpanded)
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: (){
+                  bloc.toggleNrcExpanded();
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  color: Colors.transparent,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      ///NRC Dropdown
-                      const SizedBox(height: 18),
-                      if(_currentUserRole == 1)
-                        Row(
-                        children: [
-                          Expanded(child: stateListWidget(context)),
-                          Expanded(child: townshipDropdown(context)),
-                          Expanded(child: nationalTypeListDropdown(context)),
-                          Expanded(
-                            child: Container(
-                              height: 45,
-                              padding: const EdgeInsets.symmetric(horizontal: 6),
-                              decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.onPrimary,
-                                  border: Border.all(color: Colors.grey.shade600),
-                                  borderRadius: BorderRadius.circular(6)
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.only(bottom: 1.0),
-                                child: TextField(
-                                  maxLines: 1,
-                                  controller: TextEditingController(text: bloc.nrcNo),
-                                  keyboardType: TextInputType.number,
-                                  onChanged : (value) => bloc.setNrcNo = value,
-                                  readOnly: _currentUserRole != 1,
-                                  decoration: const InputDecoration(
-                                    labelStyle: TextStyle(fontWeight: FontWeight.w300),
-                                    border: InputBorder.none,
-                                  ),
-                                ),
-                              ),
-                            )
-                          )
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Selector<PersonalInfoBloc,String>(
-                        selector: (context,bloc) => bloc.nrcNumber ?? 'null nrc',
-                        builder: (context,nrcNumber,_){
-                          return Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 8),
-                              decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.onPrimary,
-                                  border: Border.all(color: Colors.grey.shade600),
-                                  borderRadius: BorderRadius.circular(8)
-                              ),
-                              child: Text(nrcNumber)
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Selector<PersonalInfoBloc,String>(
-                              selector: (context,bloc) => bloc.personalInfo.nrcFrontUrl ?? '',
-                              builder: (context,nrcFrontUrl,_){
-                                return Stack(
-                                  alignment: Alignment.bottomRight,
-                                  children: [
-                                    OpenContainer(
-                                      closedBuilder:(context,action) => CachedNetworkImage(
-                                        imageUrl: bloc.personalInfo.getImageWithBaseUrl(nrcFrontUrl),
-                                        height: SizeConfig.blockSizeVertical * 17,
-                                        width: SizeConfig.blockSizeHorizontal * 40,
-                                        fit: BoxFit.cover,
-                                        errorWidget: (context, error, stackTrace) {
-                                          return Container(
-                                              height: SizeConfig.blockSizeVertical * 17,
-                                              width: SizeConfig.blockSizeHorizontal * 40,
-                                              color: Colors.black12,
-                                              child: const Center(child: Text("Front Image")));
-                                        },
-                                      ),
-                                      closedColor: Colors.black12,
-                                      openBuilder: (context,action) =>
-                                          ImageDetailsPage(imageUrl: bloc.personalInfo.getImageWithBaseUrl(nrcFrontUrl)),
-                                    ),
-                                    if(_currentUserRole == 1)
-                                      GestureDetector(
-                                          onTap: (){
-                                              _showPickerDialog(context,3,bloc);
-                                          },
-                                          child: Image.asset("lib/icons/add_camera.png", width: 30, height: 30, color: Colors.grey,))
-                                  ],
-                                );
-                              },
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Selector<PersonalInfoBloc,String>(
-                                selector: (context,bloc) => bloc.personalInfo.nrcBackUrl ?? '',
-                                builder: (context,nrcBackUrl,_){
-                                  return Stack(
-                                      alignment: Alignment.bottomRight,
-                                      children: [
-                                        OpenContainer(
-                                            closedColor: Colors.black12,
-                                            closedBuilder: (context,action) => CachedNetworkImage(
-                                              imageUrl: bloc.personalInfo.getImageWithBaseUrl(nrcBackUrl),
-                                              height: SizeConfig.blockSizeVertical * 17,
-                                              width: SizeConfig.blockSizeHorizontal * 40,
-                                              fit: BoxFit.cover,
-                                              errorWidget: (context, error, stackTrace) {
-                                                return Container(
-                                                    height: SizeConfig.blockSizeVertical * 17,
-                                                    width: SizeConfig.blockSizeHorizontal * 40,
-                                                    color: Colors.black12,
-                                                    child: const Center(child: Text("Back Image"))
-                                                );
-                                              },
-                                            ),
-                                            openBuilder: (context,action) =>
-                                                ImageDetailsPage(imageUrl: bloc.personalInfo.getImageWithBaseUrl(nrcBackUrl))
-                                        ),
-                                        if(_currentUserRole == 1)
-                                          GestureDetector(
-                                              onTap: (){
-                                                _showPickerDialog(context, 4, bloc);
-                                              },
-                                              child: Image.asset("lib/icons/add_camera.png", width: 30, height: 30, color: Colors.grey,)
-                                          )
-                                      ]
-                                  );
-                                }
-                            ),
-                          ),
-                        ],
-                      )
+                      const Text('National Card',style: TextStyle(fontFamily: 'Ubuntu'),),
+                      Icon(isNrcExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
                     ],
                   ),
-              ],
-            ),
+                ),
+              ),
+              if(isNrcExpanded)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ///NRC Dropdown
+                    const SizedBox(height: 18),
+                    if(_currentUserRole == 1)
+                      Row(
+                      children: [
+                        Expanded(child: stateListWidget(context)),
+                        Expanded(child: townshipDropdown(context)),
+                        Expanded(child: nationalTypeListDropdown(context)),
+                        Expanded(
+                          child: Container(
+                            height: 45,
+                            padding: const EdgeInsets.symmetric(horizontal: 6),
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.onPrimary,
+                                border: Border.all(color: Colors.grey.shade600),
+                                borderRadius: BorderRadius.circular(6)
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 1.0),
+                              child: TextField(
+                                keyboardType: TextInputType.number,
+                                onChanged : (value) => bloc.setNrcNo(value),
+                                readOnly: _currentUserRole != 1,
+                                decoration: const InputDecoration(
+                                  labelStyle: TextStyle(fontWeight: FontWeight.w300),
+                                  border: InputBorder.none,
+                                ),
+                              ),
+                            ),
+                          )
+                        )
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Selector<PersonalInfoBloc,String>(
+                      selector: (context,bloc) => bloc.nrcNumber ?? 'null nrc',
+                      builder: (context,nrcNumber,_){
+                        return Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 8),
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.onPrimary,
+                                border: Border.all(color: Colors.grey.shade600),
+                                borderRadius: BorderRadius.circular(8)
+                            ),
+                            child: Text(nrcNumber)
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Selector<PersonalInfoBloc,String>(
+                            selector: (context,bloc) => bloc.personalInfo.nrcFrontUrl ?? '',
+                            builder: (context,nrcFrontUrl,_){
+                              return Stack(
+                                alignment: Alignment.bottomRight,
+                                children: [
+                                  OpenContainer(
+                                    closedBuilder:(context,action) => CachedNetworkImage(
+                                      imageUrl: bloc.personalInfo.getImageWithBaseUrl(nrcFrontUrl),
+                                      height: SizeConfig.blockSizeVertical * 17,
+                                      width: SizeConfig.blockSizeHorizontal * 40,
+                                      fit: BoxFit.cover,
+                                      errorWidget: (context, error, stackTrace) {
+                                        return Container(
+                                            height: SizeConfig.blockSizeVertical * 17,
+                                            width: SizeConfig.blockSizeHorizontal * 40,
+                                            color: Colors.black12,
+                                            child: const Center(child: Text("Front Image")));
+                                      },
+                                    ),
+                                    closedColor: Colors.black12,
+                                    openBuilder: (context,action) =>
+                                        ImageDetailsPage(imageUrl: bloc.personalInfo.getImageWithBaseUrl(nrcFrontUrl)),
+                                  ),
+                                  if(_currentUserRole == 1)
+                                    GestureDetector(
+                                        onTap: (){
+                                            _showPickerDialog(context,3,bloc);
+                                        },
+                                        child: Image.asset("lib/icons/add_camera.png", width: 30, height: 30, color: Colors.grey,))
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Selector<PersonalInfoBloc,String>(
+                              selector: (context,bloc) => bloc.personalInfo.nrcBackUrl ?? '',
+                              builder: (context,nrcBackUrl,_){
+                                return Stack(
+                                    alignment: Alignment.bottomRight,
+                                    children: [
+                                      OpenContainer(
+                                          closedColor: Colors.black12,
+                                          closedBuilder: (context,action) => CachedNetworkImage(
+                                            imageUrl: bloc.personalInfo.getImageWithBaseUrl(nrcBackUrl),
+                                            height: SizeConfig.blockSizeVertical * 17,
+                                            width: SizeConfig.blockSizeHorizontal * 40,
+                                            fit: BoxFit.cover,
+                                            errorWidget: (context, error, stackTrace) {
+                                              return Container(
+                                                  height: SizeConfig.blockSizeVertical * 17,
+                                                  width: SizeConfig.blockSizeHorizontal * 40,
+                                                  color: Colors.black12,
+                                                  child: const Center(child: Text("Back Image"))
+                                              );
+                                            },
+                                          ),
+                                          openBuilder: (context,action) =>
+                                              ImageDetailsPage(imageUrl: bloc.personalInfo.getImageWithBaseUrl(nrcBackUrl))
+                                      ),
+                                      if(_currentUserRole == 1)
+                                        GestureDetector(
+                                            onTap: (){
+                                              _showPickerDialog(context, 4, bloc);
+                                            },
+                                            child: Image.asset("lib/icons/add_camera.png", width: 30, height: 30, color: Colors.grey,)
+                                        )
+                                    ]
+                                );
+                              }
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+            ],
           ),
         );
       },
@@ -886,20 +918,20 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                         children: [
                           const SizedBox(height: 10),
                           CustomTextField(
-                              controller: TextEditingController(text: bloc.personalInfo.skinColor),
+                              controller: _hairColorController,
                               onChange: (value) => bloc.updatePersonalInfo(hairColor: value),
                               labelText: 'Hair Color',
                               readOnly: _currentUserRole
                           ),
                           const SizedBox(height: 6,),
                           CustomTextField(
-                              controller: TextEditingController(text: bloc.personalInfo.skinColor),
+                              controller: _skinColorController,
                               onChange: (value) => bloc.updatePersonalInfo(skinColor: value),
                               labelText: 'Skin Color',
                               readOnly: _currentUserRole),
                           const SizedBox(height: 6,),
                           CustomTextField(
-                              controller: TextEditingController(text: bloc.personalInfo.eyeColor),
+                              controller: _eyeColorController,
                               onChange: (value) => bloc.updatePersonalInfo(eyeColor: value),
                               labelText: 'Eye Color',readOnly: _currentUserRole)
                         ],
@@ -1054,7 +1086,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                 ),
                                 if(vehiclePunishment)
                                   CustomTextField(
-                                      controller: TextEditingController(text: bloc.personalInfo.vehiclePunishmentDescription),
+                                      controller: _vehiclePunishmentDescription,
                                       onChange: (value) => bloc.updatePersonalInfo(vehiclePunishmentDescription: value),
                                       labelText: 'Vehicle Punishment Description',
                                       readOnly: _currentUserRole
@@ -1189,8 +1221,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                 ),
                 if(previousApplied)
                   CustomTextField(
-                      controller: TextEditingController(
-                          text: bloc.personalInfo.previousAppliedDescription),
+                      controller: _previousAppliedDescription,
                       onChange: (value) => bloc.updatePersonalInfo(
                           previousAppliedDescription: value),
                       labelText: 'Previous Applied Description',
@@ -1302,9 +1333,6 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                 onChanged: (String? newValue) {
                   bloc.selectedNationalType = newValue;
                 },
-                dropdownStyleData: DropdownStyleData(
-
-                ),
                 buttonStyleData: ButtonStyleData(
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.onPrimary,

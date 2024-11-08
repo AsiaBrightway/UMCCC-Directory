@@ -18,7 +18,7 @@ class PersonalInfoBloc extends ChangeNotifier{
   PersonalInfoVo _personalInfo = PersonalInfoVo();
   PersonalInfoState _personalInfoState = PersonalInfoState.initial;
   PersonalInfoState _updateState = PersonalInfoState.initial;
-  String? _nrcNo;
+  String nrcNo = "";
   String? _nrcNumber;
   String? _errorMessage;
   bool _isDataEmpty = false;
@@ -36,7 +36,6 @@ class PersonalInfoBloc extends ChangeNotifier{
   String? _selectedNationalType;
   List<NrcTownshipVo>? townshipList;
 
-  String? get nrcNo => _nrcNo;
   String? get selectedNationalType => _selectedNationalType;
 
   set selectedNationalType(String? value) {
@@ -46,8 +45,8 @@ class PersonalInfoBloc extends ChangeNotifier{
     notifyListeners();
   }
 
-  set setNrcNo(String? value) {
-    _nrcNo = value;
+  void setNrcNo(String value) {
+    nrcNo = value;
   }
 
   String? get nrcNumber => _nrcNumber;
@@ -310,7 +309,7 @@ class PersonalInfoBloc extends ChangeNotifier{
 
   PersonalInfoRequest getPersonalRequest(){
     if(_isNrcChanged){
-       _nrcNumber = "$selectedState/$selectedTownship/($selectedNationalType) $_nrcNo";
+       _nrcNumber = "$selectedState/$selectedTownship/($selectedNationalType) $nrcNo";
     }
     return PersonalInfoRequest(
         id: _personalInfo.id,
@@ -360,6 +359,7 @@ class PersonalInfoBloc extends ChangeNotifier{
   set selectedState(int? value) {
     _selectedState = value;
     _selectedTownship = null;
+    townshipList = null;
     getTownship(value!);
     _isNrcChanged = true;
     notifyListeners();

@@ -28,6 +28,7 @@ class CustomTextField extends StatelessWidget {
         border: Border.all(color: Colors.grey.shade600)
       ),
       child: TextField(
+        ///I remove this because I lost focus when the widget rebuild
         controller: controller,
         readOnly: readOnly != 1,
         keyboardType: keyboardType,
