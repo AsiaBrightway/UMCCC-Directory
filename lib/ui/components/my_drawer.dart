@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pahg_group/ui/pages/add_category_page.dart';
 
-
 import '../../dialog/change_password_dialog.dart';
 import '../../utils/helper_functions.dart';
 import '../pages/add_company_page.dart';

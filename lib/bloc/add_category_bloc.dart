@@ -1,7 +1,6 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
-
 import '../data/models/pahg_model.dart';
 import '../data/vos/category_vo.dart';
 import '../data/vos/request_body/add_category_vo.dart';
@@ -20,6 +19,7 @@ class AddCategoryBloc extends ChangeNotifier{
   bool _isActive = true;
   String? _failedMessage;
   int? updateId;
+
 
   int? get updateParentId => _updateParentId;
   String? get failedMessage => _failedMessage;
@@ -96,13 +96,16 @@ class AddCategoryBloc extends ChangeNotifier{
   }
 
   Future<void> updateCategory(BuildContext context) async{
-    if(_categoryName != null && updateId != null){
+    if(_categoryName != null && updateId != null && _updateParentId != null){
       AddCategoryVo requestBody = AddCategoryVo(updateId, _categoryName, _updateParentId, _isActive, null, null);
       _model.updateCategory(_token,updateId!, requestBody).then((onValue){
         showSuccessScaffold(context, onValue?.message ?? '');
       }).catchError((onError){
         showErrorDialog(context, onError.toString());
       });
+    }
+    else if(_updateParentId == null){
+      showScaffoldMessage(context, "Please select parent.");
     }
     else if(updateId == null){
       showScaffoldMessage(context, "Your update id is null");

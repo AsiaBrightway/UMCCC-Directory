@@ -170,7 +170,6 @@ class FCMService {
     }
   }
 
-
   String truncateMessage(String message, {int maxLength = 80}) {
     return message.length > maxLength ? '${message.substring(0, maxLength)} ...' : message;
   }

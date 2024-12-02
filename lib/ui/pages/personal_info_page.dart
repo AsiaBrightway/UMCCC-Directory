@@ -32,7 +32,7 @@ class PersonalInfoPage extends StatefulWidget {
 }
 
 class _PersonalInfoPageState extends State<PersonalInfoPage> {
-  final addressController = TextEditingController();
+  final _addressController = TextEditingController();
   final _cellularPhoneController = TextEditingController();
   final _homePhoneController = TextEditingController();
   final _placeOfBirthController = TextEditingController();
@@ -59,10 +59,11 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   final Map<int ,String> licenseStatusList = {1: 'Not Have',2: 'Have',3: 'Still Applying'};
   final Map<int ,String> licenseTypeList = {1: 'က' ,2: 'ခ',3: 'ဃ'};
   final Map<int ,String> licenseColorList = {1: 'Black', 2: 'Red'};
-  final Map<int, String> stateList = {1: '1', 2: '2', 3: '2', 4: '4',5:'5',6:'6',7:'7',8:'8',9:'9',10:'10',11:'11',12:'12',13:'13',14:'14'};
+  final Map<int, String> stateList = {1: '1', 2: '2', 3: '3', 4: '4',5:'5',6:'6',7:'7',8:'8',9:'9',10:'10',11:'11',12:'12',13:'13',14:'14'};
   final Map<int, String> nationTypeList ={1: 'နိုင်',2: 'ဧည့်',3: 'သာ',4: 'ပြု',5: 'သီ',6: 'စ',};
   String frontDrivingImageUrl = "";
   String backDrivingImageUrl = "";
+
 
   @override
   void initState() {
@@ -74,6 +75,31 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     final authModel = Provider.of<AuthProvider>(context,listen: false);
     _token = authModel.token;
     _currentUserRole = authModel.role;
+  }
+
+  @override
+  void dispose(){
+    super.dispose();
+    _addressController.dispose();
+    _cellularPhoneController.dispose();
+    _homePhoneController.dispose();
+    _placeOfBirthController.dispose();
+    _nationalityController.dispose();
+    _religionController.dispose();
+    _raceController.dispose();
+    _healthController.dispose();
+    _hairColorController.dispose();
+    _skinColorController.dispose();
+    _eyeColorController.dispose();
+    _emergencyNameController.dispose();
+    _emergencyRelationController.dispose();
+    _emergencyAddressController.dispose();
+    _vehiclePunishmentDescription.dispose();
+    _previousAppliedDescription.dispose();
+    _sportsHobbyController.dispose();
+    _socialActivitiesController.dispose();
+    _emergencyCellularPhone.dispose();
+    _emergencyHomePhone.dispose();
   }
 
   Future<void> _selectDate(BuildContext context,PersonalInfoBloc bloc) async {
@@ -114,7 +140,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   }
 
   String getLicenseTypeName(int? licenseType){
-    return licenseStatusList[licenseType] ?? '';
+    return licenseTypeList[licenseType] ?? '';
   }
 
   void _showPickerDialog(BuildContext context,int imageType,PersonalInfoBloc bloc) {
@@ -251,7 +277,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                   }
                   ///Success Widgets
                   else if(personalInfoState == PersonalInfoState.success){
-                    addressController.text = bloc.personalInfo.address ?? '';
+                    _addressController.text = bloc.personalInfo.address ?? '';
                     _cellularPhoneController.text = bloc.personalInfo.telNoOffice ?? '';
                     _homePhoneController.text = bloc.personalInfo.telNoHome ?? '';
                     _placeOfBirthController.text = bloc.personalInfo.placeOfBirth ?? '';
@@ -286,7 +312,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                   borderRadius: BorderRadius.circular(8)
                               ),
                               child: TextField(
-                                controller: addressController,
+                                controller: _addressController,
                                 readOnly: _currentUserRole != 1,
                                 onChanged: (value) => bloc.updatePersonalInfo(address: value),
                                 keyboardType: TextInputType.multiline,
@@ -525,50 +551,56 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                 Expanded(child: marriageStatus(context))
                               ],
                             )
-                                : Container(
-                              height: 50,
-                              padding: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12),
-                                  color: Theme.of(context).colorScheme.surfaceBright
-                              ),
-
-                              ///Blood type and marriage status
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  RichText(
-                                    text: TextSpan(
-                                        text: 'Blood Type : ',
-                                        style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-                                        children: [
-                                          TextSpan(
-                                            text: getBloodType(bloc.personalInfo.bloodType),
-                                            style: TextStyle(
-                                                fontFamily: 'Ubuntu',
-                                                color: Theme.of(context).colorScheme.onSurface,
-                                                fontSize: 16
-                                            ),
-                                          )
-                                        ]),
-                                  ),
-                                  RichText(
-                                    text: TextSpan(
-                                        text: 'Marriage Status : ',
-                                        style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-                                        children: [
-                                          TextSpan(
-                                            text: getMarriageStatus(bloc.personalInfo.marriageStatus),
-                                            style: TextStyle(
-                                                fontFamily: 'Ubuntu',
-                                                fontSize: 16,
-                                                color: Theme.of(context).colorScheme.onSurface),
-                                          )
-                                        ]),
-                                  ),
-                                ],
-                              ),
-                            ),
+                                : Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Container(
+                                      height: 50,
+                                      padding: const EdgeInsets.all(10),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(12),
+                                          color: Theme.of(context).colorScheme.surfaceBright
+                                      ),
+                                      child: RichText(
+                                        text: TextSpan(
+                                            text: 'Blood Type : ',
+                                            style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                                            children: [
+                                              TextSpan(
+                                                text: getBloodType(bloc.personalInfo.bloodType),
+                                                style: TextStyle(
+                                                    fontFamily: 'Ubuntu',
+                                                    color: Theme.of(context).colorScheme.onSurface,
+                                                    fontSize: 16
+                                                ),
+                                              )
+                                            ]),
+                                      ),
+                                    ),
+                                    Container(
+                                      height: 50,
+                                      padding: const EdgeInsets.all(10),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(12),
+                                          color: Theme.of(context).colorScheme.surfaceBright
+                                      ),
+                                      child: RichText(
+                                        text: TextSpan(
+                                            text: 'Marriage Status : ',
+                                            style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                                            children: [
+                                              TextSpan(
+                                                text: getMarriageStatus(bloc.personalInfo.marriageStatus),
+                                                style: TextStyle(
+                                                    fontFamily: 'Ubuntu',
+                                                    fontSize: 16,
+                                                    color: Theme.of(context).colorScheme.onSurface),
+                                              )
+                                            ]),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                             const SizedBox(height: 10),
                             _buildNationalRegiCard(context),
                             const SizedBox(height: 10),
@@ -1245,16 +1277,24 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                 child: DropdownButton2(
                   isExpanded: true,
                   value: selectedState,
-                  hint: const Text('State', style: TextStyle(fontSize: 8)),
+                  hint: const Center(child: Text('State', style: TextStyle(fontSize: 10))),
                   items: stateList.entries.map((entry) {
                     return DropdownMenuItem<int>(
                       value: entry.key,
-                      child: Text(entry.value, style: const TextStyle(fontSize: 12,fontWeight: FontWeight.w600)),
+                      child: Center(child: Text(entry.value, style: const TextStyle(fontSize: 16,fontWeight: FontWeight.w500))),
                     );
                   }).toList(),
                   onChanged: (int? newValue) {
                     bloc.selectedState = newValue;
                   },
+                  dropdownStyleData: DropdownStyleData(
+                    width: MediaQuery.of(context).size.width * 0.4, // Adjust width here
+                    padding: const EdgeInsets.symmetric(horizontal: 16), // Optional padding
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: Theme.of(context).colorScheme.surface, // Adjust background color if needed
+                    ),
+                  ),
                   buttonStyleData: ButtonStyleData(
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.onPrimary,
@@ -1284,16 +1324,32 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                   child: DropdownButton2(
                     isExpanded: true,
                     value: selectedTownship,
-                    hint: const Text('Tsp', style: TextStyle(fontSize: 8)),
+                    hint: const Center(child: Text('Tsp', style: TextStyle(fontSize: 10))),
                     items: bloc.townshipList?.map((NrcTownshipVo value) {
                       return DropdownMenuItem<String>(
                         value: value.name,
-                        child: Text(value.name ?? '', style: const TextStyle(fontSize: 12,fontWeight: FontWeight.w600)),
+                        child: Center(child: Text(value.name ?? '', style: const TextStyle(fontSize: 15,fontWeight: FontWeight.w500))),
                       );
                     }).toList(),
                     onChanged: (String? newValue) {
                       bloc.selectedTownship = newValue;
                     },
+                    dropdownStyleData: DropdownStyleData(
+                      elevation: 2,
+                      padding: const EdgeInsets.all(16),
+                      width: MediaQuery.of(context).size.width * 0.5, // Adjust width here
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: Theme.of(context).colorScheme.surface, // Adjust background color if needed
+                      ),
+                      scrollbarTheme: ScrollbarThemeData(
+                        thickness: MaterialStateProperty.all(6),
+                        radius: const Radius.circular(8),
+                      ),
+                    ),
+                    menuItemStyleData: const MenuItemStyleData(
+                      height: 50,
+                    ),
                     buttonStyleData: ButtonStyleData(
                       decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.onPrimary,
@@ -1323,16 +1379,25 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
               child: DropdownButton2(
                 isExpanded: true,
                 value: selectedNational,
-                hint: const Text('Ctz', style: TextStyle(fontSize: 8)),
+
+                hint: const Center(child: Text('Ctz', style: TextStyle(fontSize: 10))),
                 items: nationTypeList.entries.map((entry) {
                   return DropdownMenuItem<String>(
                     value: entry.value,
-                    child: Text(entry.value, style: const TextStyle(fontSize: 12,fontWeight: FontWeight.w600)),
+                    child: Center(child: Text(entry.value, style: const TextStyle(fontSize: 14,fontWeight: FontWeight.w500))),
                   );
                 }).toList(),
                 onChanged: (String? newValue) {
                   bloc.selectedNationalType = newValue;
                 },
+                dropdownStyleData: DropdownStyleData(
+                  width: MediaQuery.of(context).size.width * 0.3, // Adjust width here
+                  padding: const EdgeInsets.symmetric(horizontal: 16), // Optional padding
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Theme.of(context).colorScheme.surface, // Adjust background color if needed
+                  ),
+                ),
                 buttonStyleData: ButtonStyleData(
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.onPrimary,

@@ -63,11 +63,11 @@ class _AddCategoryPageState extends State<AddCategoryPage> {
                                     child: DropdownButton2(
                                       isExpanded: true,
                                       value: updateParentId,
-                                      hint: const Text('Select Parent', style: TextStyle(fontSize: 10)),
+                                      hint: const Text('Select Parent', style: TextStyle(fontSize: 14)),
                                       items: bloc.parentCategoryList?.map((CategoryVo value) {
                                         return DropdownMenuItem<int>(
                                           value: value.id,
-                                          child: Text(value.category ?? '', style: const TextStyle(fontSize: 12,fontWeight: FontWeight.w600)),
+                                          child: Text(value.category ?? '', style: const TextStyle(fontSize: 14,fontWeight: FontWeight.w600)),
                                         );
                                       }).toList(),
                                       onChanged: (int? newValue) {
@@ -101,11 +101,14 @@ class _AddCategoryPageState extends State<AddCategoryPage> {
                                   child: DropdownButton2(
                                     isExpanded: true,
                                     value: selectedParentId,
-                                    hint: const Text('', style: TextStyle(fontSize: 10)),
+                                    hint: Text(
+                                        widget.isAdd
+                                            ? 'Select Parent'
+                                            : 'Select', style: const TextStyle(fontSize: 14)),
                                     items: categoryList?.map((CategoryVo value) {
                                       return DropdownMenuItem<int>(
                                         value: value.id,
-                                        child: Text(value.category ?? '', style: const TextStyle(fontSize: 12,fontWeight: FontWeight.w600)),
+                                        child: Text(value.category ?? '', style: const TextStyle(fontSize: 14,fontWeight: FontWeight.w600)),
                                       );
                                     }).toList(),
                                     onChanged: (int? newValue) {

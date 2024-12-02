@@ -59,46 +59,53 @@ class _AddNewsFeedPageState extends State<AddNewsFeedPage> {
             onPressed: _onBackPressed,
           ),
           actions: [
-            Consumer<AddNewsFeedBloc>(
-              builder: (context,bloc,child){
-                if(widget.post == null ){
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          elevation: 2,
-                          padding: const EdgeInsets.symmetric(horizontal: 18,vertical: 6),
-                          backgroundColor: Colors.blueAccent,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(6), // Adjust corner radius here
+            Selector<AddNewsFeedBloc,bool>(
+              selector: (context,bloc) => bloc.addLoading,
+              builder: (context, addLoading, _) {
+                  var bloc = context.read<AddNewsFeedBloc>();
+                  if(addLoading){
+                    return const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: CircularProgressIndicator(color: Colors.orangeAccent),
+                    );
+                  }
+                  if(widget.post == null ){
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            elevation: 2,
+                            padding: const EdgeInsets.symmetric(horizontal: 18,vertical: 6),
+                            backgroundColor: Colors.blueAccent,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(6), // Adjust corner radius here
+                            ),
                           ),
-                        ),
-                        onPressed: () {
-                          bloc.addPost(context, widget.categoryId);
-                        },
-                        child: const Text('POST',style: TextStyle(color: Colors.white))),
-                  );
-                }
-                else{
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          elevation: 2,
-                          padding: const EdgeInsets.symmetric(horizontal: 18,vertical: 6),
-                          backgroundColor: Colors.orangeAccent,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(6), // Adjust corner radius here
+                          onPressed: () {
+                            bloc.addPost(context, widget.categoryId);
+                          },
+                          child: const Text('POST',style: TextStyle(color: Colors.white))),
+                    );
+                  }
+                  else{
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            elevation: 2,
+                            padding: const EdgeInsets.symmetric(horizontal: 18,vertical: 6),
+                            backgroundColor: Colors.orangeAccent,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(6), // Adjust corner radius here
+                            ),
                           ),
-                        ),
-                        onPressed: () {
-                          bloc.updatePost(context, widget.categoryId);
-                        },
-                        child: const Text('UPDATE',style: TextStyle(color: Colors.white))),
-                  );
-                }
-              },
-            )
+                          onPressed: () {
+                            bloc.updatePost(context, widget.categoryId);
+                          },
+                          child: const Text('UPDATE',style: TextStyle(color: Colors.white))),
+                    );
+                  }
+            },)
           ],
         ),
         body: SingleChildScrollView(

@@ -30,6 +30,14 @@
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "maskable"
+        },
+        {
+            "fonts": [
+                {
+                    "asset": "icons/MaterialIcons-Regular.ttf"
+                }
+            ],
+            "family": "MaterialIcons"
         }
     ]
 }

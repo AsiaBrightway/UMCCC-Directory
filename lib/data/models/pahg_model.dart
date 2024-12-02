@@ -283,6 +283,7 @@ class PahgModel {
     return mDataAgent.searchEmployee(apiKey,itemsPerPage, searchName).asStream().map((response) => response?.document?.records ?? []).first;
   }
 
+
   Future<List<EmployeeVo>> searchEmployeeByCompany(String apiKey,String searchName,String id){
     return mDataAgent.searchEmployeeByCompany(apiKey, searchName, id).asStream().map((response) => response?.document?.records ?? []).first;
   }

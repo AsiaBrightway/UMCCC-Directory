@@ -35,7 +35,8 @@ class HomeBloc extends ChangeNotifier{
   Future<void> getCategory() async{
     GetRequest request = GetRequest(columnName: "ParentId", columnCondition: 1, columnValue: "0");
     _model.getCategories(_token, request).then((onValue){
-      _categoryList = onValue;
+      //filter isActive is true
+      _categoryList = onValue.where((category) => category.isActive == true).toList();
       notifyListeners();
     }).catchError((onError){
       ///do something

@@ -25,6 +25,7 @@ class AddNewsFeedBloc extends ChangeNotifier{
   String? _errorTitle;
   String? _errorContent;
   int? _postId;
+  bool addLoading = false;
 
   String get createdDateForUpdate => _createdDateForUpdate;
   String? get errorTitle => _errorTitle;
@@ -147,32 +148,43 @@ class AddNewsFeedBloc extends ChangeNotifier{
         _model.uploadImage(_token, image!).then((onValue) {
           // Proceed to create post after image upload
           AddPostRequest request = AddPostRequest(0, _postTitle, _postTitle, onValue?.file, _postContent, categoryId, Utils.getCurrentDateTime(), false, null, null, null, null,);
-
+          addLoading = true;
+          notifyListeners();
           _model.addPost(_token, request).then((value) {
             /// this is send notification
             FCMService().sendTopicNotification(categoryId,'all', _postTitle, _postContent);
+            addLoading = false;
+            notifyListeners();
             showSuccessScaffold(context, value?.message ?? 'Post added successfully');
             Navigator.pop(context,true);
           }).catchError((onError) {
             // Show error message if adding post fails
+            addLoading = false;
+            notifyListeners();
             showScaffoldMessage(context, onError.toString());
           });
         }).catchError((error) {
           // Show error message if image upload fails
           showScaffoldMessage(context, error.toString());
         });
+
       }
       // If no image was selected, just create the post.I use featureImage because it can be already exit in update state
       else {
         AddPostRequest request = AddPostRequest(0, _postTitle, _postTitle, _featureImageIsForUpdate,_postContent,categoryId,Utils.getCurrentDateTime(),false, null, null, null, null,);
-
+        addLoading = true;
+        notifyListeners();
         _model.addPost(_token, request).then((value) {
           ///this is send notification
           FCMService().sendTopicNotification(categoryId,'all', _postTitle, _postContent);
+          addLoading = false;
+          notifyListeners();
           showSuccessScaffold(context, value?.message ?? 'Post added successfully');
           Navigator.pop(context,true);
         }).catchError((onError) {
           // Show error message if adding post fails
+          addLoading = false;
+          notifyListeners();
           showScaffoldMessage(context, onError.toString());
         });
       }

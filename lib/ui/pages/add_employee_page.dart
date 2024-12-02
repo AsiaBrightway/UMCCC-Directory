@@ -320,7 +320,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                     floatingLabelStyle: const TextStyle(color: Colors.blue),
                     prefixIcon: Padding(
                       padding: const EdgeInsets.all(8),
-                      child: Image.asset('lib/icons/employee_no.png',width: 12,height: 12),
+                      child: Image.asset('lib/icons/employee_no.png',width: 12,height: 12,color: Theme.of(context).colorScheme.onSurface,),
                     ),
                     labelStyle: TextStyle(color: Colors.grey[700],fontFamily:'Roboto',fontWeight: FontWeight.w300),
                     labelText: 'Employee Number',
@@ -337,7 +337,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                     floatingLabelStyle: const TextStyle(color: Colors.blue),
                     prefixIcon: Padding(
                       padding: const EdgeInsets.all(8),
-                      child: Image.asset('lib/icons/employee_jd.png',width: 12,height: 12),
+                      child: Image.asset('lib/icons/employee_jd.png',width: 12,height: 12,color: Theme.of(context).colorScheme.onSurface),
                     ),
                     labelStyle: TextStyle(color: Colors.grey[700],fontFamily:'Roboto',fontWeight: FontWeight.w300),
                     labelText: 'Appointment Date',
