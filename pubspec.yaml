@@ -57,8 +57,6 @@ dependencies:
   flutter_local_notifications: ^17.2.3
   googleapis_auth: ^1.6.0
   http: ^1.2.2
-  awesome: ^0.0.3
-  awesome_mm_nrc: ^0.0.1
 
 dev_dependencies:
   flutter_test:

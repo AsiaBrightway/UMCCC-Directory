@@ -154,7 +154,7 @@ abstract class PahgDataAgent{
 
   Future<PostMethodResponse?> patchSchool(String apiKey,int id,List<PathUserRequest> request);
 
-  Future<TownshipResponse?> getTownship(String apiKey,List<GetRequest> request);
+  Future<TownshipResponse?> getTownship(String apiKey);
 
   Future<CategoryResponse?> getCategories(String apiKey,List<GetRequest> request);
 

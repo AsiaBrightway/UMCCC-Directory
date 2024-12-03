@@ -500,8 +500,8 @@ class PahgDataAgentImpl extends PahgDataAgent{
   }
 
   @override
-  Future<TownshipResponse?> getTownship(String apiKey, List<GetRequest> request) {
-    return mApi.getTownship(apiKey, request).catchError((onError){
+  Future<TownshipResponse?> getTownship(String apiKey) {
+    return mApi.getAllTownship(apiKey,430).catchError((onError){
       throw _createException(onError);
     });
   }

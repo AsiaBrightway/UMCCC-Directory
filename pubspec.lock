@@ -57,22 +57,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
-  awesome:
-    dependency: "direct main"
-    description:
-      name: awesome
-      sha256: "141f8b93a4ea267edac9148947475bd3e7f4399fd961ebdd5bfd17437b997869"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.3"
-  awesome_mm_nrc:
-    dependency: "direct main"
-    description:
-      name: awesome_mm_nrc
-      sha256: "60485faeb71c4f441607036324a77324accde3f7b07f1e9b38f4be6084ce8b41"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.2"
   boolean_selector:
     dependency: transitive
     description:

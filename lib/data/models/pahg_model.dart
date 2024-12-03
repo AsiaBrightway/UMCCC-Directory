@@ -336,9 +336,8 @@ class PahgModel {
     return mDataAgent.patchSchool(apiKey, id, requestList);
   }
 
-  Future<List<NrcTownshipVo>> getTownship(String apiKey,GetRequest request){
-    List<GetRequest> requestList = [request];
-    return mDataAgent.getTownship(apiKey, requestList).asStream().map((response) => response?.document?.records ?? []).first;
+  Future<List<NrcTownshipVo>> getAllTownship(String apiKey){
+    return mDataAgent.getTownship(apiKey).asStream().map((response) => response?.document?.records ?? []).first;
   }
 
   Future<List<CategoryVo>> getCategories(String apiKey,GetRequest request){

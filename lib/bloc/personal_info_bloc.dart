@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:pahg_group/data/models/pahg_model.dart';
 import 'package:pahg_group/data/vos/nrc_township_vo.dart';
 import 'package:pahg_group/data/vos/personal_info_vo.dart';
-import 'package:pahg_group/data/vos/request_body/get_request.dart';
 import 'package:pahg_group/data/vos/request_body/path_user_request.dart';
 import 'package:pahg_group/data/vos/request_body/personal_info_request.dart';
 import 'package:pahg_group/utils/helper_functions.dart';
@@ -34,11 +33,13 @@ class PersonalInfoBloc extends ChangeNotifier{
   int? _selectedState;
   String? _selectedTownship;
   String? _selectedNationalType;
+  List<NrcTownshipVo>? allTownship;
   List<NrcTownshipVo>? townshipList;
+  final options = {1: '၁',2: '၂',3: '၃',4:'၄',5: '၅',6: '၆', 7: '၇',8: '၈',9: '၉',10: '၁၀', 11: '၁၁', 12: '၁၂', 13: '၁၃', 14: '၁၄',};
 
   String? get selectedNationalType => _selectedNationalType;
 
-  set selectedNationalType(String? value) {
+  void setSelectedNationalType(String? value) {
     _selectedNationalType = value;
     _nrcNumber == null;
     _isNrcChanged = true;
@@ -64,9 +65,12 @@ class PersonalInfoBloc extends ChangeNotifier{
   String? get errorMessage => _errorMessage;
   bool get isDataEmpty => _isDataEmpty;
 
-  PersonalInfoBloc(String token,String columnValue){
+  PersonalInfoBloc(String token,String columnValue,int role){
     getPersonalInformation(token, columnValue);
     _token = token;
+    if(role == 1){
+      getAllTownship();
+    }
     _employeeId = columnValue;
   }
 
@@ -89,6 +93,15 @@ class PersonalInfoBloc extends ChangeNotifier{
       _errorMessage = onError.toString();
       _personalInfoState = PersonalInfoState.error;
       notifyListeners();
+    });
+  }
+
+  Future<void> getAllTownship() async{
+    _pahgModel.getAllTownship(_token).then((response){
+      allTownship = response;
+      notifyListeners();
+    }).catchError((onError){
+
     });
   }
 
@@ -129,18 +142,6 @@ class PersonalInfoBloc extends ChangeNotifier{
       _updateState = PersonalInfoState.error;
       showScaffoldMessage(context, onError.toString());
       notifyListeners();
-    });
-  }
-
-  ///get township
-  Future<void> getTownship(int distinctId) async{
-    GetRequest request = GetRequest(columnName: "StateDistrictNo", columnCondition: 1, columnValue: distinctId.toString());
-    _pahgModel.getTownship(_token, request).then((response){
-      townshipList = [];
-      townshipList = response;
-      notifyListeners();
-    }).catchError((onError){
-
     });
   }
 
@@ -309,7 +310,7 @@ class PersonalInfoBloc extends ChangeNotifier{
 
   PersonalInfoRequest getPersonalRequest(){
     if(_isNrcChanged){
-       _nrcNumber = "$selectedState/$selectedTownship/($selectedNationalType) $nrcNo";
+       _nrcNumber = "${options[selectedState]}/$selectedTownship/($selectedNationalType) $nrcNo";
     }
     return PersonalInfoRequest(
         id: _personalInfo.id,
@@ -360,7 +361,7 @@ class PersonalInfoBloc extends ChangeNotifier{
     _selectedState = value;
     _selectedTownship = null;
     townshipList = null;
-    getTownship(value!);
+    townshipList = allTownship?.where((township) => township.stateDistrictNo == value).toList();
     _isNrcChanged = true;
     notifyListeners();
   }

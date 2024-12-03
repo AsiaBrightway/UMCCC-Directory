@@ -18,7 +18,7 @@ const String kEndPointAddDepartment = "/v1/api/Departments";
 const String kEndPointGetEmployee = "/v1/api/Employees";
 const String kEndPointGetPersonalInfo = "/v1/api/PersonalInformations/filter";
 const String kEndPointAddPersonalInfo = "/v1/api/PersonalInformations";
-const String kEndPointGetNRC = "/v1/api/NRC/filter";
+const String kEndPointGetNRC = "/v1/api/NRC";
 
 const String kEndPointGetCategory = "/v1/api/Category/filter";
 const String kEndPointUpdateCategory = "/v1/api/Category";

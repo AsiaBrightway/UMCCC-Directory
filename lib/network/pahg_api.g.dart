@@ -1880,24 +1880,24 @@ class _PahgApi implements PahgApi {
   }
 
   @override
-  Future<TownshipResponse?> getTownship(
+  Future<TownshipResponse?> getAllTownship(
     String apiKey,
-    List<GetRequest> requestBody,
+    int pageSize,
   ) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'itemsPerPage': pageSize};
     final _headers = <String, dynamic>{r'Authorization': apiKey};
     _headers.removeWhere((k, v) => v == null);
-    final _data = requestBody.map((e) => e.toJson()).toList();
+    const Map<String, dynamic>? _data = null;
     final _result = await _dio
         .fetch<Map<String, dynamic>?>(_setStreamType<TownshipResponse>(Options(
-      method: 'POST',
+      method: 'GET',
       headers: _headers,
       extra: _extra,
     )
             .compose(
               _dio.options,
-              '/v1/api/NRC/filter',
+              '/v1/api/NRC',
               queryParameters: queryParameters,
               data: _data,
             )

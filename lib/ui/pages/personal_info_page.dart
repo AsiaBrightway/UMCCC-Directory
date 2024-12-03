@@ -3,10 +3,8 @@ import 'dart:io';
 
 import 'package:animations/animations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:pahg_group/data/vos/nrc_township_vo.dart';
 import 'package:pahg_group/utils/utils.dart';
 import 'package:provider/provider.dart';
 import '../../bloc/personal_info_bloc.dart';
@@ -59,11 +57,9 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   final Map<int ,String> licenseStatusList = {1: 'Not Have',2: 'Have',3: 'Still Applying'};
   final Map<int ,String> licenseTypeList = {1: 'က' ,2: 'ခ',3: 'ဃ'};
   final Map<int ,String> licenseColorList = {1: 'Black', 2: 'Red'};
-  final Map<int, String> stateList = {1: '1', 2: '2', 3: '3', 4: '4',5:'5',6:'6',7:'7',8:'8',9:'9',10:'10',11:'11',12:'12',13:'13',14:'14'};
-  final Map<int, String> nationTypeList ={1: 'နိုင်',2: 'ဧည့်',3: 'သာ',4: 'ပြု',5: 'သီ',6: 'စ',};
+  final options = {1: '၁',2: '၂',3: '၃',4:'၄',5: '၅',6: '၆', 7: '၇',8: '၈',9: '၉',10: '၁၀', 11: '၁၁', 12: '၁၂', 13: '၁၃', 14: '၁၄',};
   String frontDrivingImageUrl = "";
   String backDrivingImageUrl = "";
-
 
   @override
   void initState() {
@@ -198,7 +194,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     return ChangeNotifierProvider(
-      create: (context) => PersonalInfoBloc(_token, widget.userId),
+      create: (context) => PersonalInfoBloc(_token, widget.userId,_currentUserRole),
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -499,104 +495,113 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                   color: Theme.of(context).colorScheme.surfaceBright
                               ),
                               child: (bloc.editMode && _currentUserRole == 1)
-                                  ? Selector<PersonalInfoBloc,int>(
-                                selector: (context,handUsage) => bloc.personalInfo.handUsage ?? 1,
-                                builder: (context,handUsage,_){
-                                  return ButtonBar(
-                                    alignment: MainAxisAlignment.start,
-                                    children: <Widget>[
-                                      const Text('Hand Usage : ',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w400),),
-                                      const Text('Left'),
-                                      Radio(
-                                        value: 1,
-                                        groupValue: handUsage,
-                                        activeColor: colorAccent,
-                                        onChanged: (int? value){
-                                          bloc.updatePersonalInfo(handUsage: value);
-                                        },
+                                ? Selector<PersonalInfoBloc, int>(
+                                    selector: (context, handUsage) => bloc.personalInfo.handUsage ?? 1,
+                                    builder: (context, handUsage, _) {
+                                      return ButtonBar(
+                                        alignment: MainAxisAlignment.start,
+                                        children: <Widget>[
+                                          const Text(
+                                            'Hand Usage : ',
+                                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                                          ),
+                                          const Text('Left'),
+                                          Radio(
+                                            value: 1,
+                                            groupValue: handUsage,
+                                            activeColor: colorAccent,
+                                            onChanged: (int? value) {
+                                              bloc.updatePersonalInfo(handUsage: value);
+                                            },
+                                          ),
+                                          const Text('Right'),
+                                          Radio(
+                                            value: 2,
+                                            groupValue: handUsage,
+                                            activeColor: colorAccent,
+                                            onChanged: (int? value) {
+                                              bloc.updatePersonalInfo(handUsage: value);
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  )
+                                : Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      const Padding(
+                                        padding: EdgeInsets.only(left: 8.0, right: 4),
+                                        child: Text("Hand Usage :",
+                                          style: TextStyle(fontFamily: 'Ubuntu', fontSize: 14),
+                                        ),
                                       ),
-                                      const Text('Right'),
-                                      Radio(
-                                        value: 2,
-                                        groupValue: handUsage,
-                                        activeColor: colorAccent,
-                                        onChanged: (int? value){
-                                          bloc.updatePersonalInfo(handUsage: value);
-                                        },
-                                      ),
+                                      (bloc.personalInfo.handUsage == 2)
+                                          ? const Text(" Right", style: TextStyle(fontSize: 16),)
+                                          : const Text(" Left", style: TextStyle(fontSize: 16))
                                     ],
-                                  );
-                                },
-                              )
-                                  : Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  const Padding(
-                                    padding: EdgeInsets.only(left: 8.0,right: 4),
-                                    child: Text("Hand Usage :",style: TextStyle(fontFamily: 'Ubuntu',fontSize: 14),),
-                                  ),
-                                  (bloc.personalInfo.handUsage == 2)
-                                      ? const Text(" Right",style: TextStyle(fontSize: 16),)
-                                      : const Text(" Left",style: TextStyle(fontSize: 16))
-                                ],
-                              ),
-                            ),
+                                ),
+                          ),
                             const SizedBox(height: 10),
                             ///blood type and marriage
                             (bloc.editMode && _currentUserRole == 1)
-                                ? Row(
-                              children: [
-                                Expanded(child: bloodTypeWidget(context)),
-                                const SizedBox(width: 10),
-                                Expanded(child: marriageStatus(context))
-                              ],
-                            )
-                                : Row(
+                              ? Row(
+                                  children: [
+                                    Expanded(child: bloodTypeWidget(context)),
+                                    const SizedBox(width: 10),
+                                    Expanded(child: marriageStatus(context))
+                                  ],
+                                )
+                              : Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Container(
-                                      height: 50,
-                                      padding: const EdgeInsets.all(10),
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(12),
-                                          color: Theme.of(context).colorScheme.surfaceBright
-                                      ),
-                                      child: RichText(
-                                        text: TextSpan(
-                                            text: 'Blood Type : ',
-                                            style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-                                            children: [
-                                              TextSpan(
-                                                text: getBloodType(bloc.personalInfo.bloodType),
-                                                style: TextStyle(
-                                                    fontFamily: 'Ubuntu',
-                                                    color: Theme.of(context).colorScheme.onSurface,
-                                                    fontSize: 16
-                                                ),
-                                              )
-                                            ]),
+                                    Expanded(
+                                      flex:2,
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 12),
+                                        margin: const EdgeInsets.only(right: 4),
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(12),
+                                            color: Theme.of(context).colorScheme.surfaceBright
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                              child: Icon(Icons.bloodtype,color: Colors.red.shade300),
+                                            ),
+                                            Text(getBloodType(bloc.personalInfo.bloodType),
+                                              style: TextStyle(
+                                                  fontFamily: 'Ubuntu',
+                                                  color: Theme.of(context).colorScheme.onSurface,
+                                                  fontSize: 16
+                                              ))
+                                          ]
+                                        )
                                       ),
                                     ),
-                                    Container(
-                                      height: 50,
-                                      padding: const EdgeInsets.all(10),
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(12),
-                                          color: Theme.of(context).colorScheme.surfaceBright
-                                      ),
-                                      child: RichText(
-                                        text: TextSpan(
-                                            text: 'Marriage Status : ',
-                                            style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                                    Expanded(
+                                      flex:3,
+                                      child: Container(
+                                        padding: const EdgeInsets.all(12),
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(12),
+                                            color: Theme.of(context).colorScheme.surfaceBright
+                                        ),
+                                        child: Row(
                                             children: [
-                                              TextSpan(
-                                                text: getMarriageStatus(bloc.personalInfo.marriageStatus),
-                                                style: TextStyle(
-                                                    fontFamily: 'Ubuntu',
-                                                    fontSize: 16,
-                                                    color: Theme.of(context).colorScheme.onSurface),
-                                              )
-                                            ]),
+                                              Padding(
+                                                padding: const EdgeInsets.symmetric(horizontal: 12),
+                                                child: Image.asset('lib/icons/marriage.png',width: 20,height: 20,color: Theme.of(context).colorScheme.onSurface,),
+                                              ),
+                                              Text(getMarriageStatus(bloc.personalInfo.marriageStatus),
+                                                  style: TextStyle(
+                                                      fontFamily: 'Ubuntu',
+                                                      color: Theme.of(context).colorScheme.onSurface,
+                                                      fontSize: 16
+                                                  ))
+                                            ]
+                                        )
                                       ),
                                     ),
                                   ],
@@ -778,30 +783,31 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                     if(_currentUserRole == 1)
                       Row(
                       children: [
-                        Expanded(child: stateListWidget(context)),
-                        Expanded(child: townshipDropdown(context)),
-                        Expanded(child: nationalTypeListDropdown(context)),
+                        Expanded(flex:4,child: stateListWidget(context)),
+                        Expanded(flex:5,child: townshipListWidget(context)),
+                        Expanded(flex:5,child: nationalTypeListWidget(context)),
                         Expanded(
-                          child: Container(
-                            height: 45,
-                            padding: const EdgeInsets.symmetric(horizontal: 6),
-                            decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.onPrimary,
-                                border: Border.all(color: Colors.grey.shade600),
-                                borderRadius: BorderRadius.circular(6)
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 1.0),
-                              child: TextField(
-                                keyboardType: TextInputType.number,
-                                onChanged : (value) => bloc.setNrcNo(value),
-                                readOnly: _currentUserRole != 1,
-                                decoration: const InputDecoration(
-                                  labelStyle: TextStyle(fontWeight: FontWeight.w300),
-                                  border: InputBorder.none,
+                            flex:5,
+                            child: Container(
+                              height: 45,
+                              padding: const EdgeInsets.symmetric(horizontal: 6),
+                              decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.onPrimary,
+                                  border: Border.all(color: Colors.grey.shade600),
+                                  borderRadius: BorderRadius.circular(6)
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 1.0),
+                                child: TextField(
+                                  keyboardType: TextInputType.text,
+                                  onChanged : (value) => bloc.setNrcNo(value),
+                                  readOnly: _currentUserRole != 1,
+                                  decoration: const InputDecoration(
+                                    labelStyle: TextStyle(fontWeight: FontWeight.w300),
+                                    border: InputBorder.none,
+                                  ),
                                 ),
                               ),
-                            ),
                           )
                         )
                       ],
@@ -1267,147 +1273,254 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
 
   Widget stateListWidget(BuildContext context){
     var bloc = context.read<PersonalInfoBloc>();
-    return Selector<PersonalInfoBloc,int?>(
-      selector: (context,bloc) => bloc.selectedState,
-      builder: (context,selectedState,_){
-        return Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 4),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton2(
-                  isExpanded: true,
-                  value: selectedState,
-                  hint: const Center(child: Text('State', style: TextStyle(fontSize: 10))),
-                  items: stateList.entries.map((entry) {
-                    return DropdownMenuItem<int>(
-                      value: entry.key,
-                      child: Center(child: Text(entry.value, style: const TextStyle(fontSize: 16,fontWeight: FontWeight.w500))),
-                    );
-                  }).toList(),
-                  onChanged: (int? newValue) {
-                    bloc.selectedState = newValue;
-                  },
-                  dropdownStyleData: DropdownStyleData(
-                    width: MediaQuery.of(context).size.width * 0.4, // Adjust width here
-                    padding: const EdgeInsets.symmetric(horizontal: 16), // Optional padding
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Theme.of(context).colorScheme.surface, // Adjust background color if needed
-                    ),
-                  ),
-                  buttonStyleData: ButtonStyleData(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    height: 40,
-                  ),
-                ),
-              ),
-            ));
+
+    void handleOptionSelected(int selectedOption) {
+      bloc.selectedState = selectedOption;
+    }
+
+    return GestureDetector(
+      onTap: (){
+        showStateDialog(context,handleOptionSelected);
       },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 2),
+        height: 42,
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.onPrimary,
+            borderRadius: BorderRadius.circular(4)
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Selector<PersonalInfoBloc, int?>(
+              selector: (context, bloc) => bloc.selectedState,
+              builder: (context, state, _) {
+                return Padding(
+                  padding: const EdgeInsets.only(left: 4.0),
+
+                  child: (state != null)
+                      ? Text(options[state]!)
+                      : const Text('St',style: TextStyle(fontSize: 13,color: Colors.grey)),
+                );
+              }),
+            const Icon(Icons.arrow_drop_down_sharp)
+          ],
+        ),
+      ),
     );
   }
 
-  Widget townshipDropdown(BuildContext context){
+  Widget townshipListWidget(BuildContext context){
     var bloc = context.read<PersonalInfoBloc>();
-    return Selector<PersonalInfoBloc,List<NrcTownshipVo>?>(
-      selector: (context,bloc) => bloc.townshipList,
-      builder: (context,townshipList,_){
-        return  Selector<PersonalInfoBloc,String?>(
-          selector: (context,bloc) => bloc.selectedTownship,
-          builder: (context,selectedTownship,_){
-            return Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(right: 4.0),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton2(
-                    isExpanded: true,
-                    value: selectedTownship,
-                    hint: const Center(child: Text('Tsp', style: TextStyle(fontSize: 10))),
-                    items: bloc.townshipList?.map((NrcTownshipVo value) {
-                      return DropdownMenuItem<String>(
-                        value: value.name,
-                        child: Center(child: Text(value.name ?? '', style: const TextStyle(fontSize: 15,fontWeight: FontWeight.w500))),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) {
-                      bloc.selectedTownship = newValue;
-                    },
-                    dropdownStyleData: DropdownStyleData(
-                      elevation: 2,
-                      padding: const EdgeInsets.all(16),
-                      width: MediaQuery.of(context).size.width * 0.5, // Adjust width here
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: Theme.of(context).colorScheme.surface, // Adjust background color if needed
-                      ),
-                      scrollbarTheme: ScrollbarThemeData(
-                        thickness: MaterialStateProperty.all(6),
-                        radius: const Radius.circular(8),
-                      ),
-                    ),
-                    menuItemStyleData: const MenuItemStyleData(
-                      height: 50,
-                    ),
-                    buttonStyleData: ButtonStyleData(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      height: 40,
-                    ),
+
+    void handleOptionSelected(String selectedOption) {
+      bloc.selectedTownship = selectedOption;
+    }
+
+    return GestureDetector(
+      onTap: (){
+        showTownshipDialog(context, handleOptionSelected);
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 2),
+        height: 42,
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.onPrimary,
+            borderRadius: BorderRadius.circular(4)
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Selector<PersonalInfoBloc, String?>(
+              selector: (context, bloc) => bloc.selectedTownship,
+              builder: (context, township, _) {
+                return Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 4.0),
+                    child: (township != null)
+                        ? Text(township)
+                        : const Text('Tsp',overflow: TextOverflow.ellipsis,maxLines: 1,style: TextStyle(fontSize: 14,color: Colors.grey,)),
                   ),
-                ),
+                );
+              },),
+            const Icon(Icons.arrow_drop_down_sharp)
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget nationalTypeListWidget(BuildContext context){
+    var bloc = context.read<PersonalInfoBloc>();
+
+    void handleOptionSelected(String selectedOption) {
+      bloc.setSelectedNationalType(selectedOption);
+    }
+
+    return GestureDetector(
+      onTap: (){
+        showNationalityDialog(context, handleOptionSelected);
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 2),
+        height: 42,
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.onPrimary,
+          borderRadius: BorderRadius.circular(4)
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Selector<PersonalInfoBloc, String?>(
+              selector: (context, bloc) => bloc.selectedNationalType,
+              builder: (context, nationalType, _) {
+                return Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 4.0),
+                    child: (nationalType != null)
+                        ? Text(nationalType,maxLines: 2,)
+                        : const Text('Type',style: TextStyle(fontSize: 14,color: Colors.grey)),
+                  ),
+                );
+              }),
+            const Icon(Icons.arrow_drop_down_sharp)
+          ],
+        ),
+      ),
+    );
+  }
+
+  void showTownshipDialog(BuildContext context, Function(String) onOptionSelected) {
+    var mTownshipList = context.read<PersonalInfoBloc>().townshipList;
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return SimpleDialog(
+          title: const Text(
+            'Choose One Township',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: Colors.grey,
+            ),
+          ),
+          children: [
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.7,
+              width: double.maxFinite,
+              child: ListView.builder(
+                itemCount: mTownshipList?.length ?? 0,
+                itemBuilder: (context, index) {
+                  final township = mTownshipList?[index];
+                  return SimpleDialogOption(
+                    onPressed: () {
+                      onOptionSelected(township?.name ?? '');
+                      Navigator.pop(dialogContext);
+                    },
+                    child: Text(
+                      township?.name ?? '',
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  );
+                },
               ),
-            );
-          },
+            ),
+          ],
         );
       },
     );
   }
 
-  Widget nationalTypeListDropdown(BuildContext context){
-    var bloc = context.read<PersonalInfoBloc>();
-    return Selector<PersonalInfoBloc,String?>(
-      selector: (context,bloc) => bloc.selectedNationalType,
-      builder: (context,selectedNational,_){
-        return Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(right: 4.0),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton2(
-                isExpanded: true,
-                value: selectedNational,
-
-                hint: const Center(child: Text('Ctz', style: TextStyle(fontSize: 10))),
-                items: nationTypeList.entries.map((entry) {
-                  return DropdownMenuItem<String>(
-                    value: entry.value,
-                    child: Center(child: Text(entry.value, style: const TextStyle(fontSize: 14,fontWeight: FontWeight.w500))),
+  void showStateDialog(context,Function(int) onOptionSelected) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: const Text(
+            'Choose One State',
+            style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500,color: Colors.grey),
+          ),
+          children: [
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.65, // Adjust height as needed
+              width: double.maxFinite,
+              child: ListView.builder(
+                itemCount: options.length,
+                itemBuilder: (context, index) {
+                  int actualValue = options.keys.elementAt(index);
+                  String displayValue = options[actualValue]!;
+                  return SimpleDialogOption(
+                    onPressed: () {
+                      onOptionSelected(actualValue); // Pass the numeric value
+                      Navigator.pop(context);
+                    },
+                    child: Text(displayValue,style: const TextStyle(fontSize: 16),),
                   );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  bloc.selectedNationalType = newValue;
                 },
-                dropdownStyleData: DropdownStyleData(
-                  width: MediaQuery.of(context).size.width * 0.3, // Adjust width here
-                  padding: const EdgeInsets.symmetric(horizontal: 16), // Optional padding
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: Theme.of(context).colorScheme.surface, // Adjust background color if needed
-                  ),
-                ),
-                buttonStyleData: ButtonStyleData(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.onPrimary,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  height: 40,
-                ),
               ),
             ),
+          ],
+        );
+      },
+    );
+  }
+
+  void showNationalityDialog(context,Function(String) onOptionSelected) {
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: const Text(
+            'Choose One Option',
+            style: TextStyle(fontSize: 14,fontWeight: FontWeight.w400,color: Colors.grey),
           ),
+          children: [
+            SimpleDialogOption(
+              onPressed: () {
+                onOptionSelected('နိုင်');
+                Navigator.pop(context, 'နိုင်');
+              },
+              child: const Text('နိုင်',style: TextStyle(fontSize: 16)),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                onOptionSelected('ဧည့်');
+                Navigator.pop(context, 'ဧည့်');
+              },
+              child: const Text('ဧည့်',style: TextStyle(fontSize: 16)),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                onOptionSelected('သာ');
+                Navigator.pop(context, 'သာ');
+              },
+              child: const Text('သာ',style: TextStyle(fontSize: 16)),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                onOptionSelected('ပြု');
+                Navigator.pop(context, 'ပြု');
+              },
+              child: const Text('ပြု',style: TextStyle(fontSize: 16)),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                onOptionSelected('သီ');
+                Navigator.pop(context, 'သီ');
+              },
+              child: const Text('သီ',style: TextStyle(fontSize: 16)),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                onOptionSelected('စ');
+                Navigator.pop(context, 'စ');
+              },
+              child: const Text('စ',style: TextStyle(fontSize: 16)),
+            ),
+          ],
         );
       },
     );

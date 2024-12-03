@@ -403,10 +403,10 @@ abstract class PahgApi{
       @Body() List<PathUserRequest> requestBody
       );
 
-  @POST(kEndPointGetNRC)
-  Future<TownshipResponse?> getTownship(
+  @GET(kEndPointGetNRC)
+  Future<TownshipResponse?> getAllTownship(
       @Header(kParamAuthorization) String apiKey,
-      @Body() List<GetRequest> requestBody
+      @Query("itemsPerPage") int pageSize,
       );
 
   @POST(kEndPointGetCategory)
