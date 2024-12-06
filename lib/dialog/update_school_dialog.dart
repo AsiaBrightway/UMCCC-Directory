@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:pahg_group/data/vos/education_school_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_school_request.dart';
 import 'package:pahg_group/ui/themes/colors.dart';
+import 'package:pahg_group/utils/utils.dart';
 
 class SchoolDialog extends StatefulWidget {
   const SchoolDialog({super.key, this.school, required this.onSave});
@@ -27,8 +28,8 @@ class _SchoolDialogState extends State<SchoolDialog> {
     super.initState();
      _nameController = TextEditingController(text: widget.school?.name ?? '');
      if(widget.school != null){
-       startDate = widget.school?.fromDate;
-       endDate = widget.school?.toDate;
+       startDate = Utils.getFormattedDate(widget.school?.fromDate);
+       endDate = Utils.getFormattedDate(widget.school?.toDate);
      }else{
        startDate = DateFormat("yyyy-MM-dd").format(DateTime.now());
        endDate = DateFormat("yyyy-MM-dd").format(DateTime.now());
@@ -134,7 +135,7 @@ class _SchoolDialogState extends State<SchoolDialog> {
                 const SizedBox(height: 12),
                 Row(
                   children: [
-                    Text("From :$startDate",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
+                    Text("From : $startDate",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
                     const SizedBox(width: 4),
                     GestureDetector(
                       onTap: (){ _selectStartDate(context); },

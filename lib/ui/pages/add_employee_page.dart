@@ -337,7 +337,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                     floatingLabelStyle: const TextStyle(color: Colors.blue),
                     prefixIcon: Padding(
                       padding: const EdgeInsets.all(8),
-                      child: Image.asset('lib/icons/employee_jd.png',width: 12,height: 12,color: Theme.of(context).colorScheme.onSurface),
+                      child: Image.asset('lib/icons/calendar3.png',width: 12,height: 12,color: Theme.of(context).colorScheme.onSurface),
                     ),
                     labelStyle: TextStyle(color: Colors.grey[700],fontFamily:'Roboto',fontWeight: FontWeight.w300),
                     labelText: 'Appointment Date',
@@ -793,13 +793,8 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
           _emailErrorText = "Email is required";
         });
         return false;
-      }else if(!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(_emailController.text.toString())){
-        setState(() {
-          _emailErrorText = "Email format is invalid";
-        });
-        return false;
       }
-        else {
+      else {
         setState(() {
           _emailErrorText = null;
         });

@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:pahg_group/data/vos/request_body/add_training_request.dart';
 import 'package:pahg_group/data/vos/training_vo.dart';
 import 'package:pahg_group/ui/themes/colors.dart';
+import 'package:pahg_group/utils/utils.dart';
 
 class TrainingDialog extends StatefulWidget {
   const TrainingDialog({super.key, this.training, required this.onSave});
@@ -36,8 +37,8 @@ class _TrainingDialogState extends State<TrainingDialog> {
 
     isCertificate = widget.training?.certificate ?? true;
     if(widget.training != null){
-      startDate = widget.training!.startDate;
-      endDate = widget.training!.endDate;
+      startDate = Utils.getFormattedDate(widget.training!.startDate);
+      endDate = Utils.getFormattedDate(widget.training!.endDate);
       trainingResult = widget.training?.trainingResult ;
       trainingType = widget.training?.trainingType;
     }else{
@@ -162,7 +163,7 @@ class _TrainingDialogState extends State<TrainingDialog> {
                 const SizedBox(height: 14),
                 Row(
                   children: [
-                    Text("Start :$startDate",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
+                    Text("Start : $startDate",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
                     const SizedBox(width: 6),
                     GestureDetector(
                         onTap: (){ _selectStartDate(context); },
@@ -172,7 +173,7 @@ class _TrainingDialogState extends State<TrainingDialog> {
                 ),
                 Row(
                   children: [
-                    Text("End :$endDate",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
+                    Text("End : $endDate",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
                     const SizedBox(width: 8),
                     GestureDetector(
                         onTap: (){ _selectEndDate(context); },

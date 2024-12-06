@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:pahg_group/data/vos/request_body/add_work_request.dart';
 import 'package:pahg_group/data/vos/work_vo.dart';
 import 'package:pahg_group/ui/themes/colors.dart';
+import 'package:pahg_group/utils/utils.dart';
 
 class WorkDialog extends StatefulWidget {
   const WorkDialog({super.key, required this.onSave, this.work});
@@ -13,6 +14,7 @@ class WorkDialog extends StatefulWidget {
 }
 
 class _WorkDialogState extends State<WorkDialog> {
+
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _companyNameController;
   late TextEditingController _rankController;
@@ -20,6 +22,7 @@ class _WorkDialogState extends State<WorkDialog> {
   late TextEditingController _responsibilityController;
   String? startDate;
   String? endDate;
+
   @override
   void initState() {
     super.initState();
@@ -28,8 +31,8 @@ class _WorkDialogState extends State<WorkDialog> {
     _salaryAllowanceController = TextEditingController(text: widget.work?.salaryAndAllowance ?? '');
     _responsibilityController = TextEditingController(text: widget.work?.detailResponsibilities ?? '');
     if(widget.work != null){
-      startDate = widget.work!.fromDate;
-      endDate = widget.work!.toDate;
+      startDate = Utils.getFormattedDate(widget.work!.fromDate);
+      endDate = Utils.getFormattedDate(widget.work!.toDate);
     }else{
       startDate = DateFormat("yyyy-MM-dd").format(DateTime.now());
       endDate = DateFormat("yyyy-MM-dd").format(DateTime.now());
@@ -122,7 +125,7 @@ class _WorkDialogState extends State<WorkDialog> {
                 const SizedBox(height: 14),
                 Row(
                   children: [
-                    Text("Start :$startDate",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
+                    Text("Start : $startDate",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
                     const SizedBox(width: 6),
                     GestureDetector(
                         onTap: (){ _selectStartDate(context); },
@@ -132,7 +135,7 @@ class _WorkDialogState extends State<WorkDialog> {
                 ),
                 Row(
                   children: [
-                    Text("End :$endDate",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
+                    Text("End : $endDate",style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
                     const SizedBox(width: 8),
                     GestureDetector(
                         onTap: (){ _selectEndDate(context); },

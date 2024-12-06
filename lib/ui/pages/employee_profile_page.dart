@@ -80,7 +80,7 @@ class _EmployeeProfilePageState extends ConsumerState<EmployeeProfilePage> {
       ///switch ui state with riverpod
       body: switch(employeeState){
 
-        EmployeeStateLoading() => const Center(child: EmployeeProfileShimmer()),
+        EmployeeStateLoading() => const EmployeeProfileShimmer(),
 
         EmployeeStateFailed(error : String error) => Center(
           child: ErrorEmployeeWidget(

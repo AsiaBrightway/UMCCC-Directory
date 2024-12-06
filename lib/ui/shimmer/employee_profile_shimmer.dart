@@ -9,13 +9,13 @@ class EmployeeProfileShimmer extends StatelessWidget {
     return Skeletonizer(
       enabled: true,
       child:  Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(16),
         child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Card(
                     child: Container(
@@ -24,7 +24,7 @@ class EmployeeProfileShimmer extends StatelessWidget {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(16),
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 18,vertical: 26),
+                      padding: const EdgeInsets.symmetric(horizontal: 18,vertical: 8),
                     ),
                   ),
                   const SizedBox(width: 36,),

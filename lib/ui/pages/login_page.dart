@@ -185,7 +185,7 @@ class _LoginPageState extends State<LoginPage> {
                     padding: const EdgeInsets.all(18),
                     child: const Center(
                       child: Text(
-                        'Log In',
+                        'Log in',
                         style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w500,

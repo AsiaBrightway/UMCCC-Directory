@@ -313,7 +313,7 @@ class PersonalInfoBloc extends ChangeNotifier{
        _nrcNumber = "${options[selectedState]}/$selectedTownship/($selectedNationalType) $nrcNo";
     }
     return PersonalInfoRequest(
-        id: _personalInfo.id,
+        id: _personalInfo.id ?? 0,  //id null can lead exception
         address: _personalInfo.address,
         employeeId: _personalInfo.employeeId,
         gender: _personalInfo.gender,

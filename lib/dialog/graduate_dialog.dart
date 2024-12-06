@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:pahg_group/data/vos/graduate_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_graduate_request.dart';
 import 'package:pahg_group/ui/themes/colors.dart';
+import 'package:pahg_group/utils/utils.dart';
 
 class GraduateDialog extends StatefulWidget {
   const GraduateDialog({super.key, this.graduate, required this.onSave});
@@ -23,10 +24,9 @@ class _GraduateDialogState extends State<GraduateDialog> {
   @override
   void initState() {
     super.initState();
-    _nameController =
-        TextEditingController(text: widget.graduate?.university ?? '');
+    _nameController = TextEditingController(text: widget.graduate?.university ?? '');
     if (widget.graduate != null) {
-      receivedYear = widget.graduate?.receivedYear ?? '';
+      receivedYear = Utils.getFormattedDate(widget.graduate?.receivedYear);
     } else {
       receivedYear = DateFormat("yyyy-MM-dd").format(DateTime.now());
     }
@@ -92,7 +92,7 @@ class _GraduateDialogState extends State<GraduateDialog> {
                 const SizedBox(height: 14),
                 Row(
                   children: [
-                    Text("From :$receivedYear",
+                    Text("From : $receivedYear",
                         style: const TextStyle(
                             fontWeight: FontWeight.w300, fontSize: 13)),
                     const SizedBox(width: 4),

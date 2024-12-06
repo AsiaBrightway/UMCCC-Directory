@@ -35,7 +35,7 @@ class _WorkExperiencePageState extends State<WorkExperiencePage> {
     work.id = 0;
     work.employeeId = widget.empId;
     _model.addWorkExperience(_token, work).then((onValue){
-      showScaffoldMessage(context, onValue?.message ?? 'Created');
+      showSuccessScaffold(context, onValue?.message ?? 'Created');
       _onRefresh();
     }).catchError((onError){
       showErrorDialog(context, onError.toString());
@@ -44,7 +44,7 @@ class _WorkExperiencePageState extends State<WorkExperiencePage> {
 
   void _onUpdate(AddWorkRequest updatedWork){
     _model.updateWorkExperience(_token, updatedWork.id!, updatedWork).then((onValue){
-      showScaffoldMessage(context, onValue?.message ?? 'Updated');
+      showSuccessScaffold(context, onValue?.message ?? 'Updated');
       _onRefresh();
     }).catchError((onError){
       showErrorDialog(context, onError.toString());

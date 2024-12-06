@@ -814,7 +814,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                     ),
                     const SizedBox(height: 8),
                     Selector<PersonalInfoBloc,String>(
-                      selector: (context,bloc) => bloc.nrcNumber ?? 'null nrc',
+                      selector: (context,bloc) => bloc.nrcNumber ?? 'empty nrc',
                       builder: (context,nrcNumber,_){
                         return Container(
                             padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 8),
@@ -823,7 +823,16 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                 border: Border.all(color: Colors.grey.shade600),
                                 borderRadius: BorderRadius.circular(8)
                             ),
-                            child: Text(nrcNumber)
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Image.asset('lib/icons/personal_info.png',width: 20,height: 20,color: Theme.of(context).colorScheme.onSurface,),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                  child: Text(nrcNumber),
+                                ),
+                              ],
+                            )
                         );
                       },
                     ),
@@ -1531,14 +1540,13 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     return Selector<PersonalInfoBloc, int?>(
       selector: (context, bloc) => bloc.personalInfo.bloodType,
       builder: (context, bloodType, _) {
-        return Expanded(
-            child: CustomDropdownButton(
-                value: bloodType,
-                hint: 'Blood Type',
-                items: bloodTypeList,
-                onChanged: (int? newValue) {
-                  bloc.updatePersonalInfo(bloodType: newValue);
-                }));
+        return CustomDropdownButton(
+            value: bloodType,
+            hint: 'Blood Type',
+            items: bloodTypeList,
+            onChanged: (int? newValue) {
+              bloc.updatePersonalInfo(bloodType: newValue);
+            });
       },
     );
   }
@@ -1548,14 +1556,13 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
     return Selector<PersonalInfoBloc, int?>(
       selector: (context, bloc) => bloc.personalInfo.marriageStatus,
       builder: (context, marriageStatus, _) {
-        return Expanded(
-            child: CustomDropdownButton(
-                value: marriageStatus,
-                hint: 'Marriage Status',
-                items: marriageList,
-                onChanged: (int? newValue) {
-                  bloc.updatePersonalInfo(marriageStatus: newValue);
-                }));
+        return CustomDropdownButton(
+            value: marriageStatus,
+            hint: 'Marriage Status',
+            items: marriageList,
+            onChanged: (int? newValue) {
+              bloc.updatePersonalInfo(marriageStatus: newValue);
+            });
       },
     );
   }
