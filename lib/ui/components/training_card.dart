@@ -111,9 +111,9 @@ class _TrainingCardState extends State<TrainingCard> {
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(
                           children: [
-                            const Text("Type : ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
+                            const Text("Type: ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
                             Expanded(
-                                child: Text(_trainingTypeName(widget.training.trainingType ?? 0),style: const TextStyle(fontWeight: FontWeight.w400),)
+                                child: Text(_trainingTypeName(widget.training.trainingType ?? 0),style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 15),)
                             )
                           ],
                         ),
@@ -124,7 +124,7 @@ class _TrainingCardState extends State<TrainingCard> {
                           children: [
                             const Text("Provided by: ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
                             Expanded(
-                                child: Text("${widget.training.trainingProvidedBy}",style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 13))
+                                child: Text("${widget.training.trainingProvidedBy}",style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 15))
                             ),
                           ],
                         ),
@@ -133,12 +133,12 @@ class _TrainingCardState extends State<TrainingCard> {
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(
                           children: [
-                            Text(Utils.getFormattedDate(widget.training.startDate),style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 13),),
+                            Text(Utils.getFormattedDate(widget.training.startDate),style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 15),),
                             Padding(
                               padding: const EdgeInsets.only(left: 8.0,right: 8.0),
                               child: Text("To",style: TextStyle(color: Theme.of(context).colorScheme.primary),),
                             ),
-                            Text(Utils.getFormattedDate(widget.training.endDate),style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 13)),
+                            Text(Utils.getFormattedDate(widget.training.endDate),style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 15)),
                           ],
                         ),
                       ),
@@ -148,7 +148,7 @@ class _TrainingCardState extends State<TrainingCard> {
                           children: [
                             const Text("Place: ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
                             Expanded(
-                                child: Text("${widget.training.place}",style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 13))
+                                child: Text("${widget.training.place}",style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 15))
                             ),
                           ],
                         ),
@@ -158,7 +158,7 @@ class _TrainingCardState extends State<TrainingCard> {
                         child: Row(
                           children: [
                             const Text("Time : ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
-                            Text(widget.training.totalTrainingTime ?? '',style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 13),)
+                            Text(widget.training.totalTrainingTime ?? '',style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 15),)
                           ],
                         ),
                       ),
@@ -167,7 +167,7 @@ class _TrainingCardState extends State<TrainingCard> {
                         child: Row(
                           children: [
                             const Text("Result : ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
-                            Text(_trainingResult(widget.training.trainingResult ?? 0),style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 13),)
+                            Text(_trainingResult(widget.training.trainingResult ?? 0),style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 15),)
                           ],
                         ),
                       ),
@@ -177,7 +177,7 @@ class _TrainingCardState extends State<TrainingCard> {
                           children: [
                             const Text("Note: ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
 
-                            Text("${widget.training.note}",style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 13)),
+                            Text("${widget.training.note}",style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 15)),
                           ],
                         ),
                       ),
@@ -187,7 +187,7 @@ class _TrainingCardState extends State<TrainingCard> {
                           children: [
                             const Text("Certificate: ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
 
-                            Text(_certificateName(widget.training.certificate ?? false),style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 13)),
+                            Text(_certificateName(widget.training.certificate ?? false),style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 15)),
                           ],
                         ),
                       ),
@@ -206,7 +206,7 @@ class _TrainingCardState extends State<TrainingCard> {
                                     return Container(
                                         color: Colors.black12,
                                         child: const Center(child: Text(
-                                          "Add Image", style: TextStyle(
+                                          "Add Image", style: TextStyle(fontFamily: 'DMSans',
                                             color: Colors.white),)));
                                   },
                                 ),

@@ -29,7 +29,7 @@ class _UserDrawerState extends State<UserDrawer> {
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: ListTile(
                 leading: const Icon(Icons.person_outline_outlined),
-                title: const Text('Profile',style: TextStyle(fontWeight: FontWeight.bold),),
+                title: const Text('Profile',style: TextStyle(fontWeight: FontWeight.w500),),
                 onTap: (){
                   Navigator.push(context, MaterialPageRoute(builder: (context) => EmployeeProfilePage(userId: widget.userId)));
                 },
@@ -39,7 +39,7 @@ class _UserDrawerState extends State<UserDrawer> {
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: ListTile(
                 leading: const Icon(Icons.lock),
-                title: const Text('Change Password',style: TextStyle(fontWeight: FontWeight.bold),),
+                title: const Text('Change Password',style: TextStyle(fontWeight: FontWeight.w500)),
                 onTap: (){
                   showChangePasswordDialog(context);
                 },
@@ -49,7 +49,7 @@ class _UserDrawerState extends State<UserDrawer> {
               padding: const EdgeInsets.symmetric(horizontal: 14),
               child: ListTile(
                 leading: const Icon(Icons.logout_outlined),
-                title: const Text('Log out',style: TextStyle(fontWeight: FontWeight.bold),),
+                title: const Text('Log out',style: TextStyle(fontWeight: FontWeight.w500),),
                 onTap: (){
                   showLogoutDialog(context);
                   },

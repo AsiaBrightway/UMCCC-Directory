@@ -340,7 +340,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                       child: Image.asset('lib/icons/calendar3.png',width: 12,height: 12,color: Theme.of(context).colorScheme.onSurface),
                     ),
                     labelStyle: TextStyle(color: Colors.grey[700],fontFamily:'Roboto',fontWeight: FontWeight.w300),
-                    labelText: 'Appointment Date',
+                    labelText: 'Start Date',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),

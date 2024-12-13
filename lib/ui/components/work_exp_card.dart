@@ -85,7 +85,7 @@ class _WorkExpCardState extends State<WorkExpCard> {
                           children: [
                             const Text("Salary : ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
 
-                            Text("${widget.work.salaryAndAllowance}",style: const TextStyle(fontSize: 13)),
+                            Text("${widget.work.salaryAndAllowance}",style: const TextStyle(fontSize: 14)),
                           ],
                         ),
                       ),
@@ -95,7 +95,7 @@ class _WorkExpCardState extends State<WorkExpCard> {
                           children: [
                             const Text("Responsibilities : ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
 
-                            Expanded(child: Text("${widget.work.detailResponsibilities}",style: const TextStyle(fontSize: 13))),
+                            Expanded(child: Text("${widget.work.detailResponsibilities}",style: const TextStyle(fontSize: 14))),
                           ],
                         ),
                       ),

@@ -38,6 +38,12 @@ const String kEndPointAddLanguage = "/v1/api/Educationlanguages";
 const String kEndPointGetWorkExp = "/v1/api/Workingexperiences/filter";
 const String kEndPointAddWorkExp = "/v1/api/Workingexperiences";
 
+const String kEndPointGetFacility = "/v1/api/Facilities/filter";
+const String kEndPointAddFacility = "/v1/api/Facilities";
+
+const String kEndPointGetFacilityAssign = "/v1/api/Facilityassignments/filter";
+const String kEndPointAddFacilityAssign = "/v1/api/Facilityassignments";
+
 ///Post
 const String kEndPointGetPost = "/v1/api/Posts/filter";
 const String kEndPointAddPost = "/v1/api/Posts";

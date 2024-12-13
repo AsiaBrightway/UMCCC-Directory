@@ -1,11 +1,11 @@
 
 import 'package:flutter/cupertino.dart';
-import 'package:intl/intl.dart';
 import '../data/models/pahg_model.dart';
 import '../data/vos/category_vo.dart';
 import '../data/vos/request_body/add_category_vo.dart';
 import '../data/vos/request_body/get_request.dart';
 import '../utils/helper_functions.dart';
+import '../utils/utils.dart';
 
 class AddCategoryBloc extends ChangeNotifier{
 
@@ -19,7 +19,6 @@ class AddCategoryBloc extends ChangeNotifier{
   bool _isActive = true;
   String? _failedMessage;
   int? updateId;
-
 
   int? get updateParentId => _updateParentId;
   String? get failedMessage => _failedMessage;
@@ -50,12 +49,6 @@ class AddCategoryBloc extends ChangeNotifier{
     notifyListeners();
   }
 
-  String getCurrentDate() {
-    DateTime now = DateTime.now();
-    String formattedDate = DateFormat('yyyy-MM-dd').format(now);
-    return formattedDate;
-  }
-
   AddCategoryBloc(String token,bool isAdd){
     _token = token;
     getCategoryList(isAdd);
@@ -80,7 +73,7 @@ class AddCategoryBloc extends ChangeNotifier{
 
   Future<void> addCategory(BuildContext context) async{
     if(_categoryName != null && _selectedParent != null){
-      AddCategoryVo requestBody = AddCategoryVo(0, _categoryName, _selectedParent, _isActive, null, getCurrentDate());
+      AddCategoryVo requestBody = AddCategoryVo(0, _categoryName, _selectedParent, _isActive, null, Utils.getCurrentDate());
       _model.addCategory(_token, requestBody).then((onValue){
         showSuccessScaffold(context, onValue?.message ?? '');
       }).catchError((onError){

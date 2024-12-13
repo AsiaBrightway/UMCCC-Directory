@@ -15,6 +15,12 @@ class Utils {
     return age;
   }
 
+  static String getCurrentDate() {
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat('yyyy-MM-dd').format(now);
+    return formattedDate;
+  }
+
   static String getFormattedDate(String? dateTimeString) {
     // Parse the ISO 8601 date-time string into a DateTime object
     if(dateTimeString == null) {

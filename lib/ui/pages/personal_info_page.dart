@@ -1,9 +1,12 @@
 
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:animations/animations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pahg_group/utils/utils.dart';
 import 'package:provider/provider.dart';
@@ -202,7 +205,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
             icon: const Icon(Icons.arrow_back_ios,color: Colors.white),
             onPressed: _onBackPressed,
           ),
-          title: const Text('Personal Info',style: TextStyle(color: Colors.white,fontFamily: 'Ubuntu'),),
+          title: const Text('Personal Info',style: TextStyle(color: Colors.white,fontFamily: 'Ubuntu')),
           backgroundColor: Colors.blue[800],
           centerTitle: true,
           actions: [
@@ -445,46 +448,46 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                               ///gender radio button
                               child: (bloc.editMode && _currentUserRole == 1)
                                   ? Selector<PersonalInfoBloc,bool>(
-                                selector: (context,bloc) => bloc.personalInfo.gender ?? true,
-                                builder: (context,gender,_){
-                                  return ButtonBar(
-                                    alignment: MainAxisAlignment.start,
-                                    children: <Widget>[
-                                      const Text('Gender : ',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w400),),
-                                      const Text('Male'),
-                                      Radio(
-                                        value: true,
-                                        groupValue: gender,
-                                        activeColor: colorAccent,
-                                        onChanged: (bool? value){
-                                          bloc.updatePersonalInfo(gender: value);
-                                        },
-                                      ),
-                                      const Text('Female'),
-                                      Radio(
-                                        value: false,
-                                        groupValue: gender,
-                                        activeColor: colorAccent,
-                                        onChanged: (bool? value){
-                                          bloc.updatePersonalInfo(gender: value);
-                                        },
-                                      ),
-                                    ],
-                                  );
-                                },
-                              )
+                                    selector: (context,bloc) => bloc.personalInfo.gender ?? true,
+                                    builder: (context,gender,_){
+                                      return ButtonBar(
+                                        alignment: MainAxisAlignment.start,
+                                        children: <Widget>[
+                                          const Text('Gender : ',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w400)),
+                                          const Text('Male'),
+                                          Radio(
+                                            value: true,
+                                            groupValue: gender,
+                                            activeColor: colorAccent,
+                                            onChanged: (bool? value){
+                                              bloc.updatePersonalInfo(gender: value);
+                                            },
+                                          ),
+                                          const Text('Female'),
+                                          Radio(
+                                            value: false,
+                                            groupValue: gender,
+                                            activeColor: colorAccent,
+                                            onChanged: (bool? value){
+                                              bloc.updatePersonalInfo(gender: value);
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  )
                                   : Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  const Padding(
-                                    padding: EdgeInsets.only(left: 8.0,right: 4),
-                                    child: Text("Gender :",style: TextStyle(fontFamily: 'Ubuntu',fontSize: 14),),
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        const Padding(
+                                          padding: EdgeInsets.only(left: 8.0,right: 4),
+                                          child: Text("Gender :",style: TextStyle(fontSize: 14,fontWeight: FontWeight.w300,fontFamily: 'DMSans'),),
+                                        ),
+                                        (bloc.personalInfo.gender ?? true)
+                                            ? const Text(" Male",style: TextStyle(fontSize: 16))
+                                            : const Text(" Female",style: TextStyle(fontSize: 16))
+                                      ],
                                   ),
-                                  (bloc.personalInfo.gender ?? true)
-                                      ? const Text(" Male",style: TextStyle(fontSize: 16))
-                                      : const Text(" Female",style: TextStyle(fontSize: 16))
-                                ],
-                              ),
                             ),
                             const SizedBox(height: 10),
                             ///hand usage radio button
@@ -533,7 +536,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                       const Padding(
                                         padding: EdgeInsets.only(left: 8.0, right: 4),
                                         child: Text("Hand Usage :",
-                                          style: TextStyle(fontFamily: 'Ubuntu', fontSize: 14),
+                                          style: TextStyle(fontFamily: 'DMSans', fontSize: 14),
                                         ),
                                       ),
                                       (bloc.personalInfo.handUsage == 2)
@@ -592,7 +595,9 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                             children: [
                                               Padding(
                                                 padding: const EdgeInsets.symmetric(horizontal: 12),
-                                                child: Image.asset('lib/icons/marriage.png',width: 20,height: 20,color: Theme.of(context).colorScheme.onSurface,),
+                                                child: (getMarriageStatus(bloc.personalInfo.marriageStatus) == 'Single')
+                                                    ? Image.asset('lib/icons/single.png',width: 20,height: 20,color: Theme.of(context).colorScheme.onSurface,)
+                                                    : Image.asset('lib/icons/marriage.png',width: 20,height: 20,color: Theme.of(context).colorScheme.onSurface,)
                                               ),
                                               Text(getMarriageStatus(bloc.personalInfo.marriageStatus),
                                                   style: TextStyle(
@@ -857,7 +862,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                             height: SizeConfig.blockSizeVertical * 17,
                                             width: SizeConfig.blockSizeHorizontal * 40,
                                             color: Colors.black12,
-                                            child: const Center(child: Text("Front Image")));
+                                            child: const Center(child: Text("Front Image",style: TextStyle(fontFamily: 'DMSans'),)));
                                       },
                                     ),
                                     closedColor: Colors.black12,
@@ -895,7 +900,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                                   height: SizeConfig.blockSizeVertical * 17,
                                                   width: SizeConfig.blockSizeHorizontal * 40,
                                                   color: Colors.black12,
-                                                  child: const Center(child: Text("Back Image"))
+                                                  child: const Center(child: Text("Back Image",style: TextStyle(fontFamily: 'DMSans'),))
                                               );
                                             },
                                           ),
@@ -1044,8 +1049,11 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                 padding: const EdgeInsets.only(left: 8.0,bottom: 8,top: 14),
                                 child: Row(
                                   children: [
-                                    const Text("License Status : "),
-                                    Text(getLicenseStatusName(licenseStatus),style: const TextStyle(fontFamily: 'Ubuntu'),)
+                                    const Padding(
+                                      padding: EdgeInsets.only(right: 4.0),
+                                      child: Text("License Status : ",style: TextStyle(fontFamily: 'DMSans',fontWeight: FontWeight.w400),),
+                                    ),
+                                    Text(getLicenseStatusName(licenseStatus),style: const TextStyle(fontFamily: 'Ubuntu',fontSize: 15))
                                   ],
                                 ),
                               );
@@ -1069,8 +1077,11 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                 padding: const EdgeInsets.only(left: 8,bottom: 8),
                                 child: Row(
                                   children: [
-                                    const Text("License Type : "),
-                                    Text(getLicenseTypeName(licenseType),style: const TextStyle(fontFamily: 'Ubuntu'))
+                                    const Padding(
+                                      padding: EdgeInsets.only(right: 4.0),
+                                      child: Text("License Type : ",style: TextStyle(fontFamily: 'DMSans',fontWeight: FontWeight.w400)),
+                                    ),
+                                    Text(getLicenseTypeName(licenseType),style: const TextStyle(fontFamily: 'Ubuntu',fontSize: 15))
                                   ],
                                 ),
                               );
@@ -1095,8 +1106,11 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                 padding: const EdgeInsets.only(left: 8,bottom: 8),
                                 child: Row(
                                   children: [
-                                    const Text("License Color : "),
-                                    Text(getLicenseColorName(licenseColor),style: const TextStyle(fontFamily: 'Ubuntu'))
+                                    const Padding(
+                                      padding: EdgeInsets.only(right: 4.0),
+                                      child: Text("License Color : ",style: TextStyle(fontFamily: 'DMSans',fontWeight: FontWeight.w400)),
+                                    ),
+                                    Text(getLicenseColorName(licenseColor),style: const TextStyle(fontFamily: 'Ubuntu',fontSize: 15))
                                   ],
                                 ),
                               );
@@ -1165,7 +1179,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                                       height: MediaQuery.of(context).size.height * 0.17,
                                                       width: MediaQuery.of(context).size.width * 0.4,
                                                       color: Colors.black12,
-                                                      child: const Center(child: Text("Front Image"))
+                                                      child: const Center(child: Text("Front Image",style: TextStyle(fontFamily: 'DMSans'),))
                                                   );
                                                 },
                                               ),
@@ -1204,7 +1218,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                                       height: MediaQuery.of(context).size.height * 0.17,
                                                       width: MediaQuery.of(context).size.width * 0.4,
                                                       color: Colors.black12,
-                                                      child: const Center(child: Text("Back Image"))
+                                                      child: const Center(child: Text("Back Image",style: TextStyle(fontFamily: 'DMSans'),))
                                                   );
                                                 },
                                               ),
@@ -1310,7 +1324,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
 
                   child: (state != null)
                       ? Text(options[state]!)
-                      : const Text('St',style: TextStyle(fontSize: 13,color: Colors.grey)),
+                      : const Text('St',style: TextStyle(fontSize: 13,color: Colors.grey,fontFamily: 'DMSans')),
                 );
               }),
             const Icon(Icons.arrow_drop_down_sharp)
@@ -1350,7 +1364,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                     padding: const EdgeInsets.only(left: 4.0),
                     child: (township != null)
                         ? Text(township)
-                        : const Text('Tsp',overflow: TextOverflow.ellipsis,maxLines: 1,style: TextStyle(fontSize: 14,color: Colors.grey,)),
+                        : const Text('Tsp',overflow: TextOverflow.ellipsis,maxLines: 1,style: TextStyle(fontSize: 14,color: Colors.grey,fontFamily: 'DMSans')),
                   ),
                 );
               },),
@@ -1391,7 +1405,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                     padding: const EdgeInsets.only(left: 4.0),
                     child: (nationalType != null)
                         ? Text(nationalType,maxLines: 2,)
-                        : const Text('Type',style: TextStyle(fontSize: 14,color: Colors.grey)),
+                        : const Text('Type',style: TextStyle(fontSize: 14,color: Colors.grey,fontFamily: 'DMSans')),
                   ),
                 );
               }),

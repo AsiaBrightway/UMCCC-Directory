@@ -119,6 +119,9 @@ flutter:
            weight: 300
          - asset: fonts/Ubuntu-Bold.ttf
            weight: 800
+     - family: DMSans
+       fonts:
+         - asset: fonts/DMSans-Regular.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

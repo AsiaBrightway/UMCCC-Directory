@@ -83,7 +83,7 @@ class _LanguageCardState extends State<LanguageCard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(left: 4,top: 4.0,bottom: 10,right: 6),
+                  padding: const EdgeInsets.only(top: 4.0,bottom: 10,right: 6),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -102,7 +102,7 @@ class _LanguageCardState extends State<LanguageCard> {
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(
                           children: [
-                            const Text("Proficiency: ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
+                            const Text("Proficiency: ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
 
                             Text(_proficiencyName(widget.language.proficiency ?? 0),style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 13)),
                           ],
@@ -134,7 +134,7 @@ class _LanguageCardState extends State<LanguageCard> {
                                     return Container(
                                         color: Colors.black12,
                                         child: const Center(child: Text(
-                                          "Add Image", style: TextStyle(
+                                          "Add Image", style: TextStyle(fontFamily: 'DMSans',
                                             color: Colors.white),)));
                                   },
                                 ),

@@ -5,6 +5,8 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:pahg_group/data/vos/companies_vo.dart';
 import 'package:pahg_group/data/vos/error_vo.dart';
+import 'package:pahg_group/data/vos/facility_assign_vo.dart';
+import 'package:pahg_group/data/vos/facility_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_category_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_company_image_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_company_request.dart';
@@ -32,6 +34,8 @@ import 'package:pahg_group/network/responses/company_images_response.dart';
 import 'package:pahg_group/network/responses/department_list_response.dart';
 import 'package:pahg_group/network/responses/employee_list_response.dart';
 import 'package:pahg_group/network/responses/employee_response.dart';
+import 'package:pahg_group/network/responses/facility_assign_response.dart';
+import 'package:pahg_group/network/responses/facility_response.dart';
 import 'package:pahg_group/network/responses/family_response.dart';
 import 'package:pahg_group/network/responses/graduate_response.dart';
 import 'package:pahg_group/network/responses/image_upload_response.dart';
@@ -551,6 +555,41 @@ class PahgDataAgentImpl extends PahgDataAgent{
   @override
   Future<PostMethodResponse?> deletePosts(String apiKey, int id) {
     return mApi.deletePost(apiKey, id).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<FacilityResponse?> getAllFacility(String apiKey) {
+    return mApi.getAllFacilities(apiKey).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> addFacility(String apiKey, FacilityVo requestBody) {
+    return mApi.addFacility(apiKey, requestBody).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> updateFacility(String apiKey, int id, FacilityVo requestBody) {
+    return mApi.updateFacility(apiKey, id, requestBody).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<FacilityAssignResponse?> getFacilityAssignByEmployee(String apiKey, List<GetRequest> requestBody) {
+    return mApi.getFacilityAssignByEmployee(apiKey, requestBody).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> addFacilityAssign(String apiKey, FacilityAssignVo assign) {
+    return mApi.addFacilityAssign(apiKey, assign).catchError((onError){
       throw _createException(onError);
     });
   }

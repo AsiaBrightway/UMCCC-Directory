@@ -2,6 +2,8 @@
 import 'dart:io';
 
 import 'package:pahg_group/data/vos/companies_vo.dart';
+import 'package:pahg_group/data/vos/facility_assign_vo.dart';
+import 'package:pahg_group/data/vos/facility_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_category_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_company_image_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_company_request.dart';
@@ -29,6 +31,8 @@ import '../responses/category_response.dart';
 import '../responses/company_images_response.dart';
 import '../responses/department_list_response.dart';
 import '../responses/employee_list_response.dart';
+import '../responses/facility_assign_response.dart';
+import '../responses/facility_response.dart';
 import '../responses/family_response.dart';
 import '../responses/graduate_response.dart';
 import '../responses/image_upload_response.dart';
@@ -169,4 +173,14 @@ abstract class PahgDataAgent{
   Future<PostMethodResponse?> updatePosts(String apiKey,int id,AddPostRequest requestBody);
 
   Future<PostMethodResponse?> deletePosts(String apiKey,int id);
+
+  Future<FacilityResponse?> getAllFacility(String apiKey);
+
+  Future<PostMethodResponse?> addFacility(String apiKey,FacilityVo requestBody);
+
+  Future<PostMethodResponse?> updateFacility(String apiKey,int id,FacilityVo requestBody);
+
+  Future<FacilityAssignResponse?> getFacilityAssignByEmployee(String apiKey,List<GetRequest> requestBody);
+
+  Future<PostMethodResponse?> addFacilityAssign(String apiKey,FacilityAssignVo assign);
 }

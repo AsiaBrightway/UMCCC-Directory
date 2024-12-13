@@ -1,8 +1,13 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:pahg_group/data/vos/facility_assign_vo.dart';
+import 'package:pahg_group/data/vos/facility_vo.dart';
+import 'package:pahg_group/data/vos/recordVo/facility_assign_record_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_category_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_post_request.dart';
+import 'package:pahg_group/network/responses/facility_assign_response.dart';
+import 'package:pahg_group/network/responses/facility_response.dart';
 import 'package:pahg_group/network/responses/township_response.dart';
 
 import 'package:retrofit/http.dart';
@@ -454,5 +459,41 @@ abstract class PahgApi{
   Future<PostMethodResponse?> deletePost(
       @Header(kParamAuthorization) String apiKey,
       @Path("id") int id,
+      );
+
+  @POST(kEndPointGetPost)
+  Future<FacilityResponse?> getFacilities(
+      @Header(kParamAuthorization) String apiKey,
+      @Body() List<GetRequest> requestBody
+      );
+
+  @GET(kEndPointAddFacility)
+  Future<FacilityResponse?> getAllFacilities(
+      @Header(kParamAuthorization) String apiKey,
+      );
+
+  @POST(kEndPointAddFacility)
+  Future<PostMethodResponse?> addFacility(
+      @Header(kParamAuthorization) String apiKey,
+      @Body() FacilityVo requestBody
+      );
+
+  @PUT("$kEndPointAddFacility/{id}")
+  Future<PostMethodResponse?> updateFacility(
+      @Header(kParamAuthorization) String apiKey,
+      @Path("id") int id,
+      @Body() FacilityVo  requestBody
+      );
+
+  @POST(kEndPointGetFacilityAssign)
+  Future<FacilityAssignResponse> getFacilityAssignByEmployee(
+      @Header(kParamAuthorization) String apiKey,
+      @Body() List<GetRequest> requestBody
+      );
+
+  @POST(kEndPointAddFacilityAssign)
+  Future<PostMethodResponse?> addFacilityAssign(
+      @Header(kParamAuthorization) String apiKey,
+      @Body() FacilityAssignVo assign
       );
 }

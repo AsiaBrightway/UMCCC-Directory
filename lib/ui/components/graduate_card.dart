@@ -110,8 +110,7 @@ class _GraduateCardState extends State<GraduateCard> {
                                     return Container(
                                         color: Colors.black12,
                                         child: const Center(child: Text(
-                                          "Add Image", style: TextStyle(
-                                            color: Colors.white),)));
+                                          "Add Image", style: TextStyle(fontFamily: 'DMSans', color: Colors.white),)));
                                   },
                                 ),
                             closedColor: Colors.black12,

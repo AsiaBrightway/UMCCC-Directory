@@ -2,6 +2,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pahg_group/ui/pages/facility_assign_page.dart';
 import 'package:pahg_group/ui/shimmer/employee_profile_shimmer.dart';
 import 'package:pahg_group/widgets/error_employee_widget.dart';
 import 'package:provider/provider.dart';
@@ -181,7 +182,7 @@ class _EmployeeProfilePageState extends ConsumerState<EmployeeProfilePage> {
                               width: MediaQuery.of(context).size.width * 0.42,
                               height: 140,
                               decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.black,width: 1,),
+                                  border: Border.all(color: Colors.black,width: 1),
                                   borderRadius: BorderRadius.circular(8),
                                   color: Theme.of(context).colorScheme.secondaryContainer
                               ),
@@ -245,29 +246,34 @@ class _EmployeeProfilePageState extends ConsumerState<EmployeeProfilePage> {
                           ),
                           const SizedBox(width: 18,),
                           ///Facility
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.42,
-                            height: 140,
-                            decoration: BoxDecoration(
-                                border: Border.all(color: Colors.black,width: 1,),
-                                borderRadius: BorderRadius.circular(8),
-                                color: Theme.of(context).colorScheme.secondaryContainer
-                            ),
-                            child: Column(
-                              children: [
-                                const SizedBox(height: 20,),
-                                Image.asset('lib/icons/facility.png',width: 50,height: 50,color: Theme.of(context).colorScheme.onSurface),
-                                const SizedBox(height: 10,),
-                                const Text('Facility',style: TextStyle(fontWeight: FontWeight.w500),),
-                                const Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [ Padding(
-                                    padding: EdgeInsets.only(right: 8.0,top: 8),
-                                    child: Text('more details >>',style: TextStyle(color: colorAccent,fontSize: 12),),
+                          GestureDetector(
+                            onTap: (){
+                              navigateToFacilityPage(context, employee);
+                            },
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * 0.42,
+                              height: 140,
+                              decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.black,width: 1,),
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: Theme.of(context).colorScheme.secondaryContainer
+                              ),
+                              child: Column(
+                                children: [
+                                  const SizedBox(height: 20,),
+                                  Image.asset('lib/icons/facility.png',width: 50,height: 50,color: Theme.of(context).colorScheme.onSurface),
+                                  const SizedBox(height: 10,),
+                                  const Text('Facility',style: TextStyle(fontWeight: FontWeight.w500),),
+                                  const Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [ Padding(
+                                      padding: EdgeInsets.only(right: 8.0,top: 8),
+                                      child: Text('more details >>',style: TextStyle(color: colorAccent,fontSize: 12),),
+                                    )
+                                    ],
                                   )
-                                  ],
-                                )
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ],
@@ -318,7 +324,7 @@ class _EmployeeProfilePageState extends ConsumerState<EmployeeProfilePage> {
               ),
             ),
           ),
-          const SizedBox(width: 18,),
+          const SizedBox(width: 18),
           ///this is only use to adjust the container
           SizedBox(
             width: MediaQuery.of(context).size.width * 0.42,
@@ -472,4 +478,24 @@ class _EmployeeProfilePageState extends ConsumerState<EmployeeProfilePage> {
       ),
     );
   }
+
+  void navigateToFacilityPage(BuildContext context,EmployeeVo employee) {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => FacilityAssignPage(empId: employee.id ?? '', userRole: _userRole,),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(1.0, 0.0);
+          const end = Offset.zero;
+          const curve = Curves.ease;
+          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: child,
+          );
+        },
+      ),
+    );
+  }
+
 }

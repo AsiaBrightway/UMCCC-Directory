@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pahg_group/ui/pages/add_category_page.dart';
+import 'package:pahg_group/ui/pages/add_facility_page.dart';
 
 import '../../dialog/change_password_dialog.dart';
 import '../../utils/helper_functions.dart';
@@ -40,7 +41,7 @@ class MyDrawer extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: ListTile(
                 leading: Image.asset('lib/icons/add_person.png',width: 25,color: Theme.of(context).colorScheme.onSurface),
-                title: const Text('Add Employee',style: TextStyle(fontWeight: FontWeight.w400),),
+                title: const Text('Add Employee',style: TextStyle(fontWeight: FontWeight.w400)),
                 onTap: (){
                   Navigator.push(context, MaterialPageRoute(builder: (context) => const AddEmployeePage(isAdd: true, userId: '',),));
                 },
@@ -118,7 +119,7 @@ class MyDrawer extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: ListTile(
-                leading:  Image.asset('lib/icons/categories.png',width: 25),
+                leading:  Image.asset('lib/icons/categories.png',width: 25,color: Theme.of(context).colorScheme.onSurface),
                 title: const Text('Add Category',style: TextStyle(fontWeight: FontWeight.w400),),
                 onTap: (){
                   Navigator.push(context, MaterialPageRoute(builder: (context) => const AddCategoryPage(isAdd: true,),));
@@ -132,6 +133,27 @@ class MyDrawer extends StatelessWidget {
                 title: const Text('Edit Category',style: TextStyle(fontWeight: FontWeight.w400)),
                 onTap: (){
                   Navigator.push(context, MaterialPageRoute(builder: (context) => const AddCategoryPage(isAdd: false,),));
+                },
+              ),
+            ),
+            ///Facility
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: ListTile(
+                leading:  Image.asset('lib/icons/facility_icon.png',width: 25,color: Theme.of(context).colorScheme.onSurface),
+                title: const Text('Add Facility',style: TextStyle(fontWeight: FontWeight.w400)),
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const AddFacilityPage(isAdd: true,)));
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: ListTile(
+                leading:  Image.asset('lib/icons/facility_icon.png',width: 25,color: Colors.orange),
+                title: const Text('Edit Facility',style: TextStyle(fontWeight: FontWeight.w400)),
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const AddFacilityPage(isAdd: false,),));
                 },
               ),
             ),

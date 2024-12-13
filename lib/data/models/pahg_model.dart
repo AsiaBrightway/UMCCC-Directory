@@ -5,6 +5,8 @@ import 'package:pahg_group/data/vos/company_images_vo.dart';
 import 'package:pahg_group/data/vos/department_vo.dart';
 import 'package:pahg_group/data/vos/education_school_vo.dart';
 import 'package:pahg_group/data/vos/employee_vo.dart';
+import 'package:pahg_group/data/vos/facility_assign_vo.dart';
+import 'package:pahg_group/data/vos/facility_vo.dart';
 import 'package:pahg_group/data/vos/family_vo.dart';
 import 'package:pahg_group/data/vos/graduate_vo.dart';
 import 'package:pahg_group/data/vos/language_vo.dart';
@@ -28,6 +30,7 @@ import 'package:pahg_group/data/vos/request_body/add_work_request.dart';
 import 'package:pahg_group/data/vos/request_body/get_request.dart';
 import 'package:pahg_group/data/vos/request_body/login_request.dart';
 import 'package:pahg_group/data/vos/request_body/path_user_request.dart';
+import 'package:pahg_group/network/responses/facility_assign_response.dart';
 import '../../network/data_agents/pahg_data_agent.dart';
 import '../../network/data_agents/pahg_data_agent_impl.dart';
 import '../../network/responses/post_method_response.dart';
@@ -368,5 +371,26 @@ class PahgModel {
 
   Future<PostMethodResponse?> deletePostById(String apiKey,int id){
     return mDataAgent.deletePosts(apiKey, id);
+  }
+
+  Future<List<FacilityVo>?> getAllFacility(String apiKey){
+    return mDataAgent.getAllFacility(apiKey).asStream().map((response) => response?.document?.records ?? []).first;
+  }
+
+  Future<PostMethodResponse?> addFacility(String apiKey,FacilityVo requestBody){
+    return mDataAgent.addFacility(apiKey, requestBody);
+  }
+
+  Future<PostMethodResponse?> updateFacility(String apiKey,int id,FacilityVo requestBody){
+    return mDataAgent.updateFacility(apiKey, id, requestBody);
+  }
+
+  Future<List<FacilityAssignVo>> getFacilityAssignByEmployee(String apiKey,GetRequest request){
+    List<GetRequest> requestList = [request];
+    return mDataAgent.getFacilityAssignByEmployee(apiKey, requestList).asStream().map((response)=> response?.document?.records ?? []).first;
+  }
+
+  Future<PostMethodResponse?> addFacilityAssign(String apiKey,FacilityAssignVo assign){
+    return mDataAgent.addFacilityAssign(apiKey, assign);
   }
 }
