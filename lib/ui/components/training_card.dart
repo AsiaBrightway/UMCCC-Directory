@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:pahg_group/data/vos/request_body/add_training_request.dart';
 import 'package:pahg_group/data/vos/training_vo.dart';
 import 'package:pahg_group/dialog/training_dialog.dart';
-import 'package:pahg_group/ui/themes/colors.dart';
 import 'package:pahg_group/utils/utils.dart';
 
 import '../../utils/size_config.dart';
@@ -99,7 +98,9 @@ class _TrainingCardState extends State<TrainingCard> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(child: Text("${widget.training.courseName}",style: const TextStyle(fontSize: 15,fontFamily: 'Ubuntu'),)),
-                      const Icon(Icons.keyboard_arrow_down,size: 20,)
+                      (_isExpanded)
+                          ? const Icon(Icons.keyboard_arrow_up,size: 20)
+                          : const Icon(Icons.keyboard_arrow_down,size: 20)
                     ],
                   ),
                 ),
@@ -111,7 +112,10 @@ class _TrainingCardState extends State<TrainingCard> {
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(
                           children: [
-                            const Text("Type: ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
+                            const Padding(
+                              padding: EdgeInsets.only(right: 8.0),
+                              child: Text("Type: ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13,color: Colors.blueGrey,fontFamily: 'DMSans')),
+                            ),
                             Expanded(
                                 child: Text(_trainingTypeName(widget.training.trainingType ?? 0),style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 15),)
                             )
@@ -122,7 +126,7 @@ class _TrainingCardState extends State<TrainingCard> {
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(
                           children: [
-                            const Text("Provided by: ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
+                            const Text("Provided By: ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13,color: Colors.blueGrey)),
                             Expanded(
                                 child: Text("${widget.training.trainingProvidedBy}",style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 15))
                             ),
@@ -146,7 +150,7 @@ class _TrainingCardState extends State<TrainingCard> {
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(
                           children: [
-                            const Text("Place: ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
+                            const Text("Place: ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13,color: Colors.blueGrey,fontFamily: 'DMSans'),),
                             Expanded(
                                 child: Text("${widget.training.place}",style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 15))
                             ),
@@ -157,7 +161,7 @@ class _TrainingCardState extends State<TrainingCard> {
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(
                           children: [
-                            const Text("Time : ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
+                            const Text("Time : ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13,color: Colors.blueGrey,fontFamily: 'DMSans'),),
                             Text(widget.training.totalTrainingTime ?? '',style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 15),)
                           ],
                         ),
@@ -166,7 +170,7 @@ class _TrainingCardState extends State<TrainingCard> {
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(
                           children: [
-                            const Text("Result : ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
+                            const Text("Result : ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13,color: Colors.blueGrey,fontFamily: 'DMSans'),),
                             Text(_trainingResult(widget.training.trainingResult ?? 0),style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 15),)
                           ],
                         ),
@@ -175,7 +179,7 @@ class _TrainingCardState extends State<TrainingCard> {
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(
                           children: [
-                            const Text("Note: ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
+                            const Text("Note: ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13,color: Colors.blueGrey,fontFamily: 'DMSans'),),
 
                             Text("${widget.training.note}",style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 15)),
                           ],
@@ -185,7 +189,7 @@ class _TrainingCardState extends State<TrainingCard> {
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(
                           children: [
-                            const Text("Certificate: ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
+                            const Text("Certificate: ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13,color: Colors.blueGrey,fontFamily: 'DMSans'),),
 
                             Text(_certificateName(widget.training.certificate ?? false),style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 15)),
                           ],
@@ -232,13 +236,21 @@ class _TrainingCardState extends State<TrainingCard> {
                           ? Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            IconButton(onPressed: (){
-                              showTrainingDialog(context,training: widget.training,onUpdate: _updateTraining);
-                            }, icon: const Icon(Icons.edit,color: colorAccent)
+                            Card(
+                              child: TextButton.icon(
+                                  onPressed: () {
+                                    showTrainingDialog(context,training: widget.training,onUpdate: _updateTraining);
+                                  },
+                                  icon: const Icon(Icons.edit,color: Colors.orange,),
+                                  label: const Text('Edit')),
                             ),
-                            IconButton(onPressed: (){
-                              widget.onDelete(widget.training.courseName!,widget.training.id!);
-                            }, icon: const Icon(Icons.delete,color: colorAccent)
+                            Card(
+                              child: TextButton.icon(
+                                  onPressed: () {
+                                    widget.onDelete(widget.training.courseName!,widget.training.id!);
+                                  },
+                                  icon: const Icon(Icons.delete,color: Colors.red,),
+                                  label: const Text('Delete')),
                             ),
                           ]
                       )

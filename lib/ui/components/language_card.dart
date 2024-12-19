@@ -6,7 +6,6 @@ import '../../data/vos/request_body/add_language_request.dart';
 import '../../dialog/language_dialog.dart';
 import '../../utils/size_config.dart';
 import '../pages/image_details_page.dart';
-import '../themes/colors.dart';
 
 class LanguageCard extends StatefulWidget {
   final LanguageVo language;
@@ -90,7 +89,9 @@ class _LanguageCardState extends State<LanguageCard> {
                       Expanded(
                           child: Text("${widget.language.name}",style: const TextStyle(fontSize: 15,fontFamily: 'Ubuntu'),)
                       ),
-                      const Icon(Icons.keyboard_arrow_down,size: 20,)
+                      (_isExpanded)
+                          ? const Icon(Icons.keyboard_arrow_up,size: 20)
+                          : const Icon(Icons.keyboard_arrow_down,size: 20)
                     ],
                   ),
                 ),
@@ -102,9 +103,9 @@ class _LanguageCardState extends State<LanguageCard> {
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(
                           children: [
-                            const Text("Proficiency: ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
+                            const Text("Proficiency: ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13,color: Colors.blueGrey,fontFamily: 'DMSans')),
 
-                            Text(_proficiencyName(widget.language.proficiency ?? 0),style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 13)),
+                            Text(_proficiencyName(widget.language.proficiency ?? 0),style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 14)),
                           ],
                         ),
                       ),
@@ -112,9 +113,9 @@ class _LanguageCardState extends State<LanguageCard> {
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(
                           children: [
-                            const Text("Can teach: ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
+                            const Text("Can teach: ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13,color: Colors.blueGrey,fontFamily: 'DMSans'),),
 
-                            Expanded(child: Text(_canTeachAndShare(widget.language.teach ?? false),style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 13))),
+                            Expanded(child: Text(_canTeachAndShare(widget.language.teach ?? false),style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 14))),
                           ],
                         ),
                       ),
@@ -160,13 +161,21 @@ class _LanguageCardState extends State<LanguageCard> {
                           ? Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            IconButton(onPressed: (){
-                              showLanguageDialog(context,language: widget.language, onSave: _updateLanguage);
-                            }, icon: const Icon(Icons.edit,color: colorAccent)
+                            Card(
+                              child: TextButton.icon(
+                                  onPressed: () {
+                                    showLanguageDialog(context,language: widget.language, onSave: _updateLanguage);
+                                  },
+                                  icon: const Icon(Icons.edit,color: Colors.orange,),
+                                  label: const Text('Edit')),
                             ),
-                            IconButton(onPressed: (){
-                              widget.onDelete(widget.language.name!,widget.language.id!);
-                            }, icon: const Icon(Icons.delete,color: colorAccent)
+                            Card(
+                              child: TextButton.icon(
+                                  onPressed: () {
+                                    widget.onDelete(widget.language.name!,widget.language.id!);
+                                  },
+                                  icon: const Icon(Icons.delete,color: Colors.red,),
+                                  label: const Text('Delete')),
                             ),
                           ]
                       )

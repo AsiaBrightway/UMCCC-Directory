@@ -13,7 +13,7 @@ class AddFacilityBloc extends ChangeNotifier{
   String _userId = '';
   String? _facilityName;
   String? _description;
-  String? _status;
+  String _status = 'valid';
   bool? _statusCondition;
   bool isLoading = false;
   int? _selectedId;
@@ -48,7 +48,7 @@ class AddFacilityBloc extends ChangeNotifier{
     _createdUserId = _facilityList!.firstWhere((facility) => facility.id == value).createdBy ?? '';
     _facilityName = _facilityList!.firstWhere((facility) => facility.id == value).facilityName;
     _description = _facilityList!.firstWhere((facility) => facility.id == value).description;
-    _status = _facilityList!.firstWhere((facility) => facility.id == value).status;
+    _status = _facilityList!.firstWhere((facility) => facility.id == value).status!;
     if(_status == "valid"){
       _statusCondition = true;
     }else{
@@ -64,18 +64,23 @@ class AddFacilityBloc extends ChangeNotifier{
   }
 
   Future<void> addFacility(BuildContext context) async{
-    isLoading = true;
-    notifyListeners();
-    FacilityVo facility = FacilityVo(0, _facilityName, _description, _status, _userId, _userId, Utils.getCurrentDateTime(), Utils.getCurrentDateTime());
-    _model.addFacility(_token, facility).then((onValue){
-      isLoading = false;
-      showSuccessScaffold(context, onValue?.message.toString() ?? '');
+    if(_facilityName == null || _facilityName!.isEmpty){
+      showScaffoldMessage(context, 'Facility Name cannot be empty');
+    }
+    else{
+      isLoading = true;
       notifyListeners();
-    }).catchError((onError){
-      isLoading = false;
-      showScaffoldMessage(context, onError.toString());
-      notifyListeners();
-    });
+      FacilityVo facility = FacilityVo(0, _facilityName, _description, _status, _userId, _userId, Utils.getCurrentDateTime(), Utils.getCurrentDateTime());
+      _model.addFacility(_token, facility).then((onValue){
+        isLoading = false;
+        showSuccessScaffold(context, onValue?.message.toString() ?? '');
+        notifyListeners();
+      }).catchError((onError){
+        isLoading = false;
+        showScaffoldMessage(context, onError.toString());
+        notifyListeners();
+      });
+    }
   }
 
   Future<void> updateFacility(BuildContext context) async{

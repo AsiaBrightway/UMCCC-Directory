@@ -5,7 +5,6 @@ import 'package:pahg_group/utils/utils.dart';
 import '../../data/vos/request_body/add_work_request.dart';
 import '../../data/vos/work_vo.dart';
 import '../../dialog/work_dialog.dart';
-import '../themes/colors.dart';
 
 class WorkExpCard extends StatefulWidget {
   const WorkExpCard({super.key, required this.work, required this.token, required this.userRole, required this.onUpdate, required this.onDelete});
@@ -19,9 +18,10 @@ class WorkExpCard extends StatefulWidget {
 }
 
 class _WorkExpCardState extends State<WorkExpCard> {
-  bool _isExpanded = true;
+  bool _isExpanded = false;
   String? fromDate;
   String? toDate;
+
   void _toggleExpanded() {
     setState(() {
       _isExpanded = !_isExpanded;
@@ -61,7 +61,9 @@ class _WorkExpCardState extends State<WorkExpCard> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(child: Text("${widget.work.companyName}",style: const TextStyle(fontSize: 16,fontFamily: 'Ubuntu'),)),
-                      const Icon(Icons.keyboard_arrow_down,size: 20,)
+                      (_isExpanded)
+                          ? const Icon(Icons.keyboard_arrow_up,size: 20)
+                          : const Icon(Icons.keyboard_arrow_down,size: 20)
                     ],
                   ),
                 ),
@@ -117,13 +119,22 @@ class _WorkExpCardState extends State<WorkExpCard> {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             ///edit graduate
-                            IconButton(onPressed: (){
-                              showWorkDialog(context,work: widget.work, onUpdate: _updateWork);
-                            }, icon: const Icon(Icons.edit,color: colorAccent)
+                            Card(
+                              child: TextButton.icon(
+                                  onPressed: () {
+                                    showWorkDialog(context,work: widget.work, onUpdate: _updateWork);
+                                  },
+                                  icon: const Icon(Icons.edit,color: Colors.orange,),
+                                  label: const Text('Edit')),
                             ),
-                            IconButton(onPressed: (){
-                              widget.onDelete(widget.work.companyName!,widget.work.id!);
-                            }, icon: const Icon(Icons.delete,color: colorAccent)
+                            ///delete graduate
+                            Card(
+                              child: TextButton.icon(
+                                  onPressed: () {
+                                    widget.onDelete(widget.work.companyName!,widget.work.id!);
+                                  },
+                                  icon: const Icon(Icons.delete,color: Colors.red,),
+                                  label: const Text('Delete')),
                             ),
                           ]
                       )

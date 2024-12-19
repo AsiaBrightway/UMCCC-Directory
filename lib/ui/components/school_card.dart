@@ -8,7 +8,6 @@ import '../../data/vos/request_body/add_school_request.dart';
 import '../../dialog/update_school_dialog.dart';
 import '../../utils/size_config.dart';
 import '../pages/image_details_page.dart';
-import '../themes/colors.dart';
 
 class SchoolCard extends StatefulWidget {
   final EducationSchoolVo school;
@@ -62,12 +61,14 @@ class _SchoolCardState extends State<SchoolCard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(left: 4,top: 4.0,bottom: 10,right: 6),
+                  padding: const EdgeInsets.only(left: 2,top: 4.0,bottom: 10,right: 6),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(child: Text("${widget.school.name}",style: const TextStyle(fontSize: 15,fontFamily: 'Ubuntu'),)),
-                      const Icon(Icons.keyboard_arrow_down,size: 20,)
+                      (_isExpanded)
+                          ? const Icon(Icons.keyboard_arrow_up,size: 20)
+                          : const Icon(Icons.keyboard_arrow_down,size: 20)
                     ],
                   ),
                 ),
@@ -79,32 +80,41 @@ class _SchoolCardState extends State<SchoolCard> {
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(
                           children: [
-                            Text(Utils.getFormattedDate(widget.school.fromDate),style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
+                            Text(Utils.getFormattedDate(widget.school.fromDate),style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 14),),
                             Padding(
                               padding: const EdgeInsets.only(left: 8.0,right: 8.0),
-                              child: Text("To",style: TextStyle(color: Theme.of(context).colorScheme.primary),),
+                              child: Text("To",style: TextStyle(color: Theme.of(context).colorScheme.primary,fontFamily: 'DMSans'),),
                             ),
-                            Text(Utils.getFormattedDate(widget.school.toDate),style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
+                            Text(Utils.getFormattedDate(widget.school.toDate),style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 14)),
                           ],
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text("Secondary: ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
-
-                            Expanded(child: Text("${widget.school.secondary}",style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 13))),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Row(
-                          children: [
-                            const Text("Achievements: ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
+                            const Padding(
+                              padding: EdgeInsets.only(right: 10),
+                              child: Text("Secondary: ",style: TextStyle(color: Colors.blueGrey,fontWeight: FontWeight.w300,fontSize: 13)),
+                            ),
                             Expanded(
-                                child: Text("${widget.school.maximumAchievement}",style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 13))
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("${widget.school.secondary}",style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 14)),
+                                  ],
+                                )),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Row(
+                          children: [
+                            const Text("Achievements: ",style: TextStyle(color: Colors.blueGrey,fontWeight: FontWeight.w300,fontSize: 13),),
+                            Expanded(
+                                child: Text("${widget.school.maximumAchievement}",style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 14))
                             ),
                           ],
                         ),
@@ -113,9 +123,12 @@ class _SchoolCardState extends State<SchoolCard> {
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(
                           children: [
-                            const Text("Subjects: ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
+                            const Padding(
+                              padding: EdgeInsets.only(right: 10),
+                              child: Text("Subjects: ",style: TextStyle(color: Colors.blueGrey,fontWeight: FontWeight.w300,fontSize: 13),),
+                            ),
                             Expanded(
-                                child: Text("${widget.school.subjects}",style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 13))
+                                child: Text("${widget.school.subjects}",style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 14))
                             ),
                           ],
                         ),
@@ -161,13 +174,21 @@ class _SchoolCardState extends State<SchoolCard> {
                           ? Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            IconButton(onPressed: (){
-                              showSchoolDialog(context,school:  widget.school,onSave:  _updateSchool);
-                              }, icon: const Icon(Icons.edit,color: colorAccent)
+                            Card(
+                              child: TextButton.icon(
+                                  onPressed: () {
+                                    showSchoolDialog(context,school:  widget.school,onSave:  _updateSchool);
+                                  },
+                                  icon: const Icon(Icons.edit,color: Colors.orange,),
+                                  label: const Text('Edit')),
                             ),
-                            IconButton(onPressed: (){
-                              widget.onDelete(widget.school.name!,widget.school.id!);
-                            }, icon: const Icon(Icons.delete,color: colorAccent)
+                            Card(
+                              child: TextButton.icon(
+                                  onPressed: () {
+                                    widget.onDelete(widget.school.name!,widget.school.id!);
+                                  },
+                                  icon: const Icon(Icons.delete,color: Colors.red,),
+                                  label: const Text('Delete')),
                             ),
                           ]
                       )

@@ -2,6 +2,7 @@
 import 'dart:io';
 
 import 'package:pahg_group/data/vos/companies_vo.dart';
+import 'package:pahg_group/data/vos/discipline_vo.dart';
 import 'package:pahg_group/data/vos/facility_assign_vo.dart';
 import 'package:pahg_group/data/vos/facility_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_category_vo.dart';
@@ -30,6 +31,7 @@ import 'package:pahg_group/network/responses/post_method_response.dart';
 import '../responses/category_response.dart';
 import '../responses/company_images_response.dart';
 import '../responses/department_list_response.dart';
+import '../responses/discipline_response.dart';
 import '../responses/employee_list_response.dart';
 import '../responses/facility_assign_response.dart';
 import '../responses/facility_response.dart';
@@ -183,4 +185,12 @@ abstract class PahgDataAgent{
   Future<FacilityAssignResponse?> getFacilityAssignByEmployee(String apiKey,List<GetRequest> requestBody);
 
   Future<PostMethodResponse?> addFacilityAssign(String apiKey,FacilityAssignVo assign);
+
+  Future<PostMethodResponse?> updateFacilityAssign(String apiKey,int id,FacilityAssignVo assign);
+
+  Future<DisciplineResponse?> getDiscipline(String apiKey,List<GetRequest> request);
+
+  Future<PostMethodResponse?> addDiscipline(String apiKey,DisciplineVo requestBody);
+
+  Future<PostMethodResponse?> updateDiscipline(String apiKey,int id,DisciplineVo requestBody);
 }

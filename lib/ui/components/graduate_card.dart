@@ -9,7 +9,6 @@ import '../../data/vos/request_body/add_graduate_request.dart';
 import '../../dialog/graduate_dialog.dart';
 import '../../utils/size_config.dart';
 import '../pages/image_details_page.dart';
-import '../themes/colors.dart';
 
 class GraduateCard extends StatefulWidget {
   final GraduateVo graduate;
@@ -70,7 +69,9 @@ class _GraduateCardState extends State<GraduateCard> {
                       Expanded(
                           child: Text("${widget.graduate.university}",style: const TextStyle(fontSize: 15,fontFamily: 'Ubuntu'),)
                       ),
-                      const Icon(Icons.keyboard_arrow_down,size: 20,)
+                      (_isExpanded)
+                          ? const Icon(Icons.keyboard_arrow_up,size: 20)
+                          : const Icon(Icons.keyboard_arrow_down,size: 20)
                     ],
                   ),
                 ),
@@ -81,17 +82,17 @@ class _GraduateCardState extends State<GraduateCard> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          const Text("Type : ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
-                          Text("${widget.graduate.degreeType}",style: const TextStyle(fontSize: 15,fontFamily: 'Ubuntu'),),
+                          const Text("Type : ",style: TextStyle(fontFamily: 'DMSans',color: Colors.blueGrey,fontWeight: FontWeight.w300,fontSize: 13),),
+                          Text("${widget.graduate.degreeType}",style: const TextStyle(fontSize: 14,fontFamily: 'Ubuntu'),),
                         ],
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(
                           children: [
-                            const Text("Year : ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
+                            const Text("Year : ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13,color: Colors.blueGrey,fontFamily: 'DMSans'),),
 
-                            Text(Utils.getFormattedDate(widget.graduate.receivedYear),style: const TextStyle(fontSize: 13)),
+                            Text(Utils.getFormattedDate(widget.graduate.receivedYear),style: const TextStyle(fontSize: 14)),
                           ],
                         ),
                       ),
@@ -136,13 +137,21 @@ class _GraduateCardState extends State<GraduateCard> {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             ///edit graduate
-                            IconButton(onPressed: (){
-                              showGraduateDialog(context, graduate: widget.graduate,onSave: _updateGraduate);
-                            }, icon: const Icon(Icons.edit,color: colorAccent)
+                            Card(
+                              child: TextButton.icon(
+                                  onPressed: () {
+                                    showGraduateDialog(context, graduate: widget.graduate,onSave: _updateGraduate);
+                                  },
+                                  icon: const Icon(Icons.edit,color: Colors.orange,),
+                                  label: const Text('Edit')),
                             ),
-                            IconButton(onPressed: (){
-                              widget.onDelete(widget.graduate.university!,widget.graduate.id!);
-                            }, icon: const Icon(Icons.delete,color: colorAccent)
+                            Card(
+                              child: TextButton.icon(
+                                  onPressed: () {
+                                    widget.onDelete(widget.graduate.university!,widget.graduate.id!);
+                                  },
+                                  icon: const Icon(Icons.delete,color: Colors.red,),
+                                  label: const Text('Delete')),
                             ),
                           ]
                       )

@@ -1,18 +1,17 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:pahg_group/data/vos/discipline_vo.dart';
 import 'package:pahg_group/data/vos/facility_assign_vo.dart';
 import 'package:pahg_group/data/vos/facility_vo.dart';
-import 'package:pahg_group/data/vos/recordVo/facility_assign_record_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_category_vo.dart';
 import 'package:pahg_group/data/vos/request_body/add_post_request.dart';
+import 'package:pahg_group/network/responses/discipline_response.dart';
 import 'package:pahg_group/network/responses/facility_assign_response.dart';
 import 'package:pahg_group/network/responses/facility_response.dart';
 import 'package:pahg_group/network/responses/township_response.dart';
-
 import 'package:retrofit/http.dart';
 import 'package:retrofit/retrofit.dart';
-
 import '../data/vos/request_body/add_company_image_vo.dart';
 import '../data/vos/request_body/add_company_request.dart';
 import '../data/vos/request_body/add_department_request.dart';
@@ -495,5 +494,31 @@ abstract class PahgApi{
   Future<PostMethodResponse?> addFacilityAssign(
       @Header(kParamAuthorization) String apiKey,
       @Body() FacilityAssignVo assign
+      );
+  
+  @PUT("$kEndPointAddFacilityAssign/{id}")
+  Future<PostMethodResponse?> updateFacilityAssign(
+      @Header(kParamAuthorization) String apiKey,
+      @Path("id") int id,
+      @Body() FacilityAssignVo assignVo
+      );
+
+  @POST(kEndPointGetDiscipline)
+  Future<DisciplineResponse?> getDiscipline(
+      @Header(kParamAuthorization) String apiKey,
+      @Body() List<GetRequest> requestBody
+      );
+
+  @POST(kEndPointAddDiscipline)
+  Future<PostMethodResponse?> addDiscipline(
+      @Header(kParamAuthorization) String apiKey,
+      @Body() DisciplineVo requestBody
+      );
+
+  @PUT("$kEndPointAddDiscipline/{id}")
+  Future<PostMethodResponse?> updateDiscipline(
+      @Header(kParamAuthorization) String apiKey,
+      @Path("id") int id,
+      @Body() DisciplineVo requestBody
       );
 }

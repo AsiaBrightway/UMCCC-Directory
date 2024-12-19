@@ -24,7 +24,7 @@ class Utils {
   static String getFormattedDate(String? dateTimeString) {
     // Parse the ISO 8601 date-time string into a DateTime object
     if(dateTimeString == null) {
-      return "null";
+      return "_";
     }
     DateTime dateTime = DateTime.parse(dateTimeString);
 

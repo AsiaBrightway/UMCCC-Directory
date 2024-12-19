@@ -180,7 +180,7 @@ class _AddFacilityPageState extends State<AddFacilityPage> {
                                     Navigator.of(context).pop();
                                   },
                                   child: const Text('Cancel')),
-                              const SizedBox(width: 20,),
+                              const SizedBox(width: 20),
                               (widget.isAdd)
                                   ? ElevatedButton(
                                     style: ElevatedButton.styleFrom(

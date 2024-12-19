@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:pahg_group/data/vos/companies_vo.dart';
+import 'package:pahg_group/data/vos/discipline_vo.dart';
 import 'package:pahg_group/data/vos/error_vo.dart';
 import 'package:pahg_group/data/vos/facility_assign_vo.dart';
 import 'package:pahg_group/data/vos/facility_vo.dart';
@@ -32,6 +33,7 @@ import 'package:pahg_group/network/responses/category_response.dart';
 import 'package:pahg_group/network/responses/company_by_id_response.dart';
 import 'package:pahg_group/network/responses/company_images_response.dart';
 import 'package:pahg_group/network/responses/department_list_response.dart';
+import 'package:pahg_group/network/responses/discipline_response.dart';
 import 'package:pahg_group/network/responses/employee_list_response.dart';
 import 'package:pahg_group/network/responses/employee_response.dart';
 import 'package:pahg_group/network/responses/facility_assign_response.dart';
@@ -594,4 +596,31 @@ class PahgDataAgentImpl extends PahgDataAgent{
     });
   }
 
+  @override
+  Future<PostMethodResponse?> updateFacilityAssign(String apiKey, int id, FacilityAssignVo assign) {
+    return mApi.updateFacilityAssign(apiKey, id, assign).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<DisciplineResponse?> getDiscipline(String apiKey, List<GetRequest> request) {
+    return mApi.getDiscipline(apiKey, request).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> addDiscipline(String apiKey, DisciplineVo requestBody) {
+    return mApi.addDiscipline(apiKey, requestBody).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
+  Future<PostMethodResponse?> updateDiscipline(String apiKey, int id, DisciplineVo requestBody) {
+    return mApi.updateDiscipline(apiKey, id,requestBody).catchError((onError){
+      throw _createException(onError);
+    });
+  }
 }

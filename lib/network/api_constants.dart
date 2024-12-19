@@ -44,6 +44,9 @@ const String kEndPointAddFacility = "/v1/api/Facilities";
 const String kEndPointGetFacilityAssign = "/v1/api/Facilityassignments/filter";
 const String kEndPointAddFacilityAssign = "/v1/api/Facilityassignments";
 
+const String kEndPointGetDiscipline = "/v1/api/Disciplines/filter";
+const String kEndPointAddDiscipline = "/v1/api/Disciplines";
+
 ///Post
 const String kEndPointGetPost = "/v1/api/Posts/filter";
 const String kEndPointAddPost = "/v1/api/Posts";
