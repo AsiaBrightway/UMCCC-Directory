@@ -208,7 +208,7 @@ class _TrainingCardState extends State<TrainingCard> {
                                   fit: BoxFit.cover,
                                   errorWidget: (context, error, stackTrace) {
                                     return Container(
-                                        color: Colors.black12,
+                                        color: Colors.grey.shade900,
                                         child: const Center(child: Text(
                                           "Add Image", style: TextStyle(fontFamily: 'DMSans',
                                             color: Colors.white),)));

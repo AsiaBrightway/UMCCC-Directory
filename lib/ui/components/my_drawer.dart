@@ -15,13 +15,13 @@ class MyDrawer extends StatelessWidget {
   final String userId;
   @override
   Widget build(BuildContext context) {
+
     return Drawer(
       backgroundColor: Theme.of(context).colorScheme.onError,
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             Center(
               child: DrawerHeader(
               child: Image.asset('assets/pahg_logo.png',width: 100,)),
@@ -34,7 +34,6 @@ class MyDrawer extends StatelessWidget {
                 onTap: (){
                   Navigator.push(context, MaterialPageRoute(builder: (context) => EmployeeProfilePage(userId: userId),));
                 },
-
               ),
             ),
             Padding(
@@ -43,7 +42,7 @@ class MyDrawer extends StatelessWidget {
                 leading: Image.asset('lib/icons/add_person.png',width: 25,color: Theme.of(context).colorScheme.onSurface),
                 title: const Text('Add Employee',style: TextStyle(fontWeight: FontWeight.w400)),
                 onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const AddEmployeePage(isAdd: true, userId: '',),));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const AddEmployeePage(isAdd: true, userId: '',)));
                 },
               ),
             ),
@@ -54,7 +53,7 @@ class MyDrawer extends StatelessWidget {
               child: ListTile(
                 leading: Image.asset('lib/icons/edit_company.png',width: 25,color: Theme.of(context).colorScheme.onSurface,),
                 title: const Text('Add Company',style: TextStyle(fontWeight: FontWeight.w400),),
-                onTap: (){
+                onTap: () async{
                   Navigator.push(context, MaterialPageRoute(builder: (context) => const AddCompanyPage(isAdd: true)));
                 },
               ),
@@ -64,7 +63,7 @@ class MyDrawer extends StatelessWidget {
               child: ListTile(
                 leading: Image.asset('lib/icons/add_company.png',width: 25,color: Colors.deepOrange,),
                 title: const Text('Edit Company',style: TextStyle(fontWeight: FontWeight.w400),),
-                onTap: (){
+                onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => const AddCompanyPage(isAdd: false),));
                 },
               ),

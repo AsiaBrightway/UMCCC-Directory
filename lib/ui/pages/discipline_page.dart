@@ -67,7 +67,8 @@ class _DisciplinePageState extends State<DisciplinePage> {
             ),
             ElevatedButton(
               onPressed: () {
-
+                bloc.deleteDiscipline(context, id);
+                Navigator.pop(context);
               },
               child: const Text('OK'),
             ),
@@ -247,12 +248,13 @@ class _DisciplineCardState extends State<DisciplineCard> {
                             const Text("Description : ",style: TextStyle(color: Colors.blueGrey,fontWeight: FontWeight.w200,fontSize: 13,fontFamily: 'DMSans')),
 
                             Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(widget.discipline.description ?? '',style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 15)),
-                                  ],
-                                )),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(widget.discipline.description ?? '',style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 15)),
+                                ],
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -269,20 +271,17 @@ class _DisciplineCardState extends State<DisciplineCard> {
                           ],
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        child: Row(
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.only(right: 8.0),
-                              child: Expanded(
-                                  child: Text("Status : ",style: TextStyle(color: Colors.blueGrey,fontWeight: FontWeight.w200,fontSize: 13,fontFamily: 'DMSans'))
-                              ),
-                            ),
+                      Row(
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(right: 8.0,top: 8,bottom: 8),
+                            child: Text("Status : ",style: TextStyle(color: Colors.blueGrey,fontWeight: FontWeight.w200,fontSize: 13,fontFamily: 'DMSans')),
+                          ),
 
-                            Text(widget.discipline.status ?? '',style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 15)),
-                          ],
-                        ),
+                          Expanded(
+                              child: Text(widget.discipline.status ?? '',style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 15))
+                          ),
+                        ],
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),

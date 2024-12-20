@@ -398,6 +398,10 @@ class PahgModel {
     return mDataAgent.updateFacilityAssign(apiKey, id, assignVo);
   }
 
+  Future<PostMethodResponse?> deleteFacilityAssign(String apiKey,int id){
+    return mDataAgent.deleteFacilityAssign(apiKey, id);
+  }
+
   Future<List<DisciplineVo>?> getDiscipline(String apiKey,GetRequest request){
     List<GetRequest> requestList = [request];
     return mDataAgent.getDiscipline(apiKey, requestList).asStream().map((response) => response?.document?.records ?? []).first;
@@ -409,5 +413,9 @@ class PahgModel {
 
   Future<PostMethodResponse?> updateDiscipline(String apiKey,int id,DisciplineVo requestBody){
     return mDataAgent.updateDiscipline(apiKey,id, requestBody);
+  }
+
+  Future<PostMethodResponse?> deleteDiscipline(String apiKey,int id){
+    return mDataAgent.deleteDiscipline(apiKey, id);
   }
 }

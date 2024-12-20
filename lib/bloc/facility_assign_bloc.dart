@@ -169,4 +169,13 @@ class FacilityAssignBloc extends ChangeNotifier{
     });
   }
 
+  Future<void> deleteFacilityAssign(BuildContext context,int id)async{
+    _model.deleteFacilityAssign(_token, id).then((onValue){
+      showSuccessScaffold(context, onValue!.message.toString());
+      getFacilityByEmployeeId();
+    }).catchError((onError){
+      showScaffoldMessage(context, onError.toString());
+    });
+  }
+
 }

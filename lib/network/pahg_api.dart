@@ -503,6 +503,12 @@ abstract class PahgApi{
       @Body() FacilityAssignVo assignVo
       );
 
+  @DELETE("$kEndPointAddFacilityAssign/{id}")
+  Future<PostMethodResponse?> deleteFacilityAssign(
+      @Header(kParamAuthorization) String apiKey,
+      @Path("id") int id,
+      );
+
   @POST(kEndPointGetDiscipline)
   Future<DisciplineResponse?> getDiscipline(
       @Header(kParamAuthorization) String apiKey,
@@ -521,4 +527,11 @@ abstract class PahgApi{
       @Path("id") int id,
       @Body() DisciplineVo requestBody
       );
+  
+  @DELETE("$kEndPointAddDiscipline/{id}")
+  Future<PostMethodResponse?> deleteDiscipline(
+      @Header(kParamAuthorization) String apiKey,
+      @Path("id") int id,
+      );
+
 }

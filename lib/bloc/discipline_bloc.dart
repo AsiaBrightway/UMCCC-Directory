@@ -126,4 +126,16 @@ class DisciplineBloc extends ChangeNotifier{
       });
     }
   }
+
+  Future<void> deleteDiscipline(BuildContext context, int id)async{
+    _model.deleteDiscipline(_token, id).then((onValue){
+
+      showSuccessScaffold(context, onValue!.message.toString());
+      getDisciplineListByEmployee();
+    }).catchError((onError){
+
+      showScaffoldMessage(context, onError.toString());
+    });
+  }
+
 }

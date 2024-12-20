@@ -604,6 +604,13 @@ class PahgDataAgentImpl extends PahgDataAgent{
   }
 
   @override
+  Future<PostMethodResponse?> deleteFacilityAssign(String apiKey, int id) {
+    return mApi.deleteFacilityAssign(apiKey, id).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+  @override
   Future<DisciplineResponse?> getDiscipline(String apiKey, List<GetRequest> request) {
     return mApi.getDiscipline(apiKey, request).catchError((onError){
       throw _createException(onError);
@@ -623,4 +630,13 @@ class PahgDataAgentImpl extends PahgDataAgent{
       throw _createException(onError);
     });
   }
+
+  @override
+  Future<PostMethodResponse?> deleteDiscipline(String apiKey, int id) {
+    return mApi.deleteDiscipline(apiKey, id).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
+
 }

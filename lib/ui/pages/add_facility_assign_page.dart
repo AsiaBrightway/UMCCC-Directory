@@ -96,13 +96,14 @@ class _AddFacilityAssignPageState extends State<AddFacilityAssignPage> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.only(left: 35,top: 16),
-                    child: Text(
-                      "Select Facility",
-                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500,fontFamily: 'DMSans'),
+                  if(widget.isAdd)
+                    const Padding(
+                      padding: EdgeInsets.only(left: 35,top: 16),
+                      child: Text(
+                        "Select Facility",
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500,fontFamily: 'DMSans'),
+                      ),
                     ),
-                  ),
                   ///show item list widget in add state
                   if(widget.isAdd)
                     GestureDetector(
@@ -195,7 +196,7 @@ class _AddFacilityAssignPageState extends State<AddFacilityAssignPage> {
                         child: Row(
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * 0.51,
+                              width: MediaQuery.of(context).size.width * 0.6,
                               margin: const EdgeInsets.symmetric(vertical: 16,horizontal: 18),
                               decoration: BoxDecoration(
                                   color: Theme.of(context).colorScheme.surfaceBright,
@@ -292,10 +293,8 @@ class _AddFacilityAssignPageState extends State<AddFacilityAssignPage> {
                         returnedStatus ??= "null";
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 12.0,vertical: 10),
-                          child: ButtonBar(
-                            alignment: MainAxisAlignment.start,
-                            children: <Widget>[
-
+                          child: Row(
+                            children: [
                               Radio(
                                 value: 'null',
                                 groupValue: returnedStatus,

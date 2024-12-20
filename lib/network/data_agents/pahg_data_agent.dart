@@ -188,9 +188,13 @@ abstract class PahgDataAgent{
 
   Future<PostMethodResponse?> updateFacilityAssign(String apiKey,int id,FacilityAssignVo assign);
 
+  Future<PostMethodResponse?> deleteFacilityAssign(String apiKey,int id);
+
   Future<DisciplineResponse?> getDiscipline(String apiKey,List<GetRequest> request);
 
   Future<PostMethodResponse?> addDiscipline(String apiKey,DisciplineVo requestBody);
 
   Future<PostMethodResponse?> updateDiscipline(String apiKey,int id,DisciplineVo requestBody);
+
+  Future<PostMethodResponse?> deleteDiscipline(String apiKey,int id);
 }

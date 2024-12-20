@@ -13,7 +13,7 @@ class _PahgApi implements PahgApi {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'http://192.168.1.8:86';
+    baseUrl ??= 'http://192.168.1.9:86';
   }
 
   final Dio _dio;
@@ -2384,6 +2384,39 @@ class _PahgApi implements PahgApi {
   }
 
   @override
+  Future<PostMethodResponse?> deleteFacilityAssign(
+    String apiKey,
+    int id,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': apiKey};
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio.fetch<Map<String, dynamic>?>(
+        _setStreamType<PostMethodResponse>(Options(
+      method: 'DELETE',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/v1/api/Facilityassignments/${id}',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = _result.data == null
+        ? null
+        : PostMethodResponse.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
   Future<DisciplineResponse?> getDiscipline(
     String apiKey,
     List<GetRequest> requestBody,
@@ -2465,6 +2498,39 @@ class _PahgApi implements PahgApi {
     final _result = await _dio.fetch<Map<String, dynamic>?>(
         _setStreamType<PostMethodResponse>(Options(
       method: 'PUT',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/v1/api/Disciplines/${id}',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = _result.data == null
+        ? null
+        : PostMethodResponse.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<PostMethodResponse?> deleteDiscipline(
+    String apiKey,
+    int id,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': apiKey};
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio.fetch<Map<String, dynamic>?>(
+        _setStreamType<PostMethodResponse>(Options(
+      method: 'DELETE',
       headers: _headers,
       extra: _extra,
     )

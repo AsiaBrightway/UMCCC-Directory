@@ -3,9 +3,7 @@ import 'dart:io';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-
 import 'package:provider/provider.dart';
-
 import '../../data/models/pahg_model.dart';
 import '../../data/vos/companies_vo.dart';
 import '../../data/vos/department_vo.dart';
@@ -355,7 +353,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                     ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           elevation: 5,
-                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.12,vertical: 16),
+                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.12,vertical: 18),
                           backgroundColor: Colors.white,
                         ),
                         onPressed: (){
@@ -366,7 +364,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                     (widget.isAdd)
                         ? ElevatedButton(style: ElevatedButton.styleFrom(
                             elevation: 5,
-                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.12,vertical: 16),
+                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.12,vertical: 18),
                             backgroundColor: Colors.blue,
                           ),
                           onPressed: (){

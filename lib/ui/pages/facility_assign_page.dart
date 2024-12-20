@@ -3,12 +3,8 @@ import 'package:pahg_group/bloc/facility_assign_bloc.dart';
 import 'package:pahg_group/data/vos/facility_assign_vo.dart';
 import 'package:pahg_group/ui/pages/add_facility_assign_page.dart';
 import 'package:pahg_group/ui/shimmer/facility_shimmer.dart';
-import 'package:pahg_group/ui/shimmer/home_shimmer.dart';
-import 'package:pahg_group/ui/shimmer/news_feed_shimmer.dart';
-import 'package:pahg_group/ui/shimmer/personal_information_shimmer.dart';
 import 'package:pahg_group/utils/utils.dart';
 import 'package:pahg_group/widgets/error_employee_widget.dart';
-import 'package:pahg_group/widgets/loading_widget.dart';
 import 'package:provider/provider.dart';
 import '../components/empty_data_widget.dart';
 import '../providers/auth_provider.dart';
@@ -59,7 +55,8 @@ class _FacilityAssignPageState extends State<FacilityAssignPage> {
             ),
             ElevatedButton(
               onPressed: () {
-
+                bloc.deleteFacilityAssign(context, id);
+                Navigator.pop(context);
               },
               child: const Text('OK'),
             ),
