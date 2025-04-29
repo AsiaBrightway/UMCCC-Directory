@@ -359,15 +359,15 @@ class _FacilityCardState extends State<FacilityCard> {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text("Description : ",style: TextStyle(color: Colors.blueGrey,fontWeight: FontWeight.w300,fontSize: 13,fontFamily: 'DMSans'),),
+                            const Text("Description : ",style: TextStyle(color: Colors.blueGrey,fontWeight: FontWeight.w300,fontSize: 13,fontFamily: 'DMSans')),
 
                             Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(widget.facilityassign.description ?? '',style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 15)),
-                              ],
-                            )),
+                                  ],
+                                )),
                           ],
                         ),
                       ),
@@ -376,7 +376,7 @@ class _FacilityCardState extends State<FacilityCard> {
                         child: Row(
                           children: [
                             const Padding(
-                              padding: EdgeInsets.only(right: 10),
+                              padding: EdgeInsets.only(right: 16),
                               child: Text("Status : ",style: TextStyle(color: Colors.blueGrey,fontWeight: FontWeight.w300,fontSize: 13,fontFamily: 'DMSans'),),
                             ),
 
@@ -388,10 +388,18 @@ class _FacilityCardState extends State<FacilityCard> {
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8.0),
                           child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text("Return reason: ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13),),
+                              const Text("Return reason: ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13,color: Colors.blueGrey,fontFamily: 'DMSans'),),
 
-                              Expanded(child: Text(widget.facilityassign.returnReason ?? '',style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 15))),
+                              Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(widget.facilityassign.returnReason ?? '',style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 15)),
+                                    ],
+                                  )
+                              ),
                             ],
                           ),
                         ),
@@ -400,7 +408,7 @@ class _FacilityCardState extends State<FacilityCard> {
                           padding: const EdgeInsets.symmetric(vertical: 8.0),
                           child: Row(
                             children: [
-                              const Text("Return Date: ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13)),
+                              const Text("Return Date: ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13,color: Colors.blueGrey,fontFamily: 'DMSans')),
 
                               Expanded(child: Text(Utils.getFormattedDate(widget.facilityassign.returnedDate),style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 15))),
                             ],

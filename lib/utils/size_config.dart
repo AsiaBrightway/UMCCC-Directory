@@ -10,7 +10,7 @@ class SizeConfig {
   static late double imageSizeMultiplier;
   static late double heightMultiplier;
 
-  void init(BuildContext context) {
+  static void init(BuildContext context) {
     screenWidth = MediaQuery.of(context).size.width;
     screenHeight = MediaQuery.of(context).size.height;
     blockSizeHorizontal = screenWidth / 100;

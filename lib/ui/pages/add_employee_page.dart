@@ -265,10 +265,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                     fit: BoxFit.cover,
                                     errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
                                       return const Center(
-                                          child: SizedBox(
-                                              height: 90,
-                                              width: 90,
-                                              child: CircularProgressIndicator(color: Colors.blue))
+                                          child: SizedBox(height: 90, width: 90, child: CircularProgressIndicator(color: Colors.blue))
                                       );
                                     },
                                   )))
@@ -652,24 +649,33 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              const Text(
-                'Edit',
-                style: TextStyle(
-                    fontWeight: FontWeight.w300,
-                    color: Colors.grey,
-                    fontSize: 11),
+              Card(
+                child: TextButton.icon(
+                    onPressed: () {
+                      setState(() {
+                        editMode = true;
+                      });
+                    },
+                    icon: const Icon(Icons.edit,color: Colors.orange,),
+                    label: const Text('Edit')
+                ),
               ),
-              IconButton(
-                  color: colorAccent,
-                  onPressed: () {
-                    setState(() {
-                      editMode = true;
-                    });
-                  },
-                  icon: const Icon(
-                    Icons.edit,
-                    color: colorAccent,
-                  ))
+              // const Text(
+              //   'Edit',
+              //   style: TextStyle(
+              //       fontWeight: FontWeight.w300,
+              //       color: Colors.grey,
+              //       fontSize: 11),
+              // ),
+              // IconButton(
+              //     color: colorAccent,
+              //     onPressed: () {
+              //
+              //     },
+              //     icon: const Icon(
+              //       Icons.edit,
+              //       color: colorAccent,
+              //     ))
             ],
           ),
           const Text('company',style: TextStyle(fontWeight: FontWeight.w300,color: Colors.blue,fontSize: 12),),

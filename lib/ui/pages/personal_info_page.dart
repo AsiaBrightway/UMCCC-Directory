@@ -1,12 +1,9 @@
 
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:animations/animations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pahg_group/utils/utils.dart';
 import 'package:provider/provider.dart';
@@ -195,7 +192,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
+    SizeConfig.init(context);
     return ChangeNotifierProvider(
       create: (context) => PersonalInfoBloc(_token, widget.userId,_currentUserRole),
       child: Scaffold(
@@ -696,7 +693,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                 if(isEmergencyExpanded)
                   Column(
                     children: [
-                      const SizedBox(height: 10,),
+                      const SizedBox(height: 10),
                       CustomTextField(
                           controller: _emergencyNameController,
                           onChange: (value) => bloc.updatePersonalInfo(emergencyContactName: value),
@@ -1184,7 +1181,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                                                 },
                                               ),
                                               openBuilder: (context,action) =>
-                                                  ImageDetailsPage(imageUrl: bloc.personalInfo.getImageWithBaseUrl(drivingLicenseFrontUrl))
+                                                  ImageDetailsPage(imageUrl: bloc.personalInfo.getImageWithBaseUrl(drivingLicenseFrontUrl)),
                                           ),
                                           if(_currentUserRole == 1)
                                             GestureDetector(

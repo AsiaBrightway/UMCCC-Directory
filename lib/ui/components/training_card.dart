@@ -70,6 +70,7 @@ class _TrainingCardState extends State<TrainingCard> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig.init(context);
     return Container(
       margin: const EdgeInsets.only(top: 10),
       decoration: BoxDecoration(
@@ -178,10 +179,16 @@ class _TrainingCardState extends State<TrainingCard> {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text("Note: ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13,color: Colors.blueGrey,fontFamily: 'DMSans'),),
+                            const Text("Note: ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13,color: Colors.blueGrey,fontFamily: 'DMSans')),
 
-                            Text("${widget.training.note}",style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 15)),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text("${widget.training.note}",style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 15)),
+                              ],
+                            ),
                           ],
                         ),
                       ),

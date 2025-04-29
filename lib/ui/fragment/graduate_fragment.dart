@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pahg_group/data/vos/request_body/path_user_request.dart';
+import 'package:pahg_group/ui/components/empty_data_widget.dart';
 
 import 'package:provider/provider.dart';
 
@@ -175,30 +176,31 @@ class _GraduateFragmentState extends State<GraduateFragment> {
           children : [
             (widget.role == 1)
                 ? Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: ElevatedButton(
-                  onPressed: (){
-                    showGraduateDialog(context, graduate: null,onSave: _onAdd);
-                  },
-                  child: const Text("Add Graduate")
-              ),
-            )
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: ElevatedButton(
+                        onPressed: (){
+                          showGraduateDialog(context, graduate: null,onSave: _onAdd);
+                        },
+                        child: const Text("Add Graduate")
+                    ),
+                  )
                 : const SizedBox(height: 1),
+
             (graduateList.isNotEmpty)
                 ? Column(
-              children: graduateList.map((graduate){
-                return GraduateCard(token: _token, userRole: _userRole, onDelete: _onDelete, onUpdateImage: selectPicker,onUpdate: _onUpdate, graduate: graduate);
-              }).toList(),
-            )
+                  children: graduateList.map((graduate){
+                    return GraduateCard(token: _token, userRole: _userRole, onDelete: _onDelete, onUpdateImage: selectPicker,onUpdate: _onUpdate, graduate: graduate);
+                  }).toList(),
+                )
                 : isLoading
-                ? const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: CircularProgressIndicator(),
-            )
-                : const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text("Empty",style: TextStyle(fontFamily: 'Ubuntu'),),
-            ),
+                  ? const SizedBox(
+                      height : 250,
+                      child: Center(child: CircularProgressIndicator())
+                  )
+                  : const SizedBox(
+                    height: 250,
+                    child: Center(child: EmptyDataWidget()),
+                  ),
           ],
         ),
       ),

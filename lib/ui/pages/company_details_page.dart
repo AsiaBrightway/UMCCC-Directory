@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:pahg_group/ui/components/empty_data_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -323,7 +324,7 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 10,),
+                  const SizedBox(height: 10),
                 ],
               )
           ),
@@ -333,7 +334,10 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                 if (index == employeeList.length) {
                   return Center(
                       child: _isLoading
-                          ? const CircularProgressIndicator()
+                          ? const Padding(
+                              padding: EdgeInsets.only(top: 24),
+                              child: CircularProgressIndicator(),
+                          )
                           : const SizedBox());
                 }
                 final employee = employeeList[index];
@@ -434,7 +438,6 @@ class CompanyBannerCard extends StatefulWidget {
   State<CompanyBannerCard> createState() => _CompanyBannerCardState();
 }
 
-
 class _CompanyBannerCardState extends State<CompanyBannerCard> {
   final _pageController = PageController(viewportFraction: 0.9);
 
@@ -460,6 +463,10 @@ class _CompanyBannerCardState extends State<CompanyBannerCard> {
                         child: Image.network(
                           widget.imagesVo[index].getImageWithBaseUrl(),
                           fit: BoxFit.cover,
+                          errorBuilder: (context, url, error) => Image.asset(
+                            'assets/no_image.png',
+                            fit: BoxFit.cover,
+                          ),
                           loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
                             if (loadingProgress == null) {
                               return child;

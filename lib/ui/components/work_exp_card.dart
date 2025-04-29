@@ -74,10 +74,17 @@ class _WorkExpCardState extends State<WorkExpCard> {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Text("Rank : ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13,color: Colors.blueGrey,fontFamily: 'DMSans')),
-                            Expanded(child: Text("${widget.work.rank}",style: const TextStyle(fontSize: 15,fontFamily: 'Ubuntu'))),
+                            Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("${widget.work.rank}",style: const TextStyle(fontSize: 15,fontFamily: 'Ubuntu')),
+                                  ],
+                                )
+                            ),
                           ],
                         ),
                       ),
@@ -94,10 +101,17 @@ class _WorkExpCardState extends State<WorkExpCard> {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Text("Responsibilities : ",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 13,color: Colors.blueGrey,fontFamily: 'DMSans'),),
-
-                            Expanded(child: Text("${widget.work.detailResponsibilities}",style: const TextStyle(fontSize: 14))),
+                            Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("${widget.work.detailResponsibilities}",style: const TextStyle(fontSize: 14)),
+                                  ],
+                                )
+                            ),
                           ],
                         ),
                       ),
@@ -105,12 +119,12 @@ class _WorkExpCardState extends State<WorkExpCard> {
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(
                           children: [
-                            Text(Utils.getFormattedDate(widget.work.fromDate),style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 14),),
+                            Text(Utils.getFormattedDate(widget.work.fromDate),style: const TextStyle(fontWeight: FontWeight.w500,fontSize: 14),),
                             Padding(
                               padding: const EdgeInsets.only(left: 8.0,right: 8.0),
                               child: Text("To",style: TextStyle(color: Theme.of(context).colorScheme.primary),),
                             ),
-                            Expanded(child: Text(Utils.getFormattedDate(widget.work.toDate),style: const TextStyle(fontWeight: FontWeight.w300,fontSize: 14))),
+                            Expanded(child: Text(Utils.getFormattedDate(widget.work.toDate),style: const TextStyle(fontWeight: FontWeight.w500,fontSize: 14))),
                           ],
                         ),
                       ),

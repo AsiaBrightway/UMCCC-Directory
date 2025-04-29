@@ -1,5 +1,3 @@
-
-
 import '../data/vos/error_vo.dart';
 
 class CustomException implements Exception{

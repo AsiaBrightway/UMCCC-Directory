@@ -1,4 +1,3 @@
-
 import 'package:animations/animations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +37,7 @@ class _SchoolCardState extends State<SchoolCard> {
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
+    SizeConfig.init(context);
     return Container(
       margin: const EdgeInsets.only(top: 10),
       decoration: BoxDecoration(
@@ -111,10 +110,16 @@ class _SchoolCardState extends State<SchoolCard> {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Text("Achievements: ",style: TextStyle(color: Colors.blueGrey,fontWeight: FontWeight.w300,fontSize: 13),),
                             Expanded(
-                                child: Text("${widget.school.maximumAchievement}",style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 14))
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("${widget.school.maximumAchievement}",style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 14)),
+                                  ],
+                                )
                             ),
                           ],
                         ),
@@ -122,13 +127,19 @@ class _SchoolCardState extends State<SchoolCard> {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Padding(
                               padding: EdgeInsets.only(right: 10),
                               child: Text("Subjects: ",style: TextStyle(color: Colors.blueGrey,fontWeight: FontWeight.w300,fontSize: 13),),
                             ),
                             Expanded(
-                                child: Text("${widget.school.subjects}",style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 14))
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("${widget.school.subjects}",style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 14)),
+                                  ],
+                                )
                             ),
                           ],
                         ),
@@ -140,7 +151,6 @@ class _SchoolCardState extends State<SchoolCard> {
                           OpenContainer(
                             closedBuilder: (context, action) =>
                                 CachedNetworkImage(
-                                  //todo
                                   imageUrl: widget.school.getImageWithBaseUrl(),
                                   height: SizeConfig.blockSizeVertical * 12,
                                   width: SizeConfig.blockSizeHorizontal * 30,

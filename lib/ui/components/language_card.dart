@@ -60,6 +60,7 @@ class _LanguageCardState extends State<LanguageCard> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig.init(context);
     return Container(
       margin: const EdgeInsets.only(top: 10),
       decoration: BoxDecoration(
@@ -126,7 +127,6 @@ class _LanguageCardState extends State<LanguageCard> {
                           OpenContainer(
                             closedBuilder: (context, action) =>
                                 CachedNetworkImage(
-                                  //todo
                                   imageUrl: widget.language.getImageWithBaseUrl(),
                                   height: SizeConfig.blockSizeVertical * 12,
                                   width: SizeConfig.blockSizeHorizontal * 30,

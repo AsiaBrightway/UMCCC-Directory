@@ -40,6 +40,7 @@ class _GraduateCardState extends State<GraduateCard> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig.init(context);
     return Container(
       margin: const EdgeInsets.only(top: 10),
       decoration: BoxDecoration(

@@ -115,7 +115,7 @@ class DisciplineBloc extends ChangeNotifier{
     if(type.isEmpty){
       showScaffoldMessage(context, 'Discipline Type cannot be empty');
     }else if(date == null){
-      showScaffoldMessage(context, 'Date should cannot be empty');
+      showScaffoldMessage(context, 'Date cannot be empty');
     }else{
       _model.updateDiscipline(_token, disciplineForUpdate!.id ?? 0, discipline).then((onValue){
 
@@ -129,7 +129,6 @@ class DisciplineBloc extends ChangeNotifier{
 
   Future<void> deleteDiscipline(BuildContext context, int id)async{
     _model.deleteDiscipline(_token, id).then((onValue){
-
       showSuccessScaffold(context, onValue!.message.toString());
       getDisciplineListByEmployee();
     }).catchError((onError){

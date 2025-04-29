@@ -175,7 +175,7 @@ class _SearchPageState extends State<SearchPage> {
                           );
                         },
                         errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
-                          return Image.asset('lib/icons/profile.png',width: 80,height: 90); // Show error image
+                          return Image.asset('assets/person_placeholder.jpg',width: 80,height: 90); // Show error image
                         },
                       ),
                     ),

@@ -13,6 +13,7 @@ import '../../data/models/pahg_model.dart';
 import '../../data/vos/request_body/path_user_request.dart';
 import '../../utils/image_compress.dart';
 import '../../utils/utils.dart';
+import '../components/empty_data_widget.dart';
 import '../providers/auth_provider.dart';
 
 class SchoolFragment extends StatefulWidget {
@@ -191,14 +192,14 @@ class _SchoolFragmentState extends State<SchoolFragment> {
                 }).toList(),
               )
               : isLoading
-              ? const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: CircularProgressIndicator(),
-              )
-              : const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Text("Empty",style: TextStyle(fontFamily: 'Ubuntu'),),
-              ),
+                ? const SizedBox(
+                    height : 250,
+                    child: Center(child: CircularProgressIndicator())
+                )
+                : const SizedBox(
+                  height: 250,
+                  child: Center(child: EmptyDataWidget()),
+                ),
           ],
         ),
       ),

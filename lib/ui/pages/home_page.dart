@@ -1,4 +1,3 @@
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:pahg_group/ui/pages/news_feed_page.dart';
@@ -63,6 +62,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+
     return ChangeNotifierProvider(
       create : (context) => HomeBloc(_token,_role,_userId),
       child: Scaffold(
@@ -72,7 +72,7 @@ class _HomePageState extends State<HomePage> {
           iconTheme: const IconThemeData(
             color: Colors.white, // Set the drawer icon color
           ),
-          title: const Text('P A H G', style: TextStyle(color: Colors.white),),
+          title: const Text('P A H G', style: TextStyle(color: Colors.white)),
           centerTitle: true,
           actions: [
             (_role == 1 || _role == 2)
@@ -90,7 +90,6 @@ class _HomePageState extends State<HomePage> {
             : UserDrawer(userId: _userId),
         body: CustomScrollView(
           slivers: [
-
             ///category list
             SliverToBoxAdapter(
               child: Padding(
@@ -117,7 +116,6 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-
             ///company list for user 1,2,3
             Selector<HomeBloc,HomeState>(
               selector: (context,bloc) => bloc.homeState,
@@ -156,8 +154,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget companyCardWidget({required CompaniesVo company,required int index}){
+    double screenWidth = MediaQuery.of(context).size.width;
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: screenWidth >= 600
+          ? const EdgeInsets.symmetric(horizontal: 16,vertical: 8)
+          : const EdgeInsets.all(8.0),
       child: Ink(
         height: 110,
         decoration: BoxDecoration(
@@ -237,6 +238,7 @@ class _HomePageState extends State<HomePage> {
 }
 
 class CategoryCardWidget extends StatelessWidget {
+
   final CategoryVo category;
   const CategoryCardWidget({super.key, required this.category});
 

@@ -13,6 +13,7 @@ import '../../dialog/training_dialog.dart';
 import '../../utils/helper_functions.dart';
 import '../../utils/image_compress.dart';
 import '../../utils/utils.dart';
+import '../components/empty_data_widget.dart';
 import '../components/training_card.dart';
 import '../providers/auth_provider.dart';
 
@@ -174,31 +175,31 @@ class _TrainingFragmentState extends State<TrainingFragment> {
           children : [
             (widget.role == 1)
                 ? Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: ElevatedButton(
-                  onPressed: (){
-                    showTrainingDialog(context, onUpdate: _onSave);
-                  },
-                  child: const Text("Add Training")
-              ),
-            )
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: ElevatedButton(
+                      onPressed: (){
+                        showTrainingDialog(context, onUpdate: _onSave);
+                      },
+                      child: const Text("Add Training")
+                  ),
+                )
                 : const SizedBox(height: 1),
             (trainingList.isNotEmpty)
                 ? Column(
-              children: trainingList.map((training){
-                ///training card
-                return TrainingCard(token: _token, userRole: _userRole, onDelete: _onDelete,updateImage: selectPicker,onUpdate: _onUpdate, training: training);
-              }).toList(),
-            )
+                  children: trainingList.map((training){
+                    ///training card
+                    return TrainingCard(token: _token, userRole: _userRole, onDelete: _onDelete,updateImage: selectPicker,onUpdate: _onUpdate, training: training);
+                  }).toList(),
+                )
                 : isLoading
-                ? const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: CircularProgressIndicator(),
-            )
-                : const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text("Empty",style: TextStyle(fontFamily: 'Ubuntu'),),
-            ),
+                  ? const SizedBox(
+                      height : 250,
+                      child: Center(child: CircularProgressIndicator())
+                  )
+                  : const SizedBox(
+                    height: 250,
+                    child: Center(child: EmptyDataWidget()),
+                  ),
           ],
         ),
       ),

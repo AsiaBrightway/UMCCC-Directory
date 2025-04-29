@@ -54,7 +54,8 @@ class FacilityAssignBloc extends ChangeNotifier{
       _returnedDate = assignVo.returnedDate;
       _returnStatus = assignVo.returnStatus;
     }
-    if(isAddPage) {
+    ///only for add_facility_assign
+    if(isAddPage && assignVo == null) {
       _assignedDate = Utils.getCurrentDateTime();
       getAllActiveFacility();
     }

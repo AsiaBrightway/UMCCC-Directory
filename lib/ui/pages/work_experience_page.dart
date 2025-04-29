@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:pahg_group/ui/components/empty_data_widget.dart';
+import 'package:pahg_group/ui/shimmer/facility_shimmer.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/models/pahg_model.dart';
@@ -167,7 +168,7 @@ class _WorkExperiencePageState extends State<WorkExperiencePage> {
                   : isLoading
                       ? const Padding(
                           padding: EdgeInsets.all(16.0),
-                          child: CircularProgressIndicator(),
+                          child: FacilityShimmer(),
                         )
                       : const Padding(
                           padding: EdgeInsets.all(16.0),

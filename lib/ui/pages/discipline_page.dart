@@ -114,11 +114,13 @@ class _DisciplinePageState extends State<DisciplinePage> {
             var bloc = context.read<DisciplineBloc>();
 
             if(disciplineState == DisciplineState.error){
-              return ErrorEmployeeWidget(
-                errorEmployee: bloc.errorMessage ?? '',
-                tryAgain: () {
-                  bloc.getDisciplineListByEmployee();
-                  },
+              return Center(
+                child: ErrorEmployeeWidget(
+                  errorEmployee: bloc.errorMessage ?? '',
+                  tryAgain: () {
+                    bloc.getDisciplineListByEmployee();
+                    },
+                ),
               );
 
             }else if(disciplineState == DisciplineState.success){
@@ -223,7 +225,7 @@ class _DisciplineCardState extends State<DisciplineCard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: 4.0,bottom: 10,right: 6),
+                  padding: const EdgeInsets.only(top: 4.0,bottom: 10,right: 6,left: 4),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

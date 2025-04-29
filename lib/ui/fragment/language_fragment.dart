@@ -11,6 +11,7 @@ import '../../dialog/language_dialog.dart';
 import '../../utils/helper_functions.dart';
 import '../../utils/image_compress.dart';
 import '../../utils/utils.dart';
+import '../components/empty_data_widget.dart';
 import '../components/language_card.dart';
 import '../providers/auth_provider.dart';
 
@@ -187,6 +188,7 @@ class _LanguageFragmentState extends State<LanguageFragment> {
                     children: languageList.map((language) {
                       return LanguageCard(
                           token: _token,
+
                           userRole: _userRole,
                           updateImage: _selectImagePicker,
                           onDelete: _onDelete,
@@ -195,17 +197,14 @@ class _LanguageFragmentState extends State<LanguageFragment> {
                     }).toList(),
                   )
                 : isLoading
-                    ? const Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: CircularProgressIndicator(),
-                      )
-                    : const Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Text(
-                          "Empty",
-                          style: TextStyle(fontFamily: 'Ubuntu'),
-                        ),
-                      ),
+                  ? const SizedBox(
+                      height : 250,
+                      child: Center(child: CircularProgressIndicator())
+                  )
+                  : const SizedBox(
+                    height: 250,
+                    child: Center(child: EmptyDataWidget()),
+                  ),
           ],
         ),
       ),

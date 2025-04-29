@@ -1,5 +1,6 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pahg_group/ui/pages/discipline_page.dart';
@@ -67,6 +68,8 @@ class _EmployeeProfilePageState extends ConsumerState<EmployeeProfilePage> {
   Widget build(BuildContext context) {
     employeeNotifier = ref.read(employeeNotifierProvider.notifier);
     final employeeState = ref.watch(employeeNotifierProvider);
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue.shade800,
@@ -112,9 +115,12 @@ class _EmployeeProfilePageState extends ConsumerState<EmployeeProfilePage> {
                           ),
                           borderRadius: BorderRadius.circular(12)
                       ),
-                      margin: const EdgeInsets.all(12),
+                      margin: screenWidth >= 600
+                          ? const EdgeInsets.symmetric(horizontal: 20,vertical: 16)
+                          : const EdgeInsets.all(12),
                       child: Stack(
                         children: [
+                          /// employee profile card
                           profileCard(employee),
                           (_userRole == 1)
                               ? Positioned(
@@ -361,11 +367,14 @@ class _EmployeeProfilePageState extends ConsumerState<EmployeeProfilePage> {
                 width: imageWidth,
                 height: imageHeight,
                 fit: BoxFit.cover,
+                placeholder: (context,url) => const CupertinoActivityIndicator(color: colorAccent),
                 errorWidget: (context, url, error) => Container(
                   height: 200,
                   width: double.infinity,
                   color: Colors.grey[200],
-                  child: const Center(child: Icon(Icons.error)),
+                  child: const Center(
+                    child: Icon(Icons.camera_alt),
+                  ),
                 ),
               ),
             )

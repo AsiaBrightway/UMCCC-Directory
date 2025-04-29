@@ -46,13 +46,16 @@ class _LoginPageState extends State<LoginPage> {
           saveToken(bearerToken, userVo!.userRolesId!, tokenVo.userId!);
           await Future.delayed(const Duration(milliseconds: 1000));
           subscribeToTopic();
+          if (!mounted) return;
           Navigator.of(context).pop();
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
         } catch (e) {
+          if (!mounted) return;
           Navigator.of(context).pop();
           showErrorDialog(context,e.toString());
         }
       }catch(e) {
+        if (!mounted) return;
         Navigator.of(context).pop();
         if(e.toString()=='Connection') {
           showConnectionErrorDialog(context, 'Check internet connection',userLogin);
@@ -75,6 +78,9 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    bool isTablet = screenWidth >= 600 ? true : false;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue.shade800,
@@ -117,81 +123,92 @@ class _LoginPageState extends State<LoginPage> {
                   ],
                 ),
               ),
+              if(isTablet)
+                const SizedBox(height: 30),
               ///email text field
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
-                child: TextField(
-                  controller: _emailController,
-                  focusNode: _emailFocusNode,
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.email),
-                    labelText: 'Email',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
-                  onSubmitted: (_) {
-                    // Move focus to the password field
-                    FocusScope.of(context).requestFocus(_passwordFocusNode);
-                  },
+              Container(
+                constraints: const BoxConstraints(
+                  maxWidth: 550
                 ),
-              ),
-              ///Password text field
-              Padding(
-                padding: const EdgeInsets.all(25.0),
-                child: TextField(
-                  controller: _passwordController,
-                  focusNode: _passwordFocusNode,
-                  obscureText: _isObscure,
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.lock),
-                    labelText: 'Password',
-                    suffixIcon: IconButton(
-                      icon: Icon(_isObscure ? Icons.visibility: Icons.visibility_off),
-                      onPressed: () {
-                        setState(() {
-                          _isObscure = !_isObscure; // Toggle the visibility
-                        });
-                      },
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 15),
-              ///sign in button
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: InkWell(
-                  onTap: () {
-                    if(_emailController.text.isNotEmpty && _passwordController.text.isNotEmpty){
-                      userLogin();
-                    }else{
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Please fill Email and Password'),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 25),
+                      child: TextField(
+                        controller: _emailController,
+                        focusNode: _emailFocusNode,
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(Icons.email),
+                          labelText: 'Email',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
                         ),
-                      );
-                    }
-                  },
-                  child: Ink(
-                    decoration: BoxDecoration(
-                        color: Colors.blue[700],
-                        borderRadius: const BorderRadius.only(topLeft: Radius.circular(16),bottomRight: Radius.circular(16))
-                    ),
-                    padding: const EdgeInsets.all(18),
-                    child: const Center(
-                      child: Text(
-                        'Log in',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 18),
+                        onSubmitted: (_) {
+                          // Move focus to the password field
+                          FocusScope.of(context).requestFocus(_passwordFocusNode);
+                        },
                       ),
                     ),
-                  ),
+                    ///Password text field
+                    Padding(
+                      padding: const EdgeInsets.all(25.0),
+                      child: TextField(
+                        controller: _passwordController,
+                        focusNode: _passwordFocusNode,
+                        obscureText: _isObscure,
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(Icons.lock),
+                          labelText: 'Password',
+                          suffixIcon: IconButton(
+                            icon: Icon(_isObscure ? Icons.visibility: Icons.visibility_off),
+                            onPressed: () {
+                              setState(() {
+                                _isObscure = !_isObscure; // Toggle the visibility
+                              });
+                            },
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                    ///sign in button
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                      child: InkWell(
+                        onTap: () {
+                          if(_emailController.text.isNotEmpty && _passwordController.text.isNotEmpty){
+                            userLogin();
+                          }else{
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Please fill Email and Password'),
+                              ),
+                            );
+                          }
+                        },
+                        child: Ink(
+                          decoration: BoxDecoration(
+                              color: Colors.blue[700],
+                              borderRadius: const BorderRadius.only(topLeft: Radius.circular(16),bottomRight: Radius.circular(16))
+                          ),
+                          padding: const EdgeInsets.all(18),
+                          child: const Center(
+                            child: Text(
+                              'Log in',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 18),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 25),
