@@ -232,7 +232,7 @@ class _NewsFeedCardState extends State<NewsFeedCard> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8.0),
                       child: Image.asset(
-                        'assets/pahg_logo.png',
+                        'assets/umcccumccc_logo.png',
                         fit: BoxFit.cover,
                       ),
                     ),

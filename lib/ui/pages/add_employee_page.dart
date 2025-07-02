@@ -16,7 +16,6 @@ import '../../network/api_constants.dart';
 import '../../utils/image_compress.dart';
 import '../../widgets/loading_widget.dart';
 import '../providers/auth_provider.dart';
-import '../themes/colors.dart';
 
 class AddEmployeePage extends StatefulWidget {
   final bool isAdd;

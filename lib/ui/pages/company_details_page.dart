@@ -5,10 +5,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:pahg_group/ui/components/empty_data_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-
 import '../../data/models/pahg_model.dart';
 import '../../data/vos/company_images_vo.dart';
 import '../../data/vos/department_vo.dart';

@@ -1,10 +1,12 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:pahg_group/ui/components/home_banner_card.dart';
+import 'package:pahg_group/ui/pages/business_group_page.dart';
 import 'package:pahg_group/ui/pages/news_feed_page.dart';
+import 'package:pahg_group/ui/themes/colors.dart';
 import 'package:provider/provider.dart';
 import '../../bloc/home_bloc.dart';
 import '../../data/vos/category_vo.dart';
-import '../../data/vos/companies_vo.dart';
 import '../../dialog/change_password_dialog.dart';
 import '../../utils/helper_functions.dart';
 import '../../widgets/error_employee_widget.dart';
@@ -17,7 +19,6 @@ import 'add_department_page.dart';
 import 'add_employee_page.dart';
 import 'add_facility_page.dart';
 import 'add_position_page.dart';
-import 'company_details_page.dart';
 import 'employee_profile_page.dart';
 import 'search_page.dart';
 
@@ -38,7 +39,6 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _initializeData();
     requestPermission();
-
   }
 
   Future<void> _initializeData() async {
@@ -72,7 +72,7 @@ class _HomePageState extends State<HomePage> {
           iconTheme: const IconThemeData(
             color: Colors.white, // Set the drawer icon color
           ),
-          title: const Text('P A H G', style: TextStyle(color: Colors.white)),
+          title: const Text('U M C C C', style: TextStyle(color: Colors.white,fontFamily: 'NotoSans',fontWeight: FontWeight.w500)),
           centerTitle: true,
           actions: [
             (_role == 1 || _role == 2)
@@ -81,7 +81,7 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => SearchPage(token: _token,searchType: 1)));
                 },
                 icon: const Icon(Icons.search,color: Colors.white)
-            )
+              )
               : const SizedBox(width: 1),
           ],
         ),
@@ -90,6 +90,10 @@ class _HomePageState extends State<HomePage> {
             : UserDrawer(userId: _userId),
         body: CustomScrollView(
           slivers: [
+            const SliverToBoxAdapter(
+              child: HomeBannerCard(),
+            ),
+
             ///category list
             SliverToBoxAdapter(
               child: Padding(
@@ -98,24 +102,25 @@ class _HomePageState extends State<HomePage> {
                   height: 60,
                   child: Selector<HomeBloc,List<CategoryVo>>(
                     selector: (context,bloc) => bloc.categoryList,
-                    builder: (context,countryList,_){
-                      return countryList.isNotEmpty
+                    builder: (context,categoryList,_){
+                      return categoryList.isNotEmpty
                             ? ListView.builder(
                                 physics: const BouncingScrollPhysics(),
                                 scrollDirection: Axis.horizontal,
                                 shrinkWrap: true,
-                                itemCount: countryList.length,
+                                itemCount: categoryList.length,
                                 itemBuilder: (context, index) {
                                   return CategoryCardWidget(
-                                      category: countryList[index]);
+                                      category: categoryList[index]);
                                 },
                               )
-                            : const SizedBox(height: 1);
+                            : const SizedBox(height: 20);
                     },
                   ),
                 ),
               ),
             ),
+
             ///company list for user 1,2,3
             Selector<HomeBloc,HomeState>(
               selector: (context,bloc) => bloc.homeState,
@@ -130,7 +135,7 @@ class _HomePageState extends State<HomePage> {
                   return SliverList(
                     delegate: SliverChildBuilderDelegate(
                         (context,index){
-                          return companyCardWidget(company: bloc.companyList[index], index: index);
+                          return Text('Nothing');
                         },
                       childCount: bloc.companyList.length
                     ),
@@ -148,127 +153,81 @@ class _HomePageState extends State<HomePage> {
               },
             ),
           ],
-        )
-      ),
-    );
-  }
-
-  Widget companyCardWidget({required CompaniesVo company,required int index}){
-    double screenWidth = MediaQuery.of(context).size.width;
-    return Padding(
-      padding: screenWidth >= 600
-          ? const EdgeInsets.symmetric(horizontal: 16,vertical: 8)
-          : const EdgeInsets.all(8.0),
-      child: Ink(
-        height: 110,
-        decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(color: Colors.grey.withOpacity(0.1),
-                  spreadRadius: 5, // Extends the shadow beyond the box
-                  blurRadius: 7, // Blurs the edges of the shadow
-                  offset: const Offset(0, 3)
-              ),
-            ],
-            color: Theme.of(context).colorScheme.onPrimary,
-            borderRadius: BorderRadius.circular(12)
         ),
-        child: InkWell(
-          onTap: (){
-            navigateToCompany(context,index,company);
+        floatingActionButton: FloatingActionButton.extended(
+          heroTag: 'checkout-fab',
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const BusinessGroupPage(),
+              ),
+            );
           },
-          child: Row(
-            children: [
-              Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(15),
-                    child: Image.network(
-                      company.getImageWithBaseUrl(),width: 80,height: 80,fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace){
-                        return Image.asset('assets/simple_placeholder.png',width: 90,height: 90,fit: BoxFit.cover,);
-                      },
-                    ),
-                  )
-              ),
-              const SizedBox(width: 16,),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(company.companyName ?? '',style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold
-                    )),
-                    const SizedBox(height: 10),
-                    Text(company.address ?? '')
-                  ],
-                ),
-              )
-            ],
-          ),
+          label: const Text('Businesses',style: TextStyle(color: Colors.black,fontFamily: 'NotoSans')),
+          icon: const Icon(Icons.group,color: goldColor),
+          backgroundColor: Colors.white,
         ),
       ),
     );
   }
 
-  void navigateToCompany(BuildContext context, int index, CompaniesVo company) {
-    Navigator.push(
-      context,
-      PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => CompanyDetailsPage(
-            companyId: company.id ?? 0,
-            companyName: company.companyName ?? ''
-        ),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          const begin = Offset(1.0, 0.0);
-          const end = Offset.zero;
-          const curve = Curves.ease;
 
-          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-          return SlideTransition(
-            position: animation.drive(tween),
-            child: child,
-          );
-        },
-      ),
-    );
-  }
 }
 
 class CategoryCardWidget extends StatelessWidget {
-
   final CategoryVo category;
+
   const CategoryCardWidget({super.key, required this.category});
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => NewsFeedPage(categoryId: category.id ?? 0,categoryName: category.category ?? ' ',),));
-      },
-      child: Card(
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 1,horizontal: 18),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8.0),
-              color: Theme.of(context).colorScheme.onPrimary,
-              boxShadow: [
-                BoxShadow(color: Colors.grey.withOpacity(0.3),
-                    spreadRadius: 2, // Extends the shadow beyond the box
-                    blurRadius: 2, // Blurs the edges of the shadow
-                    offset: const Offset(0, 3)
-                ),
-            ]
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    // Define a light color for the card in dark mode
+    final cardBackgroundColor = isDark
+        ? const Color(0xFFFAFAFA) // Light grey in dark mode
+        : theme.cardColor;
+
+    final textColor = isDark
+        ? Colors.black // To contrast with light card in dark mode
+        : theme.colorScheme.onSurface;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => NewsFeedPage(
+                categoryId: category.id ?? 0,
+                categoryName: category.category ?? ' ',
+              ),
+            ),
+          );
+        },
+        child: Card(
+          color: cardBackgroundColor,
+          elevation: isDark ? 2 : 4,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
           ),
-          child: Center(
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            alignment: Alignment.center,
             child: Text(
               category.category ?? '',
-              style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                fontFamily: 'Ubuntu',
+                color: textColor,
               ),
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ),
@@ -280,152 +239,256 @@ class CategoryCardWidget extends StatelessWidget {
 class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key, required this.userId});
   final String userId;
+
+  Widget _buildSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 6),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w500,
+          color: Colors.grey,
+          fontFamily: 'Ubuntu',
+        ),
+      ),
+    );
+  }
+
+  Widget _buildListTile({
+    required BuildContext context,
+    required String title,
+    required String iconPath,
+    required VoidCallback onTap,
+    Color? iconColor,
+  }) {
+    return ListTile(
+      leading: Image.asset(
+        iconPath,
+        width: 24,
+        color: iconColor ?? Theme.of(context).colorScheme.onSurface,
+      ),
+      title: Text(
+        title,
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+          fontWeight: FontWeight.w500,
+          fontFamily: 'Roboto',
+        ),
+      ),
+      onTap: onTap,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      hoverColor: Theme.of(context).colorScheme.primary.withOpacity(0.05),
+      dense: true,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Drawer(
-      backgroundColor: Theme.of(context).colorScheme.onError,
+      backgroundColor: theme.colorScheme.surface,
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            DrawerHeader(
+              child: Center(
+                child: Image.asset('assets/umccc_logo.png', width: 100),
+              ),
+            ),
 
-            Center(
-              child: DrawerHeader(
-                  child: Image.asset('assets/pahg_logo.png',width: 100,)),
+            _buildListTile(
+              context: context,
+              title: 'My Profile',
+              iconPath: 'lib/icons/profile.png',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EmployeeProfilePage(userId: userId),
+                  ),
+                );
+              },
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: ListTile(
-                leading: Image.asset('lib/icons/profile.png',width: 25,color: Theme.of(context).colorScheme.onSurface,),
-                title: const Text('My Profile',style: TextStyle(fontFamily: 'Roboto',fontWeight: FontWeight.w400),),
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => EmployeeProfilePage(userId: userId),));
-                },
 
-              ),
+            _buildListTile(
+              context: context,
+              title: 'Add Employee',
+              iconPath: 'lib/icons/add_person.png',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                    const AddEmployeePage(isAdd: true, userId: ''),
+                  ),
+                );
+              },
             ),
+
+            const Divider(indent: 16, endIndent: 16),
+            _buildSectionTitle('Company'),
+
+            _buildListTile(
+              context: context,
+              title: 'Add Business',
+              iconPath: 'lib/icons/edit_company.png',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AddCompanyPage(isAdd: true),
+                  ),
+                );
+              },
+            ),
+
+            _buildListTile(
+              context: context,
+              title: 'Edit Business',
+              iconPath: 'lib/icons/add_company.png',
+              iconColor: Colors.deepOrange,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AddCompanyPage(isAdd: false),
+                  ),
+                );
+              },
+            ),
+
+            const Divider(indent: 16, endIndent: 16),
+            _buildSectionTitle('Department'),
+
+            _buildListTile(
+              context: context,
+              title: 'Add Department',
+              iconPath: 'lib/icons/add_dept.png',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AddDepartmentPage(isAdd: true),
+                  ),
+                );
+              },
+            ),
+
+            _buildListTile(
+              context: context,
+              title: 'Edit Department',
+              iconPath: 'lib/icons/edit_dept.png',
+              iconColor: Colors.deepOrange,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                    const AddDepartmentPage(isAdd: false),
+                  ),
+                );
+              },
+            ),
+
+            const Divider(indent: 16, endIndent: 16),
+            _buildSectionTitle('Position'),
+
+            _buildListTile(
+              context: context,
+              title: 'Add Position',
+              iconPath: 'lib/icons/add_chair.png',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AddPositionPage(isAdd: true),
+                  ),
+                );
+              },
+            ),
+
+            _buildListTile(
+              context: context,
+              title: 'Edit Position',
+              iconPath: 'lib/icons/edit_chair.png',
+              iconColor: Colors.deepOrange,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AddPositionPage(isAdd: false),
+                  ),
+                );
+              },
+            ),
+
+            const Divider(indent: 16, endIndent: 16),
+            _buildSectionTitle('Category'),
+
+            _buildListTile(
+              context: context,
+              title: 'Add Category',
+              iconPath: 'lib/icons/categories.png',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AddCategoryPage(isAdd: true),
+                  ),
+                );
+              },
+            ),
+
+            _buildListTile(
+              context: context,
+              title: 'Edit Category',
+              iconPath: 'lib/icons/categories.png',
+              iconColor: Colors.orange,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AddCategoryPage(isAdd: false),
+                  ),
+                );
+              },
+            ),
+
+            _buildListTile(
+              context: context,
+              title: 'Add Facility',
+              iconPath: 'lib/icons/facility_icon.png',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AddFacilityPage(isAdd: true),
+                  ),
+                );
+              },
+            ),
+
+            _buildListTile(
+              context: context,
+              title: 'Edit Facility',
+              iconPath: 'lib/icons/facility_icon.png',
+              iconColor: Colors.orange,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                    const AddFacilityPage(isAdd: false),
+                  ),
+                );
+              },
+            ),
+
+            const Divider(indent: 16, endIndent: 16),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: ListTile(
-                leading: Image.asset('lib/icons/add_person.png',width: 25,color: Theme.of(context).colorScheme.onSurface),
-                title: const Text('Add Employee',style: TextStyle(fontWeight: FontWeight.w400)),
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const AddEmployeePage(isAdd: true, userId: '',),));
-                },
-              ),
-            ),
-            const Padding(padding:  EdgeInsets.symmetric(horizontal: 8.0), child: Divider()),
-            const Padding(padding: EdgeInsets.only(left: 12), child: Text('Company',style: TextStyle(fontSize: 12,color: Colors.grey,fontFamily: 'Ubuntu'))),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: ListTile(
-                leading: Image.asset('lib/icons/edit_company.png',width: 25,color: Theme.of(context).colorScheme.onSurface,),
-                title: const Text('Add Company',style: TextStyle(fontWeight: FontWeight.w400),),
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const AddCompanyPage(isAdd: true)));
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: ListTile(
-                leading: Image.asset('lib/icons/add_company.png',width: 25,color: Colors.deepOrange,),
-                title: const Text('Edit Company',style: TextStyle(fontWeight: FontWeight.w400),),
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const AddCompanyPage(isAdd: false),));
-                },
-              ),
-            ),
-            const Padding(padding:  EdgeInsets.symmetric(horizontal: 8.0), child: Divider(),
-            ),
-            const Padding(padding: EdgeInsets.only(left: 12), child: Text('Department',style: TextStyle(fontSize: 12,color: Colors.grey,fontFamily: 'Ubuntu'),),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: ListTile(
-                leading: Image.asset('lib/icons/add_dept.png',width: 25,color: Theme.of(context).colorScheme.onSurface,),
-                title: const Text('Add Department',style: TextStyle(fontWeight: FontWeight.w400),),
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const AddDepartmentPage(isAdd: true)));
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: ListTile(
-                leading: Image.asset('lib/icons/edit_dept.png',width: 25,color: Colors.deepOrange,),
-                title: const Text('Edit Department',style: TextStyle(fontWeight: FontWeight.w400),),
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const AddDepartmentPage(isAdd: false)));
-                },
-              ),
-            ),
-            const Padding(padding:  EdgeInsets.symmetric(horizontal: 8.0), child: Divider(),),
-            const Padding(padding: EdgeInsets.only(left: 12), child: Text('Position',style: TextStyle(fontSize: 12,color: Colors.grey,fontFamily: 'Ubuntu'))),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: ListTile(
-                leading: Image.asset('lib/icons/add_chair.png',width: 25,color: Theme.of(context).colorScheme.onSurface,),
-                title: const Text('Add Position',style: TextStyle(fontWeight: FontWeight.w400),),
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const AddPositionPage(isAdd: true),));
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: ListTile(
-                leading: Image.asset('lib/icons/edit_chair.png',width: 25,color: Colors.deepOrange,),
-                title: const Text('Edit Position',style: TextStyle(fontWeight: FontWeight.w400),),
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const AddPositionPage(isAdd: false),));
-                },
-              ),
-            ),
-            const Padding(padding:  EdgeInsets.symmetric(horizontal: 8.0), child: Divider(),),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: ListTile(
-                leading:  Image.asset('lib/icons/categories.png',width: 25,color: Theme.of(context).colorScheme.onSurface),
-                title: const Text('Add Category',style: TextStyle(fontWeight: FontWeight.w400),),
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const AddCategoryPage(isAdd: true,),));
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: ListTile(
-                leading:  Image.asset('lib/icons/categories.png',width: 25,color: Colors.orange,),
-                title: const Text('Edit Category',style: TextStyle(fontWeight: FontWeight.w400)),
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const AddCategoryPage(isAdd: false,),));
-                },
-              ),
-            ),
-            ///Facility
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: ListTile(
-                leading:  Image.asset('lib/icons/facility_icon.png',width: 25,color: Theme.of(context).colorScheme.onSurface),
-                title: const Text('Add Facility',style: TextStyle(fontWeight: FontWeight.w400)),
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const AddFacilityPage(isAdd: true,)));
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: ListTile(
-                leading:  Image.asset('lib/icons/facility_icon.png',width: 25,color: Colors.orange),
-                title: const Text('Edit Facility',style: TextStyle(fontWeight: FontWeight.w400)),
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const AddFacilityPage(isAdd: false,),));
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 2),
               child: ListTile(
                 leading: const Icon(Icons.lock),
                 title: const Text('Change Password',style: TextStyle(fontWeight: FontWeight.w400),),
@@ -435,10 +498,10 @@ class MyDrawer extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 14),
+              padding: const EdgeInsets.symmetric(horizontal: 4),
               child: ListTile(
                 leading: const Icon(Icons.logout_outlined),
-                title: const Text('Log out',style: TextStyle(fontWeight: FontWeight.w400),),
+                title: const Text('Log out',style: TextStyle(fontWeight: FontWeight.w400,color: Colors.red),),
                 onTap: (){
                   showLogoutDialog(context);
                 },
@@ -450,6 +513,3 @@ class MyDrawer extends StatelessWidget {
     );
   }
 }
-
-
-

@@ -98,19 +98,41 @@ class _SplashPageState extends State<SplashPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[300],
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset('assets/pahg_logo.png',width: 140,height: 140,),
-            const SizedBox(height: 16,),
-            const Text('P A H G',style: TextStyle(
-             color: Colors.orange,
-             fontSize: 26,
-              fontWeight: FontWeight.w600
-            ))
-          ],
-        ),
+      body: Stack(
+        children: [
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset('assets/umccc_logo.png', width: 140, height: 140),
+                const SizedBox(height: 16),
+                const Text(
+                  'U M C C C',
+                  style: TextStyle(
+                    color: Colors.orange,
+                    fontSize: 26,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            bottom: 20,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: Text(
+                'Developed by AsiaBrightWay',
+                style: TextStyle(
+                  color: Colors.grey[800],
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

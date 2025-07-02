@@ -101,7 +101,7 @@ class _LoginPageState extends State<LoginPage> {
                     Padding(
                       padding: const EdgeInsets.only(top: 40,bottom: 5),
                       child: Image.asset(
-                        'assets/pahg_logo.png', // Replace with your logo asset
+                        'assets/umccc_logo.png',
                         height: 100,
                       ),
                     ),
@@ -109,6 +109,7 @@ class _LoginPageState extends State<LoginPage> {
                     const Text('Log in', style: TextStyle(
                         fontSize: 24,
                         color: Colors.white,
+                        fontFamily: 'Ubuntu'
                       ),
                     ),
                     const SizedBox(height: 20),

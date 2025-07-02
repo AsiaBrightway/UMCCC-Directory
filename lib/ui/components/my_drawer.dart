@@ -24,7 +24,7 @@ class MyDrawer extends StatelessWidget {
           children: [
             Center(
               child: DrawerHeader(
-              child: Image.asset('assets/pahg_logo.png',width: 100,)),
+              child: Image.asset('assets/logo.png',width: 100,)),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),

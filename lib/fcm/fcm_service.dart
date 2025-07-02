@@ -32,6 +32,8 @@ class FCMService {
     localNotificationChannelTitle,
     description: localNotificationChannelDescription,
     importance: Importance.high,
+    playSound: true,
+    showBadge: true
   );
 
   /// Flutter Notification Plugin
@@ -68,6 +70,8 @@ class FCMService {
               channel.name,
               channelDescription: channel.description,
               icon: android.smallIcon,
+              playSound: true,
+              priority: Priority.high
             ),
           ),
           payload: remoteMessage.data['post_id'].toString(),

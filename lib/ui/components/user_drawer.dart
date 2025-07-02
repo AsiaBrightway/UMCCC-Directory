@@ -14,7 +14,6 @@ class UserDrawer extends StatefulWidget {
 
 class _UserDrawerState extends State<UserDrawer> {
 
-
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -23,7 +22,7 @@ class _UserDrawerState extends State<UserDrawer> {
           children: [
             Center(
               child: DrawerHeader(
-                  child: Image.asset('assets/pahg_logo.png',width: 100,)),
+                  child: Image.asset('assets/umccc_logo.png',width: 100,)),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),

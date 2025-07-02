@@ -9,7 +9,7 @@ final ThemeData darkMode = ThemeData(
     secondaryContainer: const Color.fromRGBO(27, 66, 66, 1),
     surface: Colors.black,
     error: Colors.red[400]!,
-    onPrimary: const Color.fromRGBO(27, 29, 40, 0.8),
+    onPrimary: const Color.fromRGBO(44, 41, 41, 0.8),
     onSecondary: Colors.black,
     surfaceBright: Colors.blue.shade900,
     onSurface: Colors.white,

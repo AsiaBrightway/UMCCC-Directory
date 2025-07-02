@@ -1,7 +1,6 @@
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:pahg_group/data/models/pahg_model.dart';
+import 'package:pahg_group/data/vos/company_images_vo.dart';
 import 'package:pahg_group/data/vos/request_body/get_request.dart';
 
 import '../data/vos/category_vo.dart';
@@ -15,9 +14,16 @@ class HomeBloc extends ChangeNotifier{
   final PahgModel _model = PahgModel();
   HomeState _homeState = HomeState.initial;
   final String _companyError = "";
+  List<CompanyImagesVo> _imageList = [];
   List<CompaniesVo> _companyList = [];
   String _token = "";
   int _role = 4;
+
+  List<CompanyImagesVo> get imageList => _imageList;
+
+  set imageList(List<CompanyImagesVo> value) {
+    _imageList = value;
+  }
 
   List<CategoryVo> get categoryList => _categoryList;
   String get companyError => _companyError;
@@ -27,8 +33,11 @@ class HomeBloc extends ChangeNotifier{
   HomeBloc(String token,int role,String userId){
     _token = token;
     _role = role;
-    getCompanyList(userId);
+    if(_role == 1){
+      getCompanyList(userId);
+    }
     getCategory();
+    getSlider();
   }
 
   ///column 0 is root parent
@@ -40,6 +49,16 @@ class HomeBloc extends ChangeNotifier{
       notifyListeners();
     }).catchError((onError){
       ///do something
+    });
+  }
+
+  Future<void> getSlider() async{
+    GetRequest request = GetRequest(columnName: "CompanyId", columnCondition: 1, columnValue: "1");
+    _model.getCompanyImages(_token, request).then((onValue){
+      _imageList = onValue;
+      notifyListeners();
+    }).catchError((onError){
+
     });
   }
 
