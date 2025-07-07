@@ -1,6 +1,9 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pahg_group/data/vos/post_vo.dart';
 import 'package:pahg_group/ui/components/home_banner_card.dart';
+import 'package:pahg_group/ui/components/post_card.dart';
 import 'package:pahg_group/ui/pages/business_group_page.dart';
 import 'package:pahg_group/ui/pages/news_feed_page.dart';
 import 'package:pahg_group/ui/themes/colors.dart';
@@ -12,7 +15,6 @@ import '../../utils/helper_functions.dart';
 import '../../widgets/error_employee_widget.dart';
 import '../components/user_drawer.dart';
 import '../providers/auth_provider.dart';
-import '../shimmer/home_shimmer.dart';
 import 'add_category_page.dart';
 import 'add_company_page.dart';
 import 'add_department_page.dart';
@@ -120,34 +122,23 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-
-            ///company list for user 1,2,3
-            Selector<HomeBloc,HomeState>(
-              selector: (context,bloc) => bloc.homeState,
-              builder: (context,homeState,_){
+            Selector<HomeBloc,List<PostVo>>(
+              selector: (context,bloc) => bloc.posts,
+              builder: (context,posts,_){
                 var bloc = context.read<HomeBloc>();
-                if(homeState == HomeState.error){
-                  return SliverToBoxAdapter(
-                      child: ErrorEmployeeWidget(errorEmployee: bloc.companyError, tryAgain: () => bloc.getCompanyList(_userId))
-                  );
-                }
-                else if(homeState == HomeState.success){
+                if(posts.isNotEmpty){
                   return SliverList(
                     delegate: SliverChildBuilderDelegate(
-                        (context,index){
-                          return Text('Nothing');
-                        },
-                      childCount: bloc.companyList.length
+                          (context, index) {
+                        final post = posts[index];
+                        return PostCard(post: post);
+                      },
+                      childCount: posts.length,
                     ),
                   );
-                }
-                ///this state was used for employee
-                else if(homeState == HomeState.initial){
-                  return SliverToBoxAdapter(child: Center(child: Image.asset('lib/icons/team_vector.png')));
-                }
-                else {
-                  return const SliverToBoxAdapter(
-                      child: HomeShimmer()
+                }else{
+                  return SliverToBoxAdapter(
+                      child: ErrorEmployeeWidget(errorEmployee: 'Failed to load', tryAgain: () => bloc.getPosts())
                   );
                 }
               },
@@ -265,7 +256,7 @@ class MyDrawer extends StatelessWidget {
     return ListTile(
       leading: Image.asset(
         iconPath,
-        width: 24,
+        width: 28,
         color: iconColor ?? Theme.of(context).colorScheme.onSurface,
       ),
       title: Text(
@@ -314,7 +305,7 @@ class MyDrawer extends StatelessWidget {
 
             _buildListTile(
               context: context,
-              title: 'Add Employee',
+              title: 'Add Person',
               iconPath: 'lib/icons/add_person.png',
               onTap: () {
                 Navigator.push(

@@ -110,8 +110,10 @@ class _EmployeeProfilePageState extends ConsumerState<EmployeeProfilePage> {
                           gradient: const LinearGradient(
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
-                              stops: [0.2,1.0],
-                              colors: [Color.fromRGBO(7, 119, 118, 1),Color.fromRGBO(42, 74, 97, 1)]
+                              stops: [0.3,1.0],
+                              colors: [
+                                Color.fromRGBO(7, 115, 84, 1.0),
+                                Color.fromRGBO(8, 97, 56, 1.0),]
                           ),
                           borderRadius: BorderRadius.circular(12)
                       ),

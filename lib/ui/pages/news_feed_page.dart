@@ -232,7 +232,7 @@ class _NewsFeedCardState extends State<NewsFeedCard> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8.0),
                       child: Image.asset(
-                        'assets/umcccumccc_logo.png',
+                        'assets/umccc_logo.png',
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -242,7 +242,7 @@ class _NewsFeedCardState extends State<NewsFeedCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        'P A H G',
+                        'UMCCC',
                         style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
                       ),
                       Text(

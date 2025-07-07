@@ -18,11 +18,31 @@ class SearchEmployeeBloc{
 
   SearchEmployeeBloc(this.context){
     queryStreamController.stream.debounceTime(const Duration(milliseconds: 500)).listen((query){
+      final q = query.searchName.trim();
+      if (q.isEmpty) return;
+
+      String lang;
+      if (_containsChinese(q)) {
+        lang = 'zh';
+      } else if (_containsBurmese(q)) {
+        lang = 'mm';
+      } else {
+        lang = 'en';
+      }
+      final enriched = DataClassForSearchBloc(
+        query.token,
+        query.searchType,
+        query.companyId,
+        query.searchName,
+        lang: lang,
+        entity: query.entity,
+      );
+
       if(query.searchName.isNotEmpty){
         if(query.searchType == 1){
-          _makeEmployeeSearchNetworkCall(query);
+          _makeEmployeeSearchNetworkCall(enriched);
         }else{
-          _makeEmployeeSearchByCompany(query);
+          _makeEmployeeSearchByCompany(enriched);
         }
       }
     });
@@ -47,5 +67,13 @@ class SearchEmployeeBloc{
   void onDispose(){
     queryStreamController.close();
     employeeStreamController.close();
+  }
+
+  bool _containsChinese(String input) {
+    return input.runes.any((r) => (r >= 0x4E00 && r <= 0x9FFF));
+  }
+
+  bool _containsBurmese(String input) {
+    return input.runes.any((r) => (r >= 0x1000 && r <= 0x109F));
   }
 }

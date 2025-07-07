@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pahg_group/data/models/pahg_model.dart';
 import 'package:pahg_group/data/vos/company_images_vo.dart';
+import 'package:pahg_group/data/vos/post_vo.dart';
 import 'package:pahg_group/data/vos/request_body/get_request.dart';
 
 import '../data/vos/category_vo.dart';
@@ -10,6 +11,7 @@ enum HomeState { initial, loading, success, error }
 
 class HomeBloc extends ChangeNotifier{
 
+  List<PostVo> _posts = [];
   List<CategoryVo> _categoryList = [];
   final PahgModel _model = PahgModel();
   HomeState _homeState = HomeState.initial;
@@ -19,6 +21,7 @@ class HomeBloc extends ChangeNotifier{
   String _token = "";
   int _role = 4;
 
+  List<PostVo> get posts => _posts;
   List<CompanyImagesVo> get imageList => _imageList;
 
   set imageList(List<CompanyImagesVo> value) {
@@ -38,6 +41,7 @@ class HomeBloc extends ChangeNotifier{
     }
     getCategory();
     getSlider();
+    getPosts();
   }
 
   ///column 0 is root parent
@@ -49,6 +53,15 @@ class HomeBloc extends ChangeNotifier{
       notifyListeners();
     }).catchError((onError){
       ///do something
+    });
+  }
+
+  Future<void> getPosts() async{
+    GetRequest request = GetRequest(columnName: "CategoryId", columnCondition: 1, columnValue: "1");
+    _model.getPosts(_token, request, 1, 10).then((onValue){
+      _posts = onValue;
+    }).catchError((onError){
+
     });
   }
 

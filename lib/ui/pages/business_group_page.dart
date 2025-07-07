@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:pahg_group/bloc/group_bloc.dart';
 import 'package:pahg_group/ui/pages/search_page.dart';
 import 'package:provider/provider.dart';
-
 import '../../bloc/home_bloc.dart';
 import '../../data/vos/companies_vo.dart';
 import '../../widgets/error_employee_widget.dart';
@@ -150,7 +149,7 @@ class _BusinessGroupPageState extends State<BusinessGroupPage> {
                     ),
                   )
               ),
-              const SizedBox(width: 16,),
+              const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

@@ -13,7 +13,7 @@ class _PahgApi implements PahgApi {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'http://www.jlarpyi.com';
+    baseUrl ??= 'http://umccc.asiabrightway.com';
   }
 
   final Dio _dio;

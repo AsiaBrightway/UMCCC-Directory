@@ -66,7 +66,9 @@ class PahgDataAgentImpl extends PahgDataAgent{
 
   PahgDataAgentImpl._internal(){
     final dio = Dio();
+    dio.options.headers['Accept'] = 'application/json';
     mApi = PahgApi(dio);
+
   }
 
   @override

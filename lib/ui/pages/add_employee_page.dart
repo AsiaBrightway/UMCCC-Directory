@@ -251,7 +251,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                       return const Center(
                                         child: SizedBox(
                                             height: 90,
-                                            child: CircularProgressIndicator()),
+                                            child: Center(child: CircularProgressIndicator())),
                                       );
                                     },
                                   ))
