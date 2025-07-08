@@ -212,7 +212,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
 
                               if (file != null) {
                                 // Compress the image
-                                File? compressFile = await compressAndGetFile(File(file.path), file.path,96);
+                                File? compressFile = await compressAndGetFile(File(file.path), file.path,70);
 
                                 // Update the state with the compressed file
                                 if (compressFile != null) {

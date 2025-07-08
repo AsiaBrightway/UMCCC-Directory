@@ -197,4 +197,6 @@ abstract class PahgDataAgent{
   Future<PostMethodResponse?> updateDiscipline(String apiKey,int id,DisciplineVo requestBody);
 
   Future<PostMethodResponse?> deleteDiscipline(String apiKey,int id);
+
+  Future<PostMethodResponse?> patchProfileImage(String apiKey,String userId,List<PathUserRequest> requests);
 }

@@ -2551,6 +2551,40 @@ class _PahgApi implements PahgApi {
     return value;
   }
 
+  @override
+  Future<PostMethodResponse?> patchProfileImage(
+    String apiKey,
+    String id,
+    List<PathUserRequest> requestBody,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': apiKey};
+    _headers.removeWhere((k, v) => v == null);
+    final _data = requestBody.map((e) => e.toJson()).toList();
+    final _result = await _dio.fetch<Map<String, dynamic>?>(
+        _setStreamType<PostMethodResponse>(Options(
+      method: 'PATCH',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/v1/api/Employees/${id}',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = _result.data == null
+        ? null
+        : PostMethodResponse.fromJson(_result.data!);
+    return value;
+  }
+
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
     if (T != dynamic &&
         !(requestOptions.responseType == ResponseType.bytes ||

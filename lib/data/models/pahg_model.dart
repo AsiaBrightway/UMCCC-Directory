@@ -319,6 +319,11 @@ class PahgModel {
     return mDataAgent.patchPersonalInfo(apiKey, id, requestList);
   }
 
+  Future<PostMethodResponse?> patchProfileImage(String apiKey,String userId,PathUserRequest request){
+    List<PathUserRequest> requestList = [request];
+    return mDataAgent.patchProfileImage(apiKey, userId,requestList);
+  }
+
   Future<PostMethodResponse?> patchEducationGraduates(String apiKey,int id,PathUserRequest request){
     List<PathUserRequest> requestList = [request];
     return mDataAgent.patchEducationGraduates(apiKey, id, requestList);

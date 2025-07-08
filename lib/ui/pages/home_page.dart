@@ -7,6 +7,7 @@ import 'package:pahg_group/ui/components/post_card.dart';
 import 'package:pahg_group/ui/pages/business_group_page.dart';
 import 'package:pahg_group/ui/pages/news_feed_page.dart';
 import 'package:pahg_group/ui/themes/colors.dart';
+import 'package:pahg_group/widgets/loading_widget.dart';
 import 'package:provider/provider.dart';
 import '../../bloc/home_bloc.dart';
 import '../../data/vos/category_vo.dart';
@@ -72,7 +73,7 @@ class _HomePageState extends State<HomePage> {
         appBar: AppBar(
           backgroundColor: Colors.blue[800],
           iconTheme: const IconThemeData(
-            color: Colors.white, // Set the drawer icon color
+            color: Colors.white,
           ),
           title: const Text('U M C C C', style: TextStyle(color: Colors.white,fontFamily: 'NotoSans',fontWeight: FontWeight.w500)),
           centerTitle: true,
@@ -96,7 +97,7 @@ class _HomePageState extends State<HomePage> {
               child: HomeBannerCard(),
             ),
 
-            ///category list
+            ///Category list
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.only(top: 8.0),
@@ -125,7 +126,6 @@ class _HomePageState extends State<HomePage> {
             Selector<HomeBloc,List<PostVo>>(
               selector: (context,bloc) => bloc.posts,
               builder: (context,posts,_){
-                var bloc = context.read<HomeBloc>();
                 if(posts.isNotEmpty){
                   return SliverList(
                     delegate: SliverChildBuilderDelegate(
@@ -137,12 +137,13 @@ class _HomePageState extends State<HomePage> {
                     ),
                   );
                 }else{
-                  return SliverToBoxAdapter(
-                      child: ErrorEmployeeWidget(errorEmployee: 'Failed to load', tryAgain: () => bloc.getPosts())
+                  return const SliverToBoxAdapter(
+                      child: SizedBox(height: 150,child: LoadingWidget())
                   );
                 }
               },
             ),
+            const SliverToBoxAdapter(child: SizedBox(height: 70,))
           ],
         ),
         floatingActionButton: FloatingActionButton.extended(
@@ -162,8 +163,6 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-
-
 }
 
 class CategoryCardWidget extends StatelessWidget {
@@ -285,7 +284,7 @@ class MyDrawer extends StatelessWidget {
           children: [
             DrawerHeader(
               child: Center(
-                child: Image.asset('assets/umccc_logo.png', width: 100),
+                child: Image.asset('assets/umccc_logo.png', width: 130),
               ),
             ),
 

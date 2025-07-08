@@ -104,7 +104,7 @@ class _SplashPageState extends State<SplashPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset('assets/umccc_logo.png', width: 140, height: 140),
+                Image.asset('assets/umccc_logo.png', width: 160, height: 160),
                 const SizedBox(height: 16),
                 const Text(
                   'U M C C C',

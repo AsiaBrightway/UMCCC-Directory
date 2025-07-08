@@ -1,16 +1,18 @@
 
-import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pahg_group/ui/pages/discipline_page.dart';
 import 'package:pahg_group/ui/pages/facility_assign_page.dart';
 import 'package:pahg_group/ui/shimmer/employee_profile_shimmer.dart';
 import 'package:pahg_group/widgets/error_employee_widget.dart';
 import 'package:provider/provider.dart';
 import '../../data/vos/employee_vo.dart';
-import '../../state/employee_state/employee_notifier.dart';
-import '../../state/employee_state/employee_state.dart';
+import '../../bloc/employee_notifier.dart';
+import '../../utils/image_compress.dart';
+import '../components/business_card.dart';
 import '../providers/auth_provider.dart';
 import '../themes/colors.dart';
 import 'add_employee_page.dart';
@@ -18,35 +20,30 @@ import 'education_page.dart';
 import 'personal_info_page.dart';
 import 'work_experience_page.dart';
 
-class EmployeeProfilePage extends ConsumerStatefulWidget {
+class EmployeeProfilePage extends StatefulWidget {
   final String userId;
   const EmployeeProfilePage({super.key, required this.userId});
 
   @override
-  ConsumerState<EmployeeProfilePage> createState() => _EmployeeProfilePageState();
+  State<EmployeeProfilePage> createState() => _EmployeeProfilePageState();
 }
 
-class _EmployeeProfilePageState extends ConsumerState<EmployeeProfilePage> {
+class _EmployeeProfilePageState extends State<EmployeeProfilePage> {
   int _userRole = 0;
   String _token = "";
-  EmployeeNotifier? employeeNotifier;
-
-  final employeeNotifierProvider =
-  NotifierProvider<EmployeeNotifier, EmployeeState>(() {
-    return EmployeeNotifier();
-  });
+  String _currentUserId = "";
 
   @override
   void initState() {
     super.initState();
-    Future.microtask(() => _initializeData());
+    _initializeData();
   }
 
   Future<void> _initializeData() async{
     final authModel = context.read<AuthProvider>();
+    _currentUserId = authModel.userId;
     _token = authModel.token;
     _userRole = authModel.role;
-    employeeNotifier?.getEmployee(_token, widget.userId);
   }
 
   Future<void> _navigateToEditPage(String employeeId) async {
@@ -56,7 +53,7 @@ class _EmployeeProfilePageState extends ConsumerState<EmployeeProfilePage> {
     );
     if (result == true) {
       // Data has been updated, refresh the data
-      employeeNotifier?.getEmployee(_token, widget.userId);
+      // employeeNotifier?.getEmployee(widget.userId);
     }
   }
 
@@ -66,235 +63,127 @@ class _EmployeeProfilePageState extends ConsumerState<EmployeeProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    employeeNotifier = ref.read(employeeNotifierProvider.notifier);
-    final employeeState = ref.watch(employeeNotifierProvider);
+
     double screenWidth = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blue.shade800,
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios,color: Colors.white),
-          onPressed: _onBackPressed,
-        ),
-        title: const Text('Profile',style: TextStyle(color: Colors.white,fontFamily: 'Ubuntu'),),
-        centerTitle: true,
-      ),
-
-      ///switch ui state with riverpod
-      body: switch(employeeState){
-
-        EmployeeStateLoading() => const EmployeeProfileShimmer(),
-
-        EmployeeStateFailed(error : String error) => Center(
-          child: ErrorEmployeeWidget(
-            errorEmployee: error,
-            tryAgain: () {
-              employeeNotifier?.getEmployee(_token, widget.userId);
-          },)
-        ),
-
-        EmployeeStateSuccess(employee : EmployeeVo employee) => RefreshIndicator(
-          onRefresh: () async{
-            employeeNotifier?.getEmployee(_token, widget.userId);
-          },
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: SafeArea(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              stops: [0.3,1.0],
-                              colors: [
-                                Color.fromRGBO(7, 115, 84, 1.0),
-                                Color.fromRGBO(8, 97, 56, 1.0),]
-                          ),
-                          borderRadius: BorderRadius.circular(12)
-                      ),
-                      margin: screenWidth >= 600
-                          ? const EdgeInsets.symmetric(horizontal: 20,vertical: 16)
-                          : const EdgeInsets.all(12),
-                      child: Stack(
-                        children: [
-                          /// employee profile card
-                          profileCard(employee),
-                          (_userRole == 1)
-                              ? Positioned(
-                              bottom: 6,
-                              right: 6,
-                              child: FloatingActionButton(
-                                onPressed: () {
-                                  _navigateToEditPage(employee.id ?? "null");
-                                },
-                                mini: true,
-                                backgroundColor: Colors.white,
-                                child: Image.asset('lib/icons/edit_user.png',width: 30,height: 30,),
-                              )
-                          )
-                              : const SizedBox(width:1)
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12,vertical: 12),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          ///Personal Info
-                          GestureDetector(
-                            onTap: (){
-                              navigateToPersonal(context,employee);
-                              },
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.42,
-                              height: 140,
-                              decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.black,width: 1,),
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: Theme.of(context).colorScheme.secondaryContainer
-                              ),
-                              child: Column(
-                                children: [
-                                  const SizedBox(height: 20,),
-                                  Image.asset('lib/icons/personal_info.png',width: 50,height: 50,color: Theme.of(context).colorScheme.onSurface,),
-                                  const SizedBox(height: 10,),
-                                  const Text('Personal Info',style: TextStyle(fontWeight: FontWeight.w500),),
-                                  const Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.only(right: 8.0, top: 8),
-                                          child: Text('more details >>',
-                                            style: TextStyle(color: colorAccent, fontSize: 12),
-                                          ),
-                                        )
-                                      ]
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 18,),
-                          ///Education
-                          GestureDetector(
-                            onTap: (){
-                              navigateToEducation(context,employee);
-                              },
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.42,
-                              height: 140,
-                              decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.black,width: 1),
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: Theme.of(context).colorScheme.secondaryContainer
-                              ),
-                              child: Column(
-                                children: [
-                                  const SizedBox(height: 20,),
-                                  Image.asset('lib/icons/user_education.png',width: 50,height: 50,color: Theme.of(context).colorScheme.onSurface),
-                                  const SizedBox(height: 10,),
-                                  const Text('Education',style: TextStyle(fontWeight: FontWeight.w500),),
-                                  const Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [ Padding(
-                                      padding: EdgeInsets.only(right: 8.0,top: 8),
-                                      child: Text('more details >>',style: TextStyle(color: colorAccent,fontSize: 12),),
-                                    )
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12,vertical: 12),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          ///Work Experience
-                          GestureDetector(
-                            onTap: () {
-                              navigateToWorkExperience(context,employee);
-                              },
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.42,
-                              height: 140,
-                              decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.black,width: 1,),
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: Theme.of(context).colorScheme.secondaryContainer
-                              ),
-                              child: Column(
-                                children: [
-                                  const SizedBox(height: 20,),
-                                  Image.asset('lib/icons/work_exp.png',width: 50,height: 50,color: Theme.of(context).colorScheme.onSurface,),
-                                  const SizedBox(height: 10,),
-                                  const Text('Work Experience',style: TextStyle(fontWeight: FontWeight.w500),),
-                                  const Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [ Padding(
-                                        padding: EdgeInsets.only(right: 8.0,top: 8),
-                                        child: Text('more details >>',style: TextStyle(color: colorAccent,fontSize: 12),),
-                                      )
-                                      ]
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 18,),
-                          ///Facility
-                          GestureDetector(
-                            onTap: (){
-                              navigateToFacilityPage(context, employee);
-                            },
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.42,
-                              height: 140,
-                              decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.black,width: 1,),
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: Theme.of(context).colorScheme.secondaryContainer
-                              ),
-                              child: Column(
-                                children: [
-                                  const SizedBox(height: 20,),
-                                  Image.asset('lib/icons/facility.png',width: 50,height: 50,color: Theme.of(context).colorScheme.onSurface),
-                                  const SizedBox(height: 10,),
-                                  const Text('Facility',style: TextStyle(fontWeight: FontWeight.w500),),
-                                  const Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [ Padding(
-                                      padding: EdgeInsets.only(right: 8.0,top: 8),
-                                      child: Text('more details >>',style: TextStyle(color: colorAccent,fontSize: 12),),
-                                    )
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    disciplineCard(employee)
-                  ],
-                )
-            ),
+    return ChangeNotifierProvider(
+      create: (context) => EmployeeNotifier(_token,widget.userId),
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.blue.shade800,
+          automaticallyImplyLeading: false,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios,color: Colors.white),
+            onPressed: _onBackPressed,
           ),
+          title: const Text('Profile',style: TextStyle(color: Colors.white,fontFamily: 'Ubuntu')),
+          centerTitle: true,
         ),
-      }
+        backgroundColor: Colors.grey.shade100,
+        // employee state
+        body: Selector<EmployeeNotifier,EmployeeState>(
+            selector: (context,bloc) => bloc.state,
+            builder: (context,state,_){
+              var bloc = context.read<EmployeeNotifier>();
+              if (state == EmployeeState.error) {
+                return Center(
+                    child: ErrorEmployeeWidget(
+                      errorEmployee: 'Error',
+                      tryAgain: () {
+                        bloc.getEmployee();
+                      },
+                    )
+                );
+              }
+              else if (state == EmployeeState.success) {
+                return RefreshIndicator(
+                      onRefresh: () async {
+                        bloc.getEmployee();
+                      },
+                      child: SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        child: SafeArea(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12)),
+                                  margin: screenWidth >= 600
+                                      ? const EdgeInsets.symmetric(horizontal: 20, vertical: 16)
+                                      : const EdgeInsets.all(8),
+                                  child: Stack(
+                                    children: [
+                                      /// employee profile card
+                                      newProfileCard(context,bloc.employee!),
+                                    ],
+                                  ),
+                                ),
+                                const Row(
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                      child: Text(
+                                        'Businesses',
+                                        style: TextStyle(
+                                            fontFamily: 'DMSans',
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 250,
+                                  child: ListView.builder(
+                                    itemCount: 2,
+                                    padding: const EdgeInsets.only(left: 12),
+                                    scrollDirection: Axis.horizontal,
+                                    itemBuilder: (context,index){
+                                      return  BusinessCard(
+                                        imageUrl: bloc.employee!.getImageWithBaseUrl(),
+                                        mmName: bloc.employee!.employeeName ?? '',
+                                        zhName: '云味',
+                                        enName: 'Xing Yi',
+                                        onTap: () {
+                                          // navigate to detail page
+                                        },
+                                        onLocate: () {
+                                          // open map or show location
+                                        },
+                                        location: '25st 90st Mandalay ddf dfk jkdjf dkjfk',
+                                      );
+                                    },
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                DashboardCard(
+                                    title: 'Personal Info', imagePath: 'lib/icons/personal_info.png',
+                                    onTap: () => navigateToPersonal(context,bloc.employee!)),
+
+                                DashboardCard(
+                                    title: 'Education', imagePath: 'lib/icons/user_education.png',
+                                    onTap: () => navigateToEducation(context,bloc.employee!)),
+                                DashboardCard(
+                                    title: 'Work Experience', imagePath: 'lib/icons/work_exp.png',
+                                    onTap: () => navigateToWorkExperience(context,bloc.employee!)),
+                                DashboardCard(
+                                    title: 'Facility', imagePath: 'lib/icons/facility.png',
+                                    onTap: () => navigateToFacilityPage(context,bloc.employee!)),
+                                DashboardCard(
+                                    title: 'Discipline', imagePath: 'lib/icons/discipline.png',
+                                    onTap: () => navigateToDisciplinePage(context,bloc.employee!)),
+                                const SizedBox(height: 4,)
+                          ],
+                        )),
+                      ),
+                    );
+              } else {
+                return const EmployeeProfileShimmer();
+              }
+            }
+        )
+      )
     );
   }
 
@@ -349,91 +238,109 @@ class _EmployeeProfilePageState extends ConsumerState<EmployeeProfilePage> {
     );
   }
 
-  Widget profileCard(EmployeeVo employee){
-    double screenWidth = MediaQuery.of(context).size.width;
-    bool isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+  Widget newProfileCard(BuildContext context,EmployeeVo person){
+    final bloc = context.read<EmployeeNotifier>();
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // ─── Profile Image ───
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              // The main profile circle
+              Container(
+                width: 128,
+                height: 128,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.white, width: 4),
+                ),
+                child: ClipOval(
+                  child: person.imageUrl != null
+                      ? Image.network(
+                        person.getImageWithBaseUrl(),
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Icon(
+                          Icons.person,
+                          size: 64,
+                          color: theme.colorScheme.onSurface.withOpacity(0.6),
+                        ),
+                      )
+                      : Icon(
+                        Icons.person,
+                        size: 64,
+                        color: theme.colorScheme.onSurface.withOpacity(0.6),
+                      ),
+                ),
+              ),
 
-    double imageWidth = isPortrait ? screenWidth * 0.3 : screenWidth * 0.2;
-    double imageHeight = MediaQuery.of(context).size.height * 0.2;
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 8),
-            child: ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Hero(
-              tag: "image-hero",
-              child: CachedNetworkImage(
-                imageUrl: employee.getImageWithBaseUrl(),
-                width: imageWidth,
-                height: imageHeight,
-                fit: BoxFit.cover,
-                placeholder: (context,url) => const CupertinoActivityIndicator(color: colorAccent),
-                errorWidget: (context, url, error) => Container(
-                  height: 200,
-                  width: double.infinity,
-                  color: Colors.grey[200],
-                  child: const Center(
-                    child: Icon(Icons.camera_alt),
+              // Positioned edit button
+              Positioned(
+                bottom: 4,
+                right: 4,
+                child: Material(
+                  shape: const CircleBorder(),
+                  elevation: 2,
+                  color: Colors.white,
+                  child: InkWell(
+                    customBorder: const CircleBorder(),
+                    onTap: () async{
+                      ImagePicker imagePicker = ImagePicker();
+                      XFile? file = await imagePicker.pickImage(source: ImageSource.gallery);
+
+                      if (file != null) {
+                        // Compress the image
+                        File? compressFile = await compressAndGetFile(File(file.path), file.path,70);
+
+                        // Update the state with the compressed file
+                        if (compressFile != null) {
+                          bloc.uploadProfile(compressFile);
+                        }
+                      }
+                    },
+                    child: (_currentUserId == widget.userId)
+                        ? const Padding(
+                          padding: EdgeInsets.all(6),
+                          child: Icon(
+                            Icons.edit,
+                            size: 18,
+                            color: Colors.grey,
+                          ),
+                        )
+                        : null,
                   ),
                 ),
               ),
-            )
-            ),
+            ],
           ),
-          const SizedBox(width: 10),
-          Flexible(
+
+          const SizedBox(height: 32),
+
+          Container(
+            padding: const EdgeInsets.all(16),
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              color: Colors.white
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                const SizedBox(height: 16),
-                Text(employee.employeeName ?? '',style: const TextStyle(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 18,
-                  color: Colors.white
-                ),),
-                const SizedBox(height: 6),
-                ///department text
-                Row(
-                  children: [
-                    Image.asset('lib/icons/apartment_department.png',width: 20,color: Colors.white,),
-                    const SizedBox(width: 4),
-                    Text(employee.departmentName ?? '',style: const TextStyle(fontSize: 14,color: Colors.white,fontWeight: FontWeight.w300),)
-                  ],
-                ),
-                const SizedBox(height: 6),
-                ///job position
-                Row(
-                  children: [
-                    Image.asset('lib/icons/add_chair.png',width: 20,color: Colors.white,),
-                    const SizedBox(width: 4),
-                    Text(employee.position ?? '',style: const TextStyle(fontSize: 14,color: Colors.white,fontWeight: FontWeight.w300),)
-                  ],
-                ),
-                const SizedBox(height: 6),
-                ///employee number
-                Row(
-                  children: [
-                    Image.asset('lib/icons/employee_no.png',width: 20,color: Colors.white,),
-                    const SizedBox(width: 4),
-                    Text(employee.employeeNumber ?? '',style: const TextStyle(fontSize: 14,color: Colors.white,fontWeight: FontWeight.w300),)
-                  ],
-                ),
-                const SizedBox(height: 6),
-                ///jd code text
-                Row(
-                  children: [
-                    Image.asset('lib/icons/calendar3.png',width: 20,color: Colors.white,),
-                    const SizedBox(width: 4),
-                    Text(employee.appointmentDate ?? '',style: const TextStyle(fontSize: 14,color: Colors.white,fontWeight: FontWeight.w300),)
-                  ],
-                ),
+                const Text('Name',style: TextStyle(fontFamily: 'DMSans')),
+                const SizedBox(height: 8),
+                _buildRow(context, '中文', 'Chinese'),
+                const Divider(color: Colors.grey,),
+                _buildRow(context, 'မြန်မာ', 'ဝင်းကျော်အေး'),
+                const Divider(color: Colors.grey,),
+                _buildRow(context, 'English', 'Win Kyaw Aye'),
               ],
             ),
-          )
-      ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -530,6 +437,112 @@ class _EmployeeProfilePageState extends ConsumerState<EmployeeProfilePage> {
             child: child,
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildRow(BuildContext context, String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        children: [
+          // optional: add a small icon or flag here
+          Text(
+            '$label:',
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              color: Theme.of(context).textTheme.bodyMedium?.color,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              value,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class DashboardCard extends StatelessWidget {
+  final String title;
+  final String imagePath;
+  final VoidCallback onTap;
+  final Color? borderColor;
+
+  const DashboardCard({
+    super.key,
+    required this.title,
+    required this.imagePath,
+    required this.onTap,
+    this.borderColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        height: 80,
+        margin: const EdgeInsets.symmetric(vertical: 6,horizontal: 16),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.secondaryContainer,
+          border: Border.all(
+            color: borderColor ?? Colors.black,
+            width: 1,
+          ),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            // Icon or Image
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Image.asset(
+                imagePath,
+                width: 40,
+                height: 40,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
+            const SizedBox(width: 16),
+
+            // Title and Details
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'more details >>',
+                    style: TextStyle(
+                      color: colorAccent,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(Icons.arrow_forward_ios_rounded, size: 16, color: colorAccent),
+          ],
+        ),
       ),
     );
   }

@@ -534,4 +534,10 @@ abstract class PahgApi{
       @Path("id") int id,
       );
 
+  @PATCH("$kEndPointGetEmployee/{id}")
+  Future<PostMethodResponse?> patchProfileImage(
+      @Header(kParamAuthorization) String apiKey,
+      @Path("id") String id,
+      @Body() List<PathUserRequest> requestBody
+      );
 }

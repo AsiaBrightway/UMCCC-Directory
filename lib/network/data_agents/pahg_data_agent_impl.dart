@@ -640,5 +640,12 @@ class PahgDataAgentImpl extends PahgDataAgent{
     });
   }
 
+  @override
+  Future<PostMethodResponse?> patchProfileImage(String apiKey, String userId,List<PathUserRequest> requests) {
+    return mApi.patchProfileImage(apiKey,userId,requests).catchError((onError){
+      throw _createException(onError);
+    });
+  }
+
 
 }
