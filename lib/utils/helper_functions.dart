@@ -12,16 +12,23 @@ void showUnauthorizedDialog(BuildContext context,String errorMessage){
     builder: (BuildContext context) {
       return AlertDialog(
         icon: const Icon(Icons.cloud_off,color: Colors.redAccent),
-        content: Text(errorMessage,textAlign: TextAlign.center,style: const TextStyle(fontSize: 18),),
+        content: Text(
+            errorMessage,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 15,fontFamily: 'DMSans')
+        ),
         actions: <Widget>[
-          Center(
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 8),
+            width: double.infinity, // Make button full width
             child: ElevatedButton(
               onPressed: () {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginPage(),));
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                );
               },
-              child: const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8),child: Text('OK')
-              ),
+              child: const Text('OK'),
             ),
           ),
         ],
@@ -100,25 +107,25 @@ void showErrorRefreshDialog(BuildContext context,String errorMessage,Function() 
   );
 }
 
-void showSuccessDialog(BuildContext context,String successMessage) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        icon: Image.asset('lib/icons/accept.png',width: 20,height: 20),
-        content: Padding(padding: const EdgeInsets.symmetric(vertical: 10),child: Text(successMessage)),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text('OK'),
-          ),
-        ],
-      );
-    },
-  );
-}
+// void showSuccessDialog(BuildContext context,String successMessage) {
+//   showDialog(
+//     context: context,
+//     builder: (BuildContext context) {
+//       return AlertDialog(
+//         icon: Image.asset('lib/icons/accept.png',width: 20,height: 20),
+//         content: Padding(padding: const EdgeInsets.symmetric(vertical: 10),child: Text(successMessage)),
+//         actions: <Widget>[
+//           TextButton(
+//             onPressed: () {
+//               Navigator.of(context).pop();
+//             },
+//             child: const Text('OK'),
+//           ),
+//         ],
+//       );
+//     },
+//   );
+// }
 
 void showErrorDialog(BuildContext context,String errorMessage) {
   showDialog(

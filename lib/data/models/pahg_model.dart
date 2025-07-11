@@ -423,4 +423,9 @@ class PahgModel {
   Future<PostMethodResponse?> deleteDiscipline(String apiKey,int id){
     return mDataAgent.deleteDiscipline(apiKey, id);
   }
+
+  Future<PostMethodResponse?> updateProfileNames(PathUserRequest requestZh,PathUserRequest requestMm,PathUserRequest requestEn) async{
+    List<PathUserRequest> requests = [];
+    return null;
+  }
 }

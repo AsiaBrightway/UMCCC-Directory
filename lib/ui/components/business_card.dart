@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class BusinessCard extends StatelessWidget {
   final String imageUrl;
-  final String mmName;          // e.g. "Love Cake House"
-  final String zhName;       // e.g. "10-25 mins • $$ • Cakes"
+  final String mmName;
+  final String zhName;
   final String enName;
   final String location;
   final VoidCallback onTap;
@@ -28,41 +28,48 @@ class BusinessCard extends StatelessWidget {
       onTap: onTap,
       child: Card(
         clipBehavior: Clip.hardEdge,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        elevation: 4,
-        margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        elevation: 2,
+        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
         child: Container(
-          width: 300,
+          width: 260,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Image with map icon overlay
               Stack(
                 children: [
-                  Image.network(
-                    imageUrl,
-                    height: 150,
+                  SizedBox(
+                    height: 140,
                     width: double.infinity,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) =>
-                        Container(color: Colors.grey.shade200),
+                    child: Image.network(
+                      imageUrl,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Container(
+                        color: Colors.grey.shade200,
+                        child: const Icon(Icons.image_not_supported, size: 40),
+                      ),
+                    ),
                   ),
                   Positioned(
-                    top: 8,
-                    right: 8,
+                    top: 10,
+                    right: 10,
                     child: Material(
-                      color: Colors.white.withOpacity(0.9),
                       shape: const CircleBorder(),
-                      elevation: 4,
+                      elevation: 3,
+                      color: Colors.white.withOpacity(0.9),
                       child: InkWell(
-                        customBorder: const CircleBorder(),
                         onTap: onLocate,
+                        customBorder: const CircleBorder(),
                         child: Padding(
                           padding: const EdgeInsets.all(6),
-                          child: Image.asset(
-                            'lib/icons/map.png',
-                            width: 20,
-                            height: 20,
-                          ),
+                          child: Icon(Icons.location_on, size: 18, color: Colors.red.shade700),
                         ),
                       ),
                     ),
@@ -70,36 +77,44 @@ class BusinessCard extends StatelessWidget {
                 ],
               ),
 
+              // Name and info
               Padding(
-                padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
+                padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Myanmar name (bold)
                     Text(
                       mmName,
                       style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w600,
                         fontSize: 16,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-
                     const SizedBox(height: 4),
 
+                    // Chinese and English names
                     Row(
                       children: [
-                        Text(
-                          zhName,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: Colors.grey.shade600,
+                        Expanded(
+                          child: Text(
+                            zhName,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: Colors.grey.shade600,
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        const SizedBox(width: 16),
-                        Text(
-                          zhName,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: Colors.grey.shade600,
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            enName,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: Colors.grey.shade600,
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ],
@@ -107,22 +122,23 @@ class BusinessCard extends StatelessWidget {
 
                     const SizedBox(height: 6),
 
+                    // Location
                     Row(
                       children: [
-                        const Icon(Icons.location_on,size: 12,),
-                        const SizedBox(width: 8),
+                        const Icon(Icons.location_on, size: 14, color: Colors.grey),
+                        const SizedBox(width: 4),
                         Expanded(
                           child: Text(
                             location,
                             style: theme.textTheme.bodySmall?.copyWith(
                               color: Colors.grey.shade800,
                             ),
-                            maxLines: 1,
+                            maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ),

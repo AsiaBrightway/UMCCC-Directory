@@ -1,7 +1,7 @@
 
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pahg_group/ui/pages/discipline_page.dart';
@@ -15,7 +15,6 @@ import '../../utils/image_compress.dart';
 import '../components/business_card.dart';
 import '../providers/auth_provider.dart';
 import '../themes/colors.dart';
-import 'add_employee_page.dart';
 import 'education_page.dart';
 import 'personal_info_page.dart';
 import 'work_experience_page.dart';
@@ -46,16 +45,73 @@ class _EmployeeProfilePageState extends State<EmployeeProfilePage> {
     _userRole = authModel.role;
   }
 
-  Future<void> _navigateToEditPage(String employeeId) async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => AddEmployeePage(isAdd: false,userId: employeeId)),
+  void showEditEmployeeDialog({
+    required BuildContext context,
+    required String initialChinese,
+    required String initialMyanmar,
+    required String initialEnglish,
+    required void Function(String zh, String mm, String en) onSave,
+  }) {
+    final TextEditingController zhController = TextEditingController(text: initialChinese);
+    final TextEditingController mmController = TextEditingController(text: initialMyanmar);
+    final TextEditingController enController = TextEditingController(text: initialEnglish);
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Edit Name',style: TextStyle(fontFamily: 'DMSans')),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: zhController,
+                decoration: const InputDecoration(labelText: 'Chinese Name',labelStyle: TextStyle(fontFamily: 'Ubuntu')),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: mmController,
+                decoration: const InputDecoration(labelText: 'Myanmar Name',labelStyle: TextStyle(fontFamily: 'Ubuntu')),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: enController,
+                decoration: const InputDecoration(labelText: 'English Name',labelStyle: TextStyle(fontFamily: 'Ubuntu')),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                onSave(
+                  zhController.text.trim(),
+                  mmController.text.trim(),
+                  enController.text.trim(),
+                );
+                Navigator.pop(context);
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
     );
-    if (result == true) {
-      // Data has been updated, refresh the data
-      // employeeNotifier?.getEmployee(widget.userId);
-    }
   }
+
+  // Future<void> _navigateToEditPage(String employeeId) async {
+  //   final result = await Navigator.push(
+  //     context,
+  //     MaterialPageRoute(builder: (context) => AddEmployeePage(isAdd: false,userId: employeeId)),
+  //   );
+  //   if (result == true) {
+  //     // Data has been updated, refresh the data
+  //     // employeeNotifier?.getEmployee(widget.userId);
+  //   }
+  // }
 
   void _onBackPressed() {
     Navigator.of(context).pop();
@@ -68,121 +124,268 @@ class _EmployeeProfilePageState extends State<EmployeeProfilePage> {
 
     return ChangeNotifierProvider(
       create: (context) => EmployeeNotifier(_token,widget.userId),
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.blue.shade800,
-          automaticallyImplyLeading: false,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios,color: Colors.white),
-            onPressed: _onBackPressed,
-          ),
-          title: const Text('Profile',style: TextStyle(color: Colors.white,fontFamily: 'Ubuntu')),
-          centerTitle: true,
-        ),
-        backgroundColor: Colors.grey.shade100,
-        // employee state
-        body: Selector<EmployeeNotifier,EmployeeState>(
-            selector: (context,bloc) => bloc.state,
-            builder: (context,state,_){
-              var bloc = context.read<EmployeeNotifier>();
-              if (state == EmployeeState.error) {
-                return Center(
-                    child: ErrorEmployeeWidget(
-                      errorEmployee: 'Error',
-                      tryAgain: () {
-                        bloc.getEmployee();
-                      },
-                    )
-                );
-              }
-              else if (state == EmployeeState.success) {
-                return RefreshIndicator(
-                      onRefresh: () async {
-                        bloc.getEmployee();
-                      },
-                      child: SingleChildScrollView(
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        child: SafeArea(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12)),
-                                  margin: screenWidth >= 600
-                                      ? const EdgeInsets.symmetric(horizontal: 20, vertical: 16)
-                                      : const EdgeInsets.all(8),
-                                  child: Stack(
+      child: Consumer<EmployeeNotifier>(
+        builder: (BuildContext context, EmployeeNotifier value, Widget? child) {
+          var bloc = context.read<EmployeeNotifier>();
+          return Scaffold(
+              appBar: AppBar(
+                backgroundColor: Colors.blue.shade800,
+                automaticallyImplyLeading: false,
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back_ios,color: Colors.white),
+                  onPressed: _onBackPressed,
+                ),
+                title: const Text(
+                    'Profile',
+                    style: TextStyle(color: Colors.white,fontFamily: 'Ubuntu')
+                ),
+                centerTitle: true,
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.edit, color: Colors.white),
+                    tooltip: 'Edit Profile',
+                    onPressed: () {
+                      showEditEmployeeDialog(
+                        context: context,
+                        initialChinese: bloc.employee?.employeeName ?? '',
+                        initialMyanmar: bloc.employee?.employeeName ?? '',
+                        initialEnglish: bloc.employee?.employeeName ?? '',
+                        onSave: (zh, mm, en) {
+                          bloc.updateProfileName(mm, zh, en);
+                        },
+                      );
+                    },
+                  ),
+                ],
+              ),
+              backgroundColor: Colors.grey.shade100,
+              // employee state
+              body: Selector<EmployeeNotifier,EmployeeState>(
+                  selector: (context,bloc) => bloc.state,
+                  builder: (context,state,_){
+                    var bloc = context.read<EmployeeNotifier>();
+                    if (state == EmployeeState.error) {
+                      return Center(
+                          child: ErrorEmployeeWidget(
+                            errorEmployee: 'Error',
+                            tryAgain: () {
+                              bloc.getEmployee();
+                            },
+                          )
+                      );
+                    }
+                    else if (state == EmployeeState.success) {
+                      return RefreshIndicator(
+                        onRefresh: () async {
+                          bloc.getEmployee();
+                        },
+                        child: SingleChildScrollView(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          child: SafeArea(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(12)),
+                                    margin: screenWidth >= 600
+                                        ? const EdgeInsets.symmetric(horizontal: 20, vertical: 16)
+                                        : const EdgeInsets.all(8),
+                                    child: Stack(
+                                      alignment: Alignment.center,
+                                      clipBehavior: Clip.none,
+                                      children: [
+                                        // The main profile circle
+                                        Container(
+                                          width: 128,
+                                          height: 128,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.black.withOpacity(0.15),
+                                                blurRadius: 8,
+                                                offset: const Offset(0, 4),
+                                              ),
+                                            ],
+                                            border: Border.all(color: Colors.white, width: 4),
+                                          ),
+                                          child: ClipOval(
+                                            child: bloc.employee!.imageUrl != null
+                                                ? Image.network(
+                                                  bloc.employee!.getImageWithBaseUrl(),
+                                                  fit: BoxFit.cover,
+                                                  errorBuilder: (_, __, ___) => Icon(
+                                                    Icons.person,
+                                                    size: 64,
+                                                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                                                  ),
+                                                )
+                                                : Icon(
+                                                  Icons.person,
+                                                  size: 64,
+                                                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                                                ),
+                                          ),
+                                        ),
+
+                                        if (_currentUserId == widget.userId)
+                                          Positioned(
+                                            bottom: -6,
+                                            right: 6,
+                                            child: GestureDetector(
+                                              onTap: () async {
+                                                final imagePicker = ImagePicker();
+                                                XFile? file = await imagePicker.pickImage(source: ImageSource.gallery);
+                                                if (file != null) {
+                                                  final compressed = await compressAndGetFile(File(file.path), file.path, 70);
+                                                  if (compressed != null) {
+                                                    bloc.uploadProfile(compressed);
+                                                  }
+                                                }
+                                              },
+                                              child: Container(
+                                                padding: const EdgeInsets.all(6),
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: Colors.white.withOpacity(0.9),
+                                                  boxShadow: const [
+                                                    BoxShadow(
+                                                      blurRadius: 6,
+                                                      color: Colors.black12,
+                                                      offset: Offset(0, 3),
+                                                    )
+                                                  ],
+                                                ),
+                                                child: const Icon(Icons.camera_alt, size: 20, color: Colors.black54),
+                                              ),
+                                            ),
+                                          )
+                                      ],
+                                    ),
+                                  ),
+                                  const Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text(
+                                    '李祖阳',
+                                      style: TextStyle(fontFamily: 'NotoSansSC',fontWeight: FontWeight.w700,fontSize: 16),
+                                    ),
+                                  ),
+                                  Row(
                                     children: [
-                                      /// employee profile card
-                                      newProfileCard(context,bloc.employee!),
+                                      Expanded(
+                                        child: Align(
+                                          alignment: Alignment.centerRight,
+                                          child: AutoSizeText(
+                                            bloc.employee!.employeeName ?? '',
+                                            textAlign: TextAlign.right,
+                                            style: const TextStyle(
+                                              fontFamily: 'NotoSansSC',
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 15,
+                                            ),
+                                            maxLines: 1,
+                                            minFontSize: 10,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        margin: const EdgeInsets.symmetric(horizontal: 6),
+                                        width: 1,
+                                        height: 20,
+                                        color: Colors.grey,
+                                      ),
+                                      const Expanded(
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: AutoSizeText(
+                                            'အေးခင်ခင်ချိုလင်းမူ',
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(
+                                              fontFamily: 'NotoSansSC',
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 15,
+                                            ),
+                                            maxLines: 1,
+                                            minFontSize: 10,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                      ),
                                     ],
                                   ),
-                                ),
-                                const Row(
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                                      child: Text(
-                                        'Businesses',
-                                        style: TextStyle(
-                                            fontFamily: 'DMSans',
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500),
-                                      ),
+                                  const SizedBox(height: 16),
+                                  // const Row(
+                                  //   children: [
+                                  //     Padding(
+                                  //       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                  //       child: Text(
+                                  //         'Businesses',
+                                  //         style: TextStyle(
+                                  //             fontFamily: 'DMSans',
+                                  //             fontSize: 16,
+                                  //             fontWeight: FontWeight.w500),
+                                  //       ),
+                                  //     ),
+                                  //   ],
+                                  // ),
+                                  SizedBox(
+                                    height: 250,
+                                    child: ListView.builder(
+                                      itemCount: 2,
+                                      padding: const EdgeInsets.only(left: 8),
+                                      scrollDirection: Axis.horizontal,
+                                      itemBuilder: (context,index){
+                                        return  BusinessCard(
+                                          imageUrl: bloc.employee!.getImageWithBaseUrl(),
+                                          mmName: bloc.employee!.employeeName ?? '',
+                                          zhName: '云味',
+                                          enName: 'Xing Yi',
+                                          onTap: () {
+                                            // navigate to detail page
+                                          },
+                                          onLocate: () {
+                                            // open map or show location
+                                          },
+                                          location: '25st 90st Mandalay ddf dfk jkdjf dkjfk',
+                                        );
+                                      },
                                     ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 250,
-                                  child: ListView.builder(
-                                    itemCount: 2,
-                                    padding: const EdgeInsets.only(left: 12),
-                                    scrollDirection: Axis.horizontal,
-                                    itemBuilder: (context,index){
-                                      return  BusinessCard(
-                                        imageUrl: bloc.employee!.getImageWithBaseUrl(),
-                                        mmName: bloc.employee!.employeeName ?? '',
-                                        zhName: '云味',
-                                        enName: 'Xing Yi',
-                                        onTap: () {
-                                          // navigate to detail page
-                                        },
-                                        onLocate: () {
-                                          // open map or show location
-                                        },
-                                        location: '25st 90st Mandalay ddf dfk jkdjf dkjfk',
-                                      );
-                                    },
                                   ),
-                                ),
-                                const SizedBox(height: 8),
-                                DashboardCard(
-                                    title: 'Personal Info', imagePath: 'lib/icons/personal_info.png',
-                                    onTap: () => navigateToPersonal(context,bloc.employee!)),
-
-                                DashboardCard(
-                                    title: 'Education', imagePath: 'lib/icons/user_education.png',
-                                    onTap: () => navigateToEducation(context,bloc.employee!)),
-                                DashboardCard(
-                                    title: 'Work Experience', imagePath: 'lib/icons/work_exp.png',
-                                    onTap: () => navigateToWorkExperience(context,bloc.employee!)),
-                                DashboardCard(
-                                    title: 'Facility', imagePath: 'lib/icons/facility.png',
-                                    onTap: () => navigateToFacilityPage(context,bloc.employee!)),
-                                DashboardCard(
-                                    title: 'Discipline', imagePath: 'lib/icons/discipline.png',
-                                    onTap: () => navigateToDisciplinePage(context,bloc.employee!)),
-                                const SizedBox(height: 4,)
-                          ],
-                        )),
-                      ),
-                    );
-              } else {
-                return const EmployeeProfileShimmer();
-              }
-            }
-        )
+                                  const SizedBox(height: 8),
+                                  if(_userRole == 1 || widget.userId == _currentUserId)
+                                    Column(
+                                      children: [
+                                        dashboardCard(
+                                            title: 'Personal Info', imagePath: 'lib/icons/personal_info.png',
+                                            onTap: () => navigateToPersonal(context,bloc.employee!)),
+                                        dashboardCard(
+                                            title: 'Education', imagePath: 'lib/icons/user_education.png',
+                                            onTap: () => navigateToEducation(context,bloc.employee!)),
+                                        dashboardCard(
+                                            title: 'Work Experience', imagePath: 'lib/icons/work_exp.png',
+                                            onTap: () => navigateToWorkExperience(context,bloc.employee!)),
+                                        dashboardCard(
+                                            title: 'Facility', imagePath: 'lib/icons/facility.png',
+                                            onTap: () => navigateToFacilityPage(context,bloc.employee!)),
+                                        dashboardCard(
+                                            title: 'Discipline', imagePath: 'lib/icons/discipline.png',
+                                            onTap: () => navigateToDisciplinePage(context,bloc.employee!)),
+                                      ],
+                                    ),
+                                  const SizedBox(height: 4)
+                                ],
+                              )),
+                        ),
+                      );
+                    } else {
+                      return const EmployeeProfileShimmer();
+                    }
+                  }
+              )
+          );
+        },
       )
     );
   }
@@ -232,112 +435,6 @@ class _EmployeeProfilePageState extends State<EmployeeProfilePage> {
           SizedBox(
             width: MediaQuery.of(context).size.width * 0.42,
             height: 140,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget newProfileCard(BuildContext context,EmployeeVo person){
-    final bloc = context.read<EmployeeNotifier>();
-    final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          // ─── Profile Image ───
-          Stack(
-            clipBehavior: Clip.none,
-            children: [
-              // The main profile circle
-              Container(
-                width: 128,
-                height: 128,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white, width: 4),
-                ),
-                child: ClipOval(
-                  child: person.imageUrl != null
-                      ? Image.network(
-                        person.getImageWithBaseUrl(),
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Icon(
-                          Icons.person,
-                          size: 64,
-                          color: theme.colorScheme.onSurface.withOpacity(0.6),
-                        ),
-                      )
-                      : Icon(
-                        Icons.person,
-                        size: 64,
-                        color: theme.colorScheme.onSurface.withOpacity(0.6),
-                      ),
-                ),
-              ),
-
-              // Positioned edit button
-              Positioned(
-                bottom: 4,
-                right: 4,
-                child: Material(
-                  shape: const CircleBorder(),
-                  elevation: 2,
-                  color: Colors.white,
-                  child: InkWell(
-                    customBorder: const CircleBorder(),
-                    onTap: () async{
-                      ImagePicker imagePicker = ImagePicker();
-                      XFile? file = await imagePicker.pickImage(source: ImageSource.gallery);
-
-                      if (file != null) {
-                        // Compress the image
-                        File? compressFile = await compressAndGetFile(File(file.path), file.path,70);
-
-                        // Update the state with the compressed file
-                        if (compressFile != null) {
-                          bloc.uploadProfile(compressFile);
-                        }
-                      }
-                    },
-                    child: (_currentUserId == widget.userId)
-                        ? const Padding(
-                          padding: EdgeInsets.all(6),
-                          child: Icon(
-                            Icons.edit,
-                            size: 18,
-                            color: Colors.grey,
-                          ),
-                        )
-                        : null,
-                  ),
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 32),
-
-          Container(
-            padding: const EdgeInsets.all(16),
-            width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              color: Colors.white
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('Name',style: TextStyle(fontFamily: 'DMSans')),
-                const SizedBox(height: 8),
-                _buildRow(context, '中文', 'Chinese'),
-                const Divider(color: Colors.grey,),
-                _buildRow(context, 'မြန်မာ', 'ဝင်းကျော်အေး'),
-                const Divider(color: Colors.grey,),
-                _buildRow(context, 'English', 'Win Kyaw Aye'),
-              ],
-            ),
           ),
         ],
       ),
@@ -441,109 +538,73 @@ class _EmployeeProfilePageState extends State<EmployeeProfilePage> {
     );
   }
 
-  Widget _buildRow(BuildContext context, String label, String value) {
+  // Widget _buildRow(BuildContext context, String label, String value) {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(vertical: 6),
+  //     child: Row(
+  //       children: [
+  //         // optional: add a small icon or flag here
+  //         Text(
+  //           '$label:',
+  //           style: TextStyle(
+  //             fontWeight: FontWeight.w600,
+  //             color: Theme.of(context).textTheme.bodyMedium?.color,
+  //           ),
+  //         ),
+  //         const SizedBox(width: 8),
+  //         Expanded(
+  //           child: Text(
+  //             value,
+  //             overflow: TextOverflow.ellipsis,
+  //             style: Theme.of(context).textTheme.bodyMedium,
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
+  Widget dashboardCard({
+    required String title,
+    required String imagePath,
+    required VoidCallback onTap,
+    Color backgroundColor = const Color(0xFFF5F5F5),
+  }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        children: [
-          // optional: add a small icon or flag here
-          Text(
-            '$label:',
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              color: Theme.of(context).textTheme.bodyMedium?.color,
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              value,
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class DashboardCard extends StatelessWidget {
-  final String title;
-  final String imagePath;
-  final VoidCallback onTap;
-  final Color? borderColor;
-
-  const DashboardCard({
-    super.key,
-    required this.title,
-    required this.imagePath,
-    required this.onTap,
-    this.borderColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: double.infinity,
-        height: 80,
-        margin: const EdgeInsets.symmetric(vertical: 6,horizontal: 16),
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.secondaryContainer,
-          border: Border.all(
-            color: borderColor ?? Colors.black,
-            width: 1,
-          ),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Row(
-          children: [
-            // Icon or Image
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: backgroundColor,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 6,
+                offset: const Offset(0, 3),
               ),
-              child: Image.asset(
-                imagePath,
-                width: 40,
-                height: 40,
-                color: Theme.of(context).colorScheme.onSurface,
+            ],
+          ),
+          child: Row(
+            children: [
+              Image.asset(imagePath, width: 32, height: 32),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Text(
+                  title,
+                  style: const TextStyle(fontWeight: FontWeight.w500),
+                ),
               ),
-            ),
-            const SizedBox(width: 16),
-
-            // Title and Details
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  const Text(
-                    'more details >>',
-                    style: TextStyle(
-                      color: colorAccent,
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const Icon(Icons.arrow_forward_ios_rounded, size: 16, color: colorAccent),
-          ],
+              const Icon(Icons.chevron_right),
+            ],
+          ),
         ),
       ),
     );
   }
+
 }
+
+

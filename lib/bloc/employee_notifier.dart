@@ -67,4 +67,16 @@ class EmployeeNotifier extends ChangeNotifier{
       notifyListeners();
     });
   }
+
+  Future<void> updateProfileName(String mmName,String zhName,String enName) async{
+    PathUserRequest requestZh = PathUserRequest('image_Url', 'replace', zhName);
+    PathUserRequest requestMm = PathUserRequest('image_Url', 'replace', mmName);
+    PathUserRequest requestEn = PathUserRequest('image_Url', 'replace', enName);
+    
+    _model.updateProfileNames(requestZh, requestMm, requestEn).then((onValue){
+
+    }).catchError((onError){
+
+    });
+  }
 }

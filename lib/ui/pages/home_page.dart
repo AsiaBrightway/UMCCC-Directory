@@ -13,7 +13,6 @@ import '../../bloc/home_bloc.dart';
 import '../../data/vos/category_vo.dart';
 import '../../dialog/change_password_dialog.dart';
 import '../../utils/helper_functions.dart';
-import '../../widgets/error_employee_widget.dart';
 import '../components/user_drawer.dart';
 import '../providers/auth_provider.dart';
 import 'add_category_page.dart';
@@ -322,7 +321,7 @@ class MyDrawer extends StatelessWidget {
 
             _buildListTile(
               context: context,
-              title: 'Add Business',
+              title: 'Add Business Type',
               iconPath: 'lib/icons/edit_company.png',
               onTap: () {
                 Navigator.push(
@@ -336,7 +335,7 @@ class MyDrawer extends StatelessWidget {
 
             _buildListTile(
               context: context,
-              title: 'Edit Business',
+              title: 'Edit Business Type',
               iconPath: 'lib/icons/add_company.png',
               iconColor: Colors.deepOrange,
               onTap: () {
@@ -354,7 +353,7 @@ class MyDrawer extends StatelessWidget {
 
             _buildListTile(
               context: context,
-              title: 'Add Department',
+              title: 'Add Business',
               iconPath: 'lib/icons/add_dept.png',
               onTap: () {
                 Navigator.push(
@@ -368,7 +367,7 @@ class MyDrawer extends StatelessWidget {
 
             _buildListTile(
               context: context,
-              title: 'Edit Department',
+              title: 'Edit Business',
               iconPath: 'lib/icons/edit_dept.png',
               iconColor: Colors.deepOrange,
               onTap: () {
@@ -481,7 +480,7 @@ class MyDrawer extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 2),
               child: ListTile(
                 leading: const Icon(Icons.lock),
-                title: const Text('Change Password',style: TextStyle(fontWeight: FontWeight.w400),),
+                title: const Text('Change Password',style: TextStyle(fontWeight: FontWeight.w400,fontSize: 14)),
                 onTap: (){
                   showChangePasswordDialog(context);
                 },
@@ -491,7 +490,7 @@ class MyDrawer extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: ListTile(
                 leading: const Icon(Icons.logout_outlined),
-                title: const Text('Log out',style: TextStyle(fontWeight: FontWeight.w400,color: Colors.red),),
+                title: const Text('Log out',style: TextStyle(fontWeight: FontWeight.w400,color: Colors.red,fontSize: 14)),
                 onTap: (){
                   showLogoutDialog(context);
                 },
